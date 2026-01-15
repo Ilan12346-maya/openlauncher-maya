@@ -1,6 +1,19 @@
 ![graphic](https://raw.githubusercontent.com/OpenLauncherTeam/openlauncher/master/fastlane/metadata/android/en-US/images/featureGraphic.png)
 
-### Project discontinued
+# Personal OpenLauncher Fork
+
+This fork was created because I could not find a launcher that met my specific requirements. I decided to fork OpenLauncher to create a version tailored to my personal preferences, specifically optimized for an 8.5" smartphone with a minimum DPI of 750 in developer options.
+
+While this project is primarily for my own use, I am making it available for anyone who might share similar requirements or preferences. The codebase has been updated to reflect current standards, and several new features have been implemented.
+
+### Key Changes and Features
+*   **Updated Codebase:** The project has been brought up to date with modern Android development standards.
+*   **Batch App Removal:** Efficiently uninstall multiple applications at once.
+*   **Page0 Webview:** A fullscreen webview integrated on page 0 for quick access to web content.
+
+---
+
+### Project discontinued (Original Notice)
 The OpenLauncher project is discontinued. The original project author has left the project many years ago and didn't come back. Also the project has not seen active development for years, or at least no considerable interest by the community to contribute. Technology doesn't stop in time and the Android platforms regulary gets new things that are expected by launchers. As well active development is require to support newer Android versions. I ([@gsantner](https://github.com/gsantner)) have been taking the time to keeping the project alive for many years, from now on I stop doing that. Move on and don't consider this codebase as it's dated. You likely are better off starting something fresh or fork a other more recent launcher project.
 
 The suggestion is to use a different, active maintained launcher. If you are happy still with OpenLauncher as it is, feel free to keep using it as long you like to. If the latest release does not work, feel free to try a older version. BUT don't expect any future project changes. The last release can be downloaded from [F-Droid](https://f-droid.org/repository/browse/?fdid=com.benny.openlauncher).

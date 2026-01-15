@@ -1,7 +1,0 @@
-#Thu Jan 15 01:33:42 CET 2026
-base.0=O\:\\openlauncher\\project\\app\\build\\intermediates\\dex\\flavorDefaultDebug\\mergeDexFlavorDefaultDebug\\classes.dex
-base.1=O\:\\openlauncher\\project\\app\\build\\intermediates\\dex\\flavorDefaultDebug\\mergeDexFlavorDefaultDebug\\classes2.dex
-path.0=classes.dex
-path.1=classes2.dex
-renamed.0=classes.dex
-renamed.1=classes2.dex

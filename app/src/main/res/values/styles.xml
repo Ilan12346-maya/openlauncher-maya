@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Home.Light" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="28">shortEdges</item>
+        <item name="android:navigationBarColor" tools:targetApi="21">@android:color/transparent</item>
+        <item name="android:colorPrimaryDark"  tools:targetApi="21">@android:color/transparent</item>
+        <item name="android:windowShowWallpaper">true</item>
+
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:textColorPrimary">@color/Light.TextColor</item>
+        <item name="android:textColor">@color/Light.TextColor</item>
+        <item name="android:textColorSecondary">@color/Light.TextColorSecondary</item>
+    </style>
+
+    <style name="NormalActivity.Light" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="28">shortEdges</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:windowBackground">@color/Light.Background</item>
+        <item name="android:textColorPrimary">@color/Light.TextColor</item>
+        <item name="android:textColor">@color/Light.TextColor</item>
+        <item name="android:textColorSecondary">@color/Light.TextColorSecondary</item>
+    </style>
+
+    <style name="NormalActivity.Dark" parent="Theme.AppCompat.NoActionBar">
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:windowBackground">@color/Dark.Background</item>
+        <item name="android:textColorPrimary">@color/Dark.TextColor</item>
+        <item name="android:textColor">@color/Dark.TextColor</item>
+        <item name="android:textColorSecondary">@color/Dark.TextColorSecondary</item>
+    </style>
+
+        <style name="NormalActivity.Black" parent="Theme.AppCompat.NoActionBar">
+            <item name="android:windowTranslucentStatus">true</item>
+            <item name="android:windowTranslucentNavigation">true</item>
+            <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="28">shortEdges</item>
+            <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+            <item name="colorPrimary">#000000</item>
+            <item name="colorPrimaryDark">#000000</item>
+            <item name="colorAccent">@color/colorAccent</item>
+    
+                    <item name="android:windowBackground">@color/Black.Background</item>
+                    <item name="android:textColorPrimary">#FFFFFF</item>
+                    <item name="android:textColor">#FFFFFF</item>
+                    <item name="android:textColorSecondary">#EEEEEE</item>
+                </style>    <style name="Toolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="colorControlNormal">@color/white</item>
+        <item name="titleTextColor">@color/white</item>
+        <item name="background">@color/colorPrimary</item>
+    </style>
+
+    <style name="IntroTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowTranslucentStatus" tools:ignore="NewApi">true</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowShowWallpaper">true</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="FilePickerTheme" parent="NNF_BaseTheme">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+</resources>

@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.benny.openlauncher.debug",
+  "variantName": "flavorDefaultDebug",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 208,
+      "versionName": "0.8.9",
+      "outputFile": "app-flavorDefault-debug.apk"
+    }
+  ],
+  "elementType": "File"
+}

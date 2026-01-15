@@ -1,0 +1,442 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.benny.openlauncher.debug"
+4    android:versionCode="208"
+5    android:versionName="0.8.9" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="21"
+9        android:targetSdkVersion="34" />
+10
+11    <uses-permission android:name="android.permission.INTERNET" />
+11-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:5:5-67
+11-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:5:22-64
+12    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+12-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:6:5-72
+12-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:6:22-69
+13    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+13-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:7:5-77
+13-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:7:22-74
+14    <uses-permission
+14-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:8:5-107
+15        android:name="android.permission.READ_EXTERNAL_STORAGE"
+15-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:8:22-77
+16        android:maxSdkVersion="32" />
+16-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:8:78-104
+17    <uses-permission
+17-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:9:5-108
+18        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+18-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:9:22-78
+19        android:maxSdkVersion="28" />
+19-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:9:79-105
+20    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+20-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:10:5-76
+20-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:10:22-73
+21    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+21-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:11:5-77
+21-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:11:22-74
+22    <uses-permission android:name="android.permission.VIBRATE" />
+22-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:12:5-66
+22-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:12:22-63
+23    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
+23-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:13:5-76
+23-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:13:22-73
+24    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
+24-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:14:5-81
+24-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:14:22-79
+25    <uses-permission android:name="android.permission.READ_CONTACTS" />
+25-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:15:5-72
+25-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:15:22-69
+26    <uses-permission android:name="android.permission.READ_CALENDAR" />
+26-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:16:5-72
+26-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:16:22-69
+27    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+27-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:17:5-79
+27-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:17:22-76
+28    <uses-permission android:name="android.permission.CALL_PHONE" />
+28-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:18:5-69
+28-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:18:22-66
+29    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
+29-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:19:5-114
+29-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:19:22-75
+30    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+30-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:20:5-84
+30-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:20:22-81
+31    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+31-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:21:5-22:47
+31-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:21:22-70
+32
+33    <permission
+33-->[androidx.core:core:1.9.0] C:\Users\anonm\.gradle\caches\transforms-3\b96686d36a0ac3a855a69d72c11d1b9e\transformed\core-1.9.0\AndroidManifest.xml:22:5-24:47
+34        android:name="com.benny.openlauncher.debug.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+34-->[androidx.core:core:1.9.0] C:\Users\anonm\.gradle\caches\transforms-3\b96686d36a0ac3a855a69d72c11d1b9e\transformed\core-1.9.0\AndroidManifest.xml:23:9-81
+35        android:protectionLevel="signature" />
+35-->[androidx.core:core:1.9.0] C:\Users\anonm\.gradle\caches\transforms-3\b96686d36a0ac3a855a69d72c11d1b9e\transformed\core-1.9.0\AndroidManifest.xml:24:9-44
+36
+37    <uses-permission android:name="com.benny.openlauncher.debug.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+37-->[androidx.core:core:1.9.0] C:\Users\anonm\.gradle\caches\transforms-3\b96686d36a0ac3a855a69d72c11d1b9e\transformed\core-1.9.0\AndroidManifest.xml:26:5-97
+37-->[androidx.core:core:1.9.0] C:\Users\anonm\.gradle\caches\transforms-3\b96686d36a0ac3a855a69d72c11d1b9e\transformed\core-1.9.0\AndroidManifest.xml:26:22-94
+38
+39    <application
+39-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:24:5-158:19
+40        android:name="com.benny.openlauncher.AppObject"
+40-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:27:9-56
+41        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+41-->[androidx.core:core:1.9.0] C:\Users\anonm\.gradle\caches\transforms-3\b96686d36a0ac3a855a69d72c11d1b9e\transformed\core-1.9.0\AndroidManifest.xml:28:18-86
+42        android:debuggable="true"
+43        android:extractNativeLibs="true"
+44        android:hardwareAccelerated="true"
+44-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:28:9-43
+45        android:icon="@mipmap/ic_launcher"
+45-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:29:9-43
+46        android:label="@string/app_name"
+46-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:30:9-41
+47        android:largeHeap="false"
+47-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:31:9-34
+48        android:launchMode="singleTask"
+48-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:32:9-40
+49        android:requestLegacyExternalStorage="true"
+49-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:36:9-52
+50        android:resizeableActivity="false"
+50-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:26:9-43
+51        android:stateNotNeeded="true"
+51-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:33:9-38
+52        android:taskAffinity=""
+52-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:34:9-32
+53        android:theme="@style/Home.Light"
+53-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:35:9-42
+54        android:usesCleartextTraffic="true" >
+54-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:25:9-44
+55        <activity
+55-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:38:9-48:20
+56            android:name="com.benny.openlauncher.activity.OnBoardActivity"
+56-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:39:13-75
+57            android:clearTaskOnLaunch="true"
+57-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:40:13-45
+58            android:exported="true"
+58-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:43:13-36
+59            android:label="@string/app_name"
+59-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:41:13-45
+60            android:theme="@style/IntroTheme" >
+60-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:42:13-46
+61            <intent-filter>
+61-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:44:13-47:29
+62                <action android:name="android.intent.action.MAIN" />
+62-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:45:17-69
+62-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:45:25-66
+63
+64                <category android:name="android.intent.category.LAUNCHER" />
+64-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:46:17-77
+64-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:46:27-74
+65            </intent-filter>
+66        </activity>
+67        <activity
+67-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:49:9-64:20
+68            android:name="com.benny.openlauncher.activity.HomeActivity"
+68-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:50:13-72
+69            android:clearTaskOnLaunch="true"
+69-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:53:13-45
+70            android:exported="true"
+70-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:57:13-36
+71            android:label="@string/app_name"
+71-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:51:13-45
+72            android:launchMode="singleTask"
+72-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:52:13-44
+73            android:stateNotNeeded="true"
+73-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:54:13-42
+74            android:taskAffinity=""
+74-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:55:13-36
+75            android:windowSoftInputMode="adjustNothing" >
+75-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:56:13-56
+76            <intent-filter>
+76-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:58:13-63:29
+77                <action android:name="android.intent.action.VIEW" />
+77-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:59:17-69
+77-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:59:25-66
+78                <action android:name="android.intent.action.MAIN" />
+78-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:45:17-69
+78-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:45:25-66
+79
+80                <category android:name="android.intent.category.HOME" />
+80-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:61:17-73
+80-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:61:27-70
+81                <category android:name="android.intent.category.DEFAULT" />
+81-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:62:17-76
+81-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:62:27-73
+82            </intent-filter>
+83        </activity>
+84        <activity
+84-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:65:9-68:40
+85            android:name="com.benny.openlauncher.activity.AutoFinishActivity"
+85-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:66:13-78
+86            android:exported="false"
+86-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:68:13-37
+87            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
+87-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:67:13-83
+88        <activity
+88-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:69:9-74:40
+89            android:name="com.benny.openlauncher.activity.MinibarEditActivity"
+89-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:70:13-79
+90            android:exported="false"
+90-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:74:13-37
+91            android:label="@string/minibar"
+91-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:71:13-44
+92            android:parentActivityName="com.benny.openlauncher.activity.HomeActivity"
+92-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:72:13-86
+93            android:theme="@style/NormalActivity.Light" />
+93-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:73:13-56
+94        <activity
+94-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:75:9-80:40
+95            android:name="com.benny.openlauncher.activity.SettingsActivity"
+95-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:76:13-76
+96            android:configChanges="orientation|keyboard|screenSize"
+96-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:77:13-68
+97            android:exported="false"
+97-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:80:13-37
+98            android:label="@string/pref_title__settings"
+98-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:78:13-57
+99            android:theme="@style/NormalActivity.Light" />
+99-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:79:13-56
+100        <activity
+100-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:81:9-85:40
+101            android:name="com.benny.openlauncher.activity.HideAppsActivity"
+101-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:82:13-76
+102            android:exported="false"
+102-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:85:13-37
+103            android:label="@string/app_name"
+103-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:83:13-45
+104            android:theme="@style/NormalActivity.Light" />
+104-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:84:13-56
+105        <activity
+105-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:86:9-94:20
+106            android:name="com.benny.openlauncher.activity.MoreInfoActivity"
+106-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:87:13-76
+107            android:exported="false"
+107-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:90:13-37
+108            android:parentActivityName="com.benny.openlauncher.activity.SettingsActivity"
+108-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:88:13-90
+109            android:theme="@style/NormalActivity.Light" >
+109-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:89:13-56
+110            <meta-data
+110-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:91:13-93:84
+111                android:name="android.support.PARENT_ACTIVITY"
+111-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:92:17-63
+112                android:value="com.benny.openlauncher.activity.SettingsActivity" />
+112-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:93:17-81
+113        </activity>
+114        <activity
+114-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:95:9-104:20
+115            android:name="com.nononsenseapps.filepicker.FilePickerActivity"
+115-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:96:13-76
+116            android:exported="true"
+116-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:99:13-36
+117            android:label="@string/app_name"
+117-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:97:13-45
+118            android:theme="@style/FilePickerTheme" >
+118-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:98:13-51
+119            <intent-filter>
+119-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:100:13-103:29
+120                <action android:name="android.intent.action.GET_CONTENT" />
+120-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:101:17-76
+120-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:101:25-73
+121
+122                <category android:name="android.intent.category.DEFAULT" />
+122-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:62:17-76
+122-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:62:27-73
+123            </intent-filter>
+124        </activity>
+125        <activity
+125-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:105:9-115:20
+126            android:name="com.benny.openlauncher.activity.AddShortcutActivity"
+126-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:106:13-79
+127            android:autoRemoveFromRecents="true"
+127-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:107:13-49
+128            android:excludeFromRecents="true"
+128-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:108:13-46
+129            android:exported="true"
+129-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:111:13-36
+130            android:label="@string/app_name"
+130-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:109:13-45
+131            android:theme="@style/FilePickerTheme" >
+131-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:110:13-51
+132            <intent-filter>
+132-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:112:13-114:29
+133                <action android:name="android.content.pm.action.CONFIRM_PIN_SHORTCUT" />
+133-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:113:17-89
+133-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:113:25-86
+134            </intent-filter>
+135        </activity>
+136
+137        <receiver
+137-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:117:9-127:20
+138            android:name="com.benny.openlauncher.receivers.DeviceAdminReceiver"
+138-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:118:13-80
+139            android:exported="true"
+139-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:120:13-36
+140            android:permission="android.permission.BIND_DEVICE_ADMIN" >
+140-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:119:13-70
+141            <intent-filter>
+141-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:121:13-123:29
+142                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+142-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:122:17-82
+142-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:122:25-79
+143            </intent-filter>
+144
+145            <meta-data
+145-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:124:13-126:56
+146                android:name="android.app.device_admin"
+146-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:125:17-56
+147                android:resource="@xml/device_admin" />
+147-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:126:17-53
+148        </receiver>
+149        <receiver
+149-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:128:9-135:20
+150            android:name="com.benny.openlauncher.receivers.ShortcutReceiver"
+150-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:129:13-77
+151            android:exported="true"
+151-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:131:13-36
+152            android:permission="com.android.launcher.permission.INSTALL_SHORTCUT" >
+152-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:130:13-82
+153            <intent-filter>
+153-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:132:13-134:29
+154                <action android:name="com.android.launcher.action.INSTALL_SHORTCUT" />
+154-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:133:17-87
+154-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:133:25-84
+155            </intent-filter>
+156        </receiver>
+157
+158        <service
+158-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:137:9-146:19
+159            android:name="com.benny.openlauncher.notifications.NotificationListener"
+159-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:138:13-85
+160            android:enabled="true"
+160-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:140:13-35
+161            android:exported="true"
+161-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:142:13-36
+162            android:label="@string/icon_badge_service_title"
+162-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:139:13-61
+163            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" >
+163-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:141:13-87
+164            <intent-filter>
+164-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:143:13-145:29
+165                <action android:name="android.service.notification.NotificationListenerService" />
+165-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:144:17-99
+165-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:144:25-96
+166            </intent-filter>
+167        </service>
+168
+169        <provider
+170            android:name="androidx.core.content.FileProvider"
+170-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:149:13-62
+171            android:authorities="com.benny.openlauncher.debug.provider"
+171-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:150:13-60
+172            android:exported="false"
+172-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:151:13-37
+173            android:grantUriPermissions="true" >
+173-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:152:13-47
+174            <meta-data
+174-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:153:13-155:54
+175                android:name="android.support.FILE_PROVIDER_PATHS"
+175-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:154:17-67
+176                android:resource="@xml/file_paths" />
+176-->O:\openlauncher\project\app\src\main\AndroidManifest.xml:155:17-51
+177        </provider>
+178
+179        <activity
+179-->[cat.ereza:customactivityoncrash:2.4.0] C:\Users\anonm\.gradle\caches\transforms-3\28466a86496ede583af3c58ac93af9b9\transformed\jetified-customactivityoncrash-2.4.0\AndroidManifest.xml:10:9-12:49
+180            android:name="cat.ereza.customactivityoncrash.activity.DefaultErrorActivity"
+180-->[cat.ereza:customactivityoncrash:2.4.0] C:\Users\anonm\.gradle\caches\transforms-3\28466a86496ede583af3c58ac93af9b9\transformed\jetified-customactivityoncrash-2.4.0\AndroidManifest.xml:11:13-89
+181            android:process=":error_activity" />
+181-->[cat.ereza:customactivityoncrash:2.4.0] C:\Users\anonm\.gradle\caches\transforms-3\28466a86496ede583af3c58ac93af9b9\transformed\jetified-customactivityoncrash-2.4.0\AndroidManifest.xml:12:13-46
+182
+183        <provider
+183-->[cat.ereza:customactivityoncrash:2.4.0] C:\Users\anonm\.gradle\caches\transforms-3\28466a86496ede583af3c58ac93af9b9\transformed\jetified-customactivityoncrash-2.4.0\AndroidManifest.xml:14:9-18:39
+184            android:name="cat.ereza.customactivityoncrash.provider.CaocInitProvider"
+184-->[cat.ereza:customactivityoncrash:2.4.0] C:\Users\anonm\.gradle\caches\transforms-3\28466a86496ede583af3c58ac93af9b9\transformed\jetified-customactivityoncrash-2.4.0\AndroidManifest.xml:15:13-85
+185            android:authorities="com.benny.openlauncher.debug.customactivityoncrashinitprovider"
+185-->[cat.ereza:customactivityoncrash:2.4.0] C:\Users\anonm\.gradle\caches\transforms-3\28466a86496ede583af3c58ac93af9b9\transformed\jetified-customactivityoncrash-2.4.0\AndroidManifest.xml:16:13-85
+186            android:exported="false"
+186-->[cat.ereza:customactivityoncrash:2.4.0] C:\Users\anonm\.gradle\caches\transforms-3\28466a86496ede583af3c58ac93af9b9\transformed\jetified-customactivityoncrash-2.4.0\AndroidManifest.xml:17:13-37
+187            android:initOrder="101" />
+187-->[cat.ereza:customactivityoncrash:2.4.0] C:\Users\anonm\.gradle\caches\transforms-3\28466a86496ede583af3c58ac93af9b9\transformed\jetified-customactivityoncrash-2.4.0\AndroidManifest.xml:18:13-36
+188        <provider
+188-->[androidx.emoji2:emoji2:1.2.0] C:\Users\anonm\.gradle\caches\transforms-3\0f9fdaeef03dceb95537e3466822b5cd\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:24:9-32:20
+189            android:name="androidx.startup.InitializationProvider"
+189-->[androidx.emoji2:emoji2:1.2.0] C:\Users\anonm\.gradle\caches\transforms-3\0f9fdaeef03dceb95537e3466822b5cd\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:25:13-67
+190            android:authorities="com.benny.openlauncher.debug.androidx-startup"
+190-->[androidx.emoji2:emoji2:1.2.0] C:\Users\anonm\.gradle\caches\transforms-3\0f9fdaeef03dceb95537e3466822b5cd\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:26:13-68
+191            android:exported="false" >
+191-->[androidx.emoji2:emoji2:1.2.0] C:\Users\anonm\.gradle\caches\transforms-3\0f9fdaeef03dceb95537e3466822b5cd\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:27:13-37
+192            <meta-data
+192-->[androidx.emoji2:emoji2:1.2.0] C:\Users\anonm\.gradle\caches\transforms-3\0f9fdaeef03dceb95537e3466822b5cd\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:29:13-31:52
+193                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+193-->[androidx.emoji2:emoji2:1.2.0] C:\Users\anonm\.gradle\caches\transforms-3\0f9fdaeef03dceb95537e3466822b5cd\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:30:17-75
+194                android:value="androidx.startup" />
+194-->[androidx.emoji2:emoji2:1.2.0] C:\Users\anonm\.gradle\caches\transforms-3\0f9fdaeef03dceb95537e3466822b5cd\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:31:17-49
+195            <meta-data
+195-->[androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\anonm\.gradle\caches\transforms-3\85c78ddb4f41b06a3c5e5d21f4bf3713\transformed\jetified-lifecycle-process-2.6.1\AndroidManifest.xml:29:13-31:52
+196                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+196-->[androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\anonm\.gradle\caches\transforms-3\85c78ddb4f41b06a3c5e5d21f4bf3713\transformed\jetified-lifecycle-process-2.6.1\AndroidManifest.xml:30:17-78
+197                android:value="androidx.startup" />
+197-->[androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\anonm\.gradle\caches\transforms-3\85c78ddb4f41b06a3c5e5d21f4bf3713\transformed\jetified-lifecycle-process-2.6.1\AndroidManifest.xml:31:17-49
+198            <meta-data
+198-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\anonm\.gradle\caches\transforms-3\43940fd93f8745031719b70e1ab9f684\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:29:13-31:52
+199                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+199-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\anonm\.gradle\caches\transforms-3\43940fd93f8745031719b70e1ab9f684\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:30:17-85
+200                android:value="androidx.startup" />
+200-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\anonm\.gradle\caches\transforms-3\43940fd93f8745031719b70e1ab9f684\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:31:17-49
+201        </provider>
+202
+203        <uses-library
+203-->[androidx.window:window:1.0.0] C:\Users\anonm\.gradle\caches\transforms-3\2097fd8eab913449092bf6343be4b191\transformed\jetified-window-1.0.0\AndroidManifest.xml:25:9-27:40
+204            android:name="androidx.window.extensions"
+204-->[androidx.window:window:1.0.0] C:\Users\anonm\.gradle\caches\transforms-3\2097fd8eab913449092bf6343be4b191\transformed\jetified-window-1.0.0\AndroidManifest.xml:26:13-54
+205            android:required="false" />
+205-->[androidx.window:window:1.0.0] C:\Users\anonm\.gradle\caches\transforms-3\2097fd8eab913449092bf6343be4b191\transformed\jetified-window-1.0.0\AndroidManifest.xml:27:13-37
+206        <uses-library
+206-->[androidx.window:window:1.0.0] C:\Users\anonm\.gradle\caches\transforms-3\2097fd8eab913449092bf6343be4b191\transformed\jetified-window-1.0.0\AndroidManifest.xml:28:9-30:40
+207            android:name="androidx.window.sidecar"
+207-->[androidx.window:window:1.0.0] C:\Users\anonm\.gradle\caches\transforms-3\2097fd8eab913449092bf6343be4b191\transformed\jetified-window-1.0.0\AndroidManifest.xml:29:13-51
+208            android:required="false" />
+208-->[androidx.window:window:1.0.0] C:\Users\anonm\.gradle\caches\transforms-3\2097fd8eab913449092bf6343be4b191\transformed\jetified-window-1.0.0\AndroidManifest.xml:30:13-37
+209
+210        <receiver
+210-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\anonm\.gradle\caches\transforms-3\43940fd93f8745031719b70e1ab9f684\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:34:9-52:20
+211            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+211-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\anonm\.gradle\caches\transforms-3\43940fd93f8745031719b70e1ab9f684\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:35:13-76
+212            android:directBootAware="false"
+212-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\anonm\.gradle\caches\transforms-3\43940fd93f8745031719b70e1ab9f684\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:36:13-44
+213            android:enabled="true"
+213-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\anonm\.gradle\caches\transforms-3\43940fd93f8745031719b70e1ab9f684\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:37:13-35
+214            android:exported="true"
+214-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\anonm\.gradle\caches\transforms-3\43940fd93f8745031719b70e1ab9f684\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:38:13-36
+215            android:permission="android.permission.DUMP" >
+215-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\anonm\.gradle\caches\transforms-3\43940fd93f8745031719b70e1ab9f684\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:39:13-57
+216            <intent-filter>
+216-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\anonm\.gradle\caches\transforms-3\43940fd93f8745031719b70e1ab9f684\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:40:13-42:29
+217                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+217-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\anonm\.gradle\caches\transforms-3\43940fd93f8745031719b70e1ab9f684\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:41:17-91
+217-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\anonm\.gradle\caches\transforms-3\43940fd93f8745031719b70e1ab9f684\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:41:25-88
+218            </intent-filter>
+219            <intent-filter>
+219-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\anonm\.gradle\caches\transforms-3\43940fd93f8745031719b70e1ab9f684\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:43:13-45:29
+220                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+220-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\anonm\.gradle\caches\transforms-3\43940fd93f8745031719b70e1ab9f684\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:44:17-85
+220-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\anonm\.gradle\caches\transforms-3\43940fd93f8745031719b70e1ab9f684\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:44:25-82
+221            </intent-filter>
+222            <intent-filter>
+222-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\anonm\.gradle\caches\transforms-3\43940fd93f8745031719b70e1ab9f684\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:46:13-48:29
+223                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+223-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\anonm\.gradle\caches\transforms-3\43940fd93f8745031719b70e1ab9f684\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:47:17-88
+223-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\anonm\.gradle\caches\transforms-3\43940fd93f8745031719b70e1ab9f684\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:47:25-85
+224            </intent-filter>
+225            <intent-filter>
+225-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\anonm\.gradle\caches\transforms-3\43940fd93f8745031719b70e1ab9f684\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:49:13-51:29
+226                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+226-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\anonm\.gradle\caches\transforms-3\43940fd93f8745031719b70e1ab9f684\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:50:17-95
+226-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\anonm\.gradle\caches\transforms-3\43940fd93f8745031719b70e1ab9f684\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:50:25-92
+227            </intent-filter>
+228        </receiver>
+229    </application>
+230
+231</manifest>

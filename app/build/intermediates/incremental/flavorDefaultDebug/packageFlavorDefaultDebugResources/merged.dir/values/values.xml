@@ -1,0 +1,537 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:ns1="http://schemas.android.com/tools">
+    <string-array name="entries__app_drawer_style" translatable="false">
+        <item>@string/horizontal_paged_drawer</item>
+        <item>@string/vertical_scroll_drawer</item>
+    </string-array>
+    <string-array name="entries__date_format" translatable="false">
+        <item>@string/custom</item>
+        <item>February 17\nSaturday, 2018</item>
+        <item>February 17\n15:48</item>
+        <item>February 17, 2018\n15:48</item>
+        <item>15:48\nFebruary 17, 2018</item>
+    </string-array>
+    <string-array name="entries__desktop_actions" translatable="false">
+        <item>@string/minibar_title__app_drawer</item>
+    </string-array>
+    <string-array name="entries__gesture" translatable="false">
+        <item>@string/none</item>
+        <item>@string/action</item>
+        <item>@string/app</item>
+    </string-array>
+    <string-array name="entries__gesture_action" translatable="false">
+        <item>@string/minibar_title__edit_minibar</item>
+        <item>@string/minibar_title__set_wallpaper</item>
+        <item>@string/minibar_title__lock_screen</item>
+        <item>@string/minibar_title__launcher_settings</item>
+        <item>@string/minibar_title__volume_dialog</item>
+        <item>@string/minibar_title__device_settings</item>
+        <item>@string/minibar_title__app_drawer</item>
+        <item>@string/minibar_title__search_bar</item>
+        <item>@string/minibar_title__mobile_network</item>
+        <item>@string/minibar_title__notification_bar</item>
+    </string-array>
+    <string-array name="entries__indicator_mode" translatable="false">
+        <item>@string/indicator_mode_dots</item>
+        <item>@string/indicator_mode_lines</item>
+    </string-array>
+    <string-array name="entries__orientation_mode" translatable="false">
+        <item>@string/orientation_mode_portrait</item>
+        <item>@string/orientation_mode_rotate</item>
+        <item>@string/orientation_mode_landscape</item>
+    </string-array>
+    <string-array name="entries__theme" translatable="false">
+        <item>@string/light</item>
+        <item>@string/dark</item>
+        <item>@string/black</item>
+    </string-array>
+    <string-array name="entries__wallpaper_scroll" translatable="false">
+        <item>@string/scroll_normal</item>
+        <item>@string/scroll_inverse</item>
+        <item>@string/scroll_off</item>
+    </string-array>
+    <string-array name="values__zero_to_four" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+    <string-array name="values__zero_to_one" translatable="false">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+    <string-array name="values__zero_to_two" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <color name="Black.Background">#000000</color>
+    <color name="Dark.Background">#424242</color>
+    <color name="Dark.TextColor">#ffffff</color>
+    <color name="Dark.TextColorSecondary">#9e9e9e</color>
+    <color name="Light.Background">#f9f9f9</color>
+    <color name="Light.TextColor">#616161</color>
+    <color name="Light.TextColorSecondary">#9e9e9e</color>
+    <color name="black">#000000</color>
+    <color name="colorAccent">#5c6bc0</color>
+    <color name="colorPrimary">#5c6bc0</color>
+    <color name="colorPrimaryDark">#4254b3</color>
+    <color name="introButton">#7d000000</color>
+    <color name="introText">#ff444444</color>
+    <color name="materialBlue">#1892cc</color>
+    <color name="materialGreen">#b4c64a</color>
+    <color name="materialRed">#d6552e</color>
+    <color name="shade">#B0000000</color>
+    <color name="white">#ffffff</color>
+    <dimen name="activity_margin">@dimen/default_margin_2</dimen>
+    <dimen name="default_margin_0_5">4dp</dimen>
+    <dimen name="default_margin_1">8dp</dimen>
+    <dimen name="default_margin_2">16dp</dimen>
+    <dimen name="default_margin_top">20dp</dimen>
+    <dimen name="default_padding_side">24dp</dimen>
+    <dimen name="default_preview_height">40dp</dimen>
+    <dimen name="default_preview_image_height">36dp</dimen>
+    <dimen name="default_slider_bar_height">4dp</dimen>
+    <dimen name="default_slider_handler_radius">10dp</dimen>
+    <dimen name="default_slider_height">36dp</dimen>
+    <dimen name="default_slider_margin">24dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <item name="app_widget_host" type="id"/>
+    <item name="id_adapter_app_item" type="id"/>
+    <item name="id_adapter_drawer_app_item" type="id"/>
+    <item name="id_adapter_icon_label_item" type="id"/>
+    <item name="id_adapter_popup_icon_label_item" type="id"/>
+    <item name="item_header_search" type="id"/>
+    <item name="item_note" type="id"/>
+    <string name="about_credit">Contributors</string>
+    <string name="about_libs">Open Source Libraries</string>
+    <string name="about_rate">Rate</string>
+    <string name="action">Action</string>
+    <string name="add_to_desktop">App hinzufügen</string>
+    <string name="android_contribution_guide">Android Development</string>
+    <string name="app">App</string>
+    <string name="app_bug_report_url" translatable="false">https://github.com/openlauncherteam/openlauncher/issues</string>
+    <string name="app_community_url" translatable="false">https://matrix.to/#/#openlauncher:matrix.org</string>
+    <string name="app_contribution_info_url" translatable="false">https://github.com/openlauncherteam/openlauncher/blob/master/README.md#contributions</string>
+    <string name="app_license_name" translatable="false">Apache 2.0</string>
+    <string name="app_name" translatable="false">OpenLauncher</string>
+    <string name="app_source_code_url" translatable="false">https://github.com/openlauncherteam/openlauncher</string>
+    <string name="app_translate_url" translatable="false"><![CDATA[https://lonamiwebs.github.io/stringlate/translate?git=https%3A%2F%2Fgithub.com%2Fopenlauncherteam%2Fopenlauncher.git&mail=gro.xobliam@@rentnasg&name=OpenLauncher&web=https%3A%2F%2Fgithub.com%2Fopenlauncherteam%2Fopenlauncher]]></string>
+    <string name="app_web_url" translatable="false">https://github.com/openlauncherteam/openlauncher</string>
+    <string name="are_you_sure">Are you sure? This action cannot be undone unless you have a backup.</string>
+    <string name="bad_format">Bad Format</string>
+    <string name="black">Black</string>
+    <string name="bug_reports">Report Bugs</string>
+    <string name="bug_reports_suggest_improvements">Report bugs and suggest improvements on GitHub.</string>
+    <string name="changelog">Changelog</string>
+    <string name="columns">Columns</string>
+    <string name="community">Community</string>
+    <string name="contribute">Contribute</string>
+    <string name="contribute_code_to_this_project_anybody_welcome">Contribute code to the project. Everyone is welcome to submit changes!</string>
+    <string name="contributors">Contributors</string>
+    <string name="contributors_public_info">Contributors can provide information to be shown here after improving the launcher.</string>
+    <string name="custom">Custom</string>
+    <string name="dark">Dark</string>
+    <string name="default_folder">Unnamed</string>
+    <string name="default_icons">Default</string>
+    <string name="device_admin_summary">OpenLauncher requires the device administration permission to lock your screen.</string>
+    <string name="device_admin_title">Device Administration</string>
+    <string name="edit">Edit</string>
+    <string name="enable">Enable</string>
+    <string name="force_stop">Sofort beenden</string>
+    <string name="help">Help</string>
+    <string name="help_translating_this_app">Translate this app to other languages with GitHub or Stringlate!</string>
+    <string name="home">Home</string>
+    <string name="horizontal_paged_drawer">Paged</string>
+    <string name="icon_badge_service_title" translatable="false">Icon Badges</string>
+    <string name="indicator_mode_dots">Dots</string>
+    <string name="indicator_mode_lines">Lines</string>
+    <string name="info">Info</string>
+    <string name="intro1_community">Large Community</string>
+    <string name="intro1_customizable">Customizable</string>
+    <string name="intro1_features">Packed with Features</string>
+    <string name="intro1_text">An open source launcher with lots of useful features.</string>
+    <string name="intro2_text">Swipe in from the left border of your home screen to open the minibar and select an action.</string>
+    <string name="intro3_text">You can choose a style for your app drawer and hide unused apps from the settings.</string>
+    <string name="intro4_text">Search for something on the web or filter your apps from the search bar.</string>
+    <string name="join_community">Join the Community</string>
+    <string name="licenses">Licenses</string>
+    <string name="light">Light</string>
+    <string name="lock">Lock</string>
+    <string name="manifest_package_id" translatable="false">com.benny.openlauncher</string>
+    <string name="minibar">Minibar</string>
+    <string name="minibar_summary__app_drawer">Open the app drawer.</string>
+    <string name="minibar_summary__camera">Take a picture with your camera app</string>
+    <string name="minibar_summary__device_settings">Shortcut to device settings.</string>
+    <string name="minibar_summary__edit_minibar">Change the minibar layout.</string>
+    <string name="minibar_summary__launcher_settings">Shortcut to OpenLauncher settings.</string>
+    <string name="minibar_summary__lock_screen">Lock the screen immediately.</string>
+    <string name="minibar_summary__mobile_network">Shortcut to the mobile network settings.</string>
+    <string name="minibar_summary__notification_bar">Expand the notification view at the top of the screen.</string>
+    <string name="minibar_summary__search_bar">Open the search bar.</string>
+    <string name="minibar_summary__set_wallpaper">Set the desktop wallpaper.</string>
+    <string name="minibar_summary__volume_dialog">Display all available volume sliders.</string>
+    <string name="minibar_title__app_drawer">Open App Drawer</string>
+    <string name="minibar_title__camera">Camera</string>
+    <string name="minibar_title__device_settings">Device Settings</string>
+    <string name="minibar_title__edit_minibar">Edit Minibar</string>
+    <string name="minibar_title__launcher_settings">Launcher Settings</string>
+    <string name="minibar_title__lock_screen">Lock Screen</string>
+    <string name="minibar_title__mobile_network">Mobile Network Settings</string>
+    <string name="minibar_title__notification_bar">Show Notification Bar</string>
+    <string name="minibar_title__search_bar">Open Search Bar</string>
+    <string name="minibar_title__set_wallpaper">Set Wallpaper</string>
+    <string name="minibar_title__volume_dialog">Volume Dialog</string>
+    <string name="more">More</string>
+    <string name="more_info_foss">More information about contributing to open source projects on Android.</string>
+    <string name="more_info_on_how_to_contribute_to_this_project">How you can contribute to this project.</string>
+    <string name="more_info_support">More information on donating or otherwise supporting this project.</string>
+    <string name="none">None</string>
+    <string name="notification_summary">OpenLauncher requires the notification permission to show icon badges.</string>
+    <string name="notification_title">Notification Access</string>
+    <string name="off">Off</string>
+    <string name="on">On</string>
+    <string name="open_source_licenses">Open Source Licenses</string>
+    <string name="orientation_mode_landscape">Landscape</string>
+    <string name="orientation_mode_portrait">Portrait</string>
+    <string name="orientation_mode_rotate">Rotate</string>
+    <string name="placeholder">Hello World!</string>
+    <string name="please_wait">Searching for installed apps. Please wait.</string>
+    <string name="pref_default__date_bar_date_format_custom_1" translatable="false"><![CDATA[EEEE\', \'dd\'.\']]></string>
+    <string name="pref_default__date_bar_date_format_custom_2" translatable="false"><![CDATA[MMMM yyyy\', KW \'ww]]></string>
+    <string name="pref_default__search_bar_base_uri" translatable="false"><![CDATA[https://duckduckgo.com/?kae=c&k1=-1&kaj=m&kv=l&kp=-1&q={query}]]></string>
+    <string name="pref_dialog__search_bar_base_uri">Enter the URI that should be used for web searches. The tag {query} can be used as
+      placeholder for the search query, in case no placeholder is used the search query will be appended at the end of the URI.</string>
+    <string name="pref_key__animation_speed" translatable="false">pref_key__animation_speed</string>
+    <string name="pref_key__backup" translatable="false">pref_key__backup</string>
+    <string name="pref_key__cat_about" translatable="false">pref_key__cat_about</string>
+    <string name="pref_key__cat_advanced" translatable="false">pref_key__cat_advanced</string>
+    <string name="pref_key__cat_app_drawer" translatable="false">pref_key__cat_app_drawer</string>
+    <string name="pref_key__cat_appearance" translatable="false">pref_key__cat_appearance</string>
+    <string name="pref_key__cat_behavior" translatable="false">pref_key__cat_behavior</string>
+    <string name="pref_key__cat_desktop" translatable="false">pref_key__cat_desktop</string>
+    <string name="pref_key__cat_dock" translatable="false">pref_key__cat_dock</string>
+    <string name="pref_key__cat_hide_apps" translatable="false">pref_key__cat_hide_apps</string>
+    <string name="pref_key__date_bar_date_format_custom_1" translatable="false">pref_key__date_bar_date_format_custom_1</string>
+    <string name="pref_key__date_bar_date_format_custom_2" translatable="false">pref_key__date_bar_date_format_custom_2</string>
+    <string name="pref_key__date_bar_date_format_type" translatable="false">pref_key__date_bar_date_format_type</string>
+    <string name="pref_key__date_bar_date_text_color" translatable="false">pref_key__date_bar_date_text_color</string>
+    <string name="pref_key__desktop_background_color" translatable="false">pref_key__desktop_background_color</string>
+    <string name="pref_key__desktop_columns" translatable="false">pref_key__desktop_columns</string>
+    <string name="pref_key__desktop_current_position" translatable="false">pref_key__desktop_current_position</string>
+    <string name="pref_key__desktop_folder_color" translatable="false">pref_key__desktop_folder_color</string>
+    <string name="pref_key__desktop_fullscreen" translatable="false">pref_key__desktop_fullscreen</string>
+    <string name="pref_key__desktop_indicator_style" translatable="false">pref_key__desktop_indicator_style</string>
+    <string name="pref_key__desktop_inset_color" translatable="false">pref_key__desktop_inset_color</string>
+    <string name="pref_key__desktop_lock" translatable="false">pref_key__desktop_lock</string>
+    <string name="pref_key__desktop_orientation" translatable="false">pref_key__desktop_orientation</string>
+    <string name="pref_key__desktop_rows" translatable="false">pref_key__desktop_rows</string>
+    <string name="pref_key__desktop_search_use_grid" translatable="false">pref_key__desktop_search_use_grid</string>
+    <string name="pref_key__desktop_show_grid" translatable="false">pref_key__desktop_show_grid</string>
+    <string name="pref_key__desktop_show_label" translatable="false">pref_key__desktop_show_label</string>
+    <string name="pref_key__desktop_show_position_indicator" translatable="false">pref_key__desktop_show_position_indicator</string>
+    <string name="pref_key__desktop_wallpaper_scroll" translatable="false">pref_key__desktop_wallpaper_scroll</string>
+    <string name="pref_key__dock_background_color" translatable="false">pref_key__dock_background_color</string>
+    <string name="pref_key__dock_columns" translatable="false">pref_key__dock_columns</string>
+    <string name="pref_key__dock_enable" translatable="false">pref_key__dock_enable</string>
+    <string name="pref_key__dock_rows" translatable="false">pref_key__dock_rows</string>
+    <string name="pref_key__dock_show_label" translatable="false">pref_key__dock_show_label</string>
+    <string name="pref_key__drawer_background_color" translatable="false">pref_key__drawer_background_color</string>
+    <string name="pref_key__drawer_card_color" translatable="false">pref_key__drawer_card_color</string>
+    <string name="pref_key__drawer_columns" translatable="false">pref_key__drawer_columns</string>
+    <string name="pref_key__drawer_fast_scroll_color" translatable="false">pref_key__drawer_fast_scroll_color</string>
+    <string name="pref_key__drawer_label_color" translatable="false">pref_key__drawer_label_color</string>
+    <string name="pref_key__drawer_label_font_size" translatable="false">pref_key__drawer_label_font_size</string>
+    <string name="pref_key__drawer_remember_position" translatable="false">pref_key__drawer_remember_position</string>
+    <string name="pref_key__drawer_rows" translatable="false">pref_key__drawer_rows</string>
+    <string name="pref_key__drawer_show_card_view" translatable="false">pref_key__drawer_show_card_view</string>
+    <string name="pref_key__drawer_show_label" translatable="false">pref_key__drawer_show_label</string>
+    <string name="pref_key__drawer_show_position_indicator" translatable="false">pref_key__drawer_show_position_indicator</string>
+    <string name="pref_key__drawer_style" translatable="false">pref_key__drawer_style</string>
+    <string name="pref_key__first_start" translatable="false">pref_key__first_start</string>
+    <string name="pref_key__gesture_double_tap" translatable="false">pref_key__gesture_double_tap</string>
+    <string name="pref_key__gesture_feedback" translatable="false">pref_key__gesture_feedback</string>
+    <string name="pref_key__gesture_notifications" translatable="false">pref_key__gesture_notifications</string>
+    <string name="pref_key__gesture_pinch_in" translatable="false">pref_key__gesture_pinch_in</string>
+    <string name="pref_key__gesture_pinch_out" translatable="false">pref_key__gesture_pinch_out</string>
+    <string name="pref_key__gesture_quick_swipe" translatable="false">pref_key__gesture_quick_swipe</string>
+    <string name="pref_key__gesture_swipe_down" translatable="false">pref_key__gesture_swipe_down</string>
+    <string name="pref_key__gesture_swipe_up" translatable="false">pref_key__gesture_swipe_up</string>
+    <string name="pref_key__hidden_apps" translatable="false">pref_key_hidden_apps</string>
+    <string name="pref_key__icon_pack" translatable="false">pref_key__icon_pack</string>
+    <string name="pref_key__icon_size" translatable="false">pref_key__icon_size</string>
+    <string name="pref_key__language" translatable="false">pref_key__language</string>
+    <string name="pref_key__minibar" translatable="false">pref_key__minibar</string>
+    <string name="pref_key__minibar_background_color" translatable="false">pref_key__minibar_background_color</string>
+    <string name="pref_key__minibar_enable" translatable="false">pref_key__minibar_enable</string>
+    <string name="pref_key__minibar_items" translatable="false">pref_key__minibar_items</string>
+    <string name="pref_key__more_info__app" translatable="false">pref_key__more_info__app</string>
+    <string name="pref_key__more_info__bug_reports" translatable="false">pref_key__more_info__bug_reports</string>
+    <string name="pref_key__more_info__contributors_public_info" translatable="false">pref_key__more_info__contributors_public_info</string>
+    <string name="pref_key__more_info__copy_build_information" translatable="false">pref_key__more_info__copy_build_information</string>
+    <string name="pref_key__more_info__help" translatable="false">pref_key__more_info__help</string>
+    <string name="pref_key__more_info__join_community" translatable="false">pref_key__more_info__join_community</string>
+    <string name="pref_key__more_info__open_source_licenses" translatable="false">pref_key__more_info__open_source_licenses</string>
+    <string name="pref_key__more_info__project_community" translatable="false">pref_key__more_info__project_community</string>
+    <string name="pref_key__more_info__project_contribution_info" translatable="false">pref_key__more_info__project_contribution_info</string>
+    <string name="pref_key__more_info__project_license" translatable="false">pref_key__more_info__project_license</string>
+    <string name="pref_key__more_info__project_team" translatable="false">pref_key__more_info__project_team</string>
+    <string name="pref_key__more_info__rate_app" translatable="false">pref_key__more_info__rate_app</string>
+    <string name="pref_key__more_info__settings" translatable="false">pref_key__more_info__settings</string>
+    <string name="pref_key__more_info__source_code" translatable="false">pref_key__more_info__source_code</string>
+    <string name="pref_key__more_info__translate" translatable="false">pref_key__more_info__translate</string>
+    <string name="pref_key__primary_color" translatable="false">pref_key__primary_color</string>
+    <string name="pref_key__queue_restart" translatable="false">pref_key__queue_restart</string>
+    <string name="pref_key__reset_database" translatable="false">pref_key__reset_database</string>
+    <string name="pref_key__reset_settings" translatable="false">pref_key__reset_settings</string>
+    <string name="pref_key__restart" translatable="false">pref_key__restart</string>
+    <string name="pref_key__restore" translatable="false">pref_key__restore</string>
+    <string name="pref_key__search_bar_base_uri" translatable="false">pref_key__search_bar_base_uri</string>
+    <string name="pref_key__search_bar_enable" translatable="false">pref_key__search_bar_enable</string>
+    <string name="pref_key__search_bar_force_browser" translatable="false">pref_key__search_bar_force_browser</string>
+    <string name="pref_key__search_bar_show_hidden_apps" translatable="false">pref_key__search_bar_show_hidden_apps</string>
+    <string name="pref_key__search_bar_starts_with" translatable="false">pref_key__search_bar_starts_with</string>
+    <string name="pref_key__show_intro" translatable="false">pref_key__show_intro</string>
+    <string name="pref_key__theme" translatable="false">pref_key__theme</string>
+    <string name="pref_summary__animation_speed_modifier">Modify the overall speed of animations.</string>
+    <string name="pref_summary__backup">Backup your desktop and settings to any location.</string>
+    <string name="pref_summary__desktop_fullscreen">Enable fullscreen for the desktop.</string>
+    <string name="pref_summary__desktop_show_grid">Show the guiding grid when dragging items.</string>
+    <string name="pref_summary__desktop_show_label">Show item labels below their icons.</string>
+    <string name="pref_summary__desktop_show_position_indicator">Show the page indicator below the desktop.</string>
+    <string name="pref_summary__dock_show_label">Show item labels below their icons.</string>
+    <string name="pref_summary__drawer_remember_position">Keep track of the current app drawer page.</string>
+    <string name="pref_summary__drawer_show_card_view">Show a card view above the drawer background.</string>
+    <string name="pref_summary__drawer_show_label">Show item labels below their icons.</string>
+    <string name="pref_summary__drawer_show_position_indicator">Show the page indicator or scrollbar depending on the style.</string>
+    <string name="pref_summary__drawer_style">Choose between a paged and vertical app drawer.</string>
+    <string name="pref_summary__gesture_feedback">Get feedback when long pressing an item on the desktop.</string>
+    <string name="pref_summary__gesture_notifications">Update icons with a badge when notifications arrive.</string>
+    <string name="pref_summary__gesture_quick_swipe">Swipe upwards on the dock to open the app drawer.</string>
+    <string name="pref_summary__icon_pack">Select an installed icon pack.</string>
+    <string name="pref_summary__icon_size">Size of all app icons.</string>
+    <string name="pref_summary__language">Change language used throughout the launcher.</string>
+    <string name="pref_summary__primary_color">Set the primary color for the app.</string>
+    <string name="pref_summary__reset_database">Remove all items from the desktop.</string>
+    <string name="pref_summary__reset_settings">Delete internal files used to store the settings.</string>
+    <string name="pref_summary__restart">This can be used to manually apply some settings.</string>
+    <string name="pref_summary__restore">Restore your desktop and settings.</string>
+    <string name="pref_summary__search_bar_base_uri">Set the URI used for web searches.</string>
+    <string name="pref_summary__search_bar_enable">Display a search bar above the desktop.</string>
+    <string name="pref_summary__search_bar_force_browser">Always use the browser for online searches.</string>
+    <string name="pref_summary__search_bar_show_hidden_apps">Include hidden apps in the search results.</string>
+    <string name="pref_summary__search_bar_starts_with">Search for apps starting with the search text.</string>
+    <string name="pref_summary__theme">Set the theme for the entire app.</string>
+    <string name="pref_title__about">About</string>
+    <string name="pref_title__advanced">Advanced</string>
+    <string name="pref_title__animation_speed_modifier">Animation Speed</string>
+    <string name="pref_title__animations">Animations</string>
+    <string name="pref_title__app_drawer">App Drawer</string>
+    <string name="pref_title__appearance">Appearance</string>
+    <string name="pref_title__backup">Backup</string>
+    <string name="pref_title__behavior">Behavior</string>
+    <string name="pref_title__color">Colors</string>
+    <string name="pref_title__date_bar">Date Bar</string>
+    <string name="pref_title__date_bar_date_format">Date Format</string>
+    <string name="pref_title__date_bar_date_format_custom_1">Custom Format: Line 1</string>
+    <string name="pref_title__date_bar_date_format_custom_2">Custom Format: Line 2</string>
+    <string name="pref_title__date_bar_text_color">Text Color</string>
+    <string name="pref_title__debug">Debug</string>
+    <string name="pref_title__desktop">Desktop</string>
+    <string name="pref_title__desktop_background_color">Background</string>
+    <string name="pref_title__desktop_folder_color">Folders</string>
+    <string name="pref_title__desktop_fullscreen">Fullscreen</string>
+    <string name="pref_title__desktop_indicator_style">Indicator Style</string>
+    <string name="pref_title__desktop_inset_color">System Bars</string>
+    <string name="pref_title__desktop_orientation">Orientation</string>
+    <string name="pref_title__desktop_show_grid">Show Grid</string>
+    <string name="pref_title__desktop_show_label">Show Labels</string>
+    <string name="pref_title__desktop_show_position_indicator">Position Indicator</string>
+    <string name="pref_title__desktop_wallpaper_scroll">Wallpaper Scroll</string>
+    <string name="pref_title__dock">Dock</string>
+    <string name="pref_title__dock_background_color">Background</string>
+    <string name="pref_title__dock_show_label">Show Labels</string>
+    <string name="pref_title__drawer_background_color">Background</string>
+    <string name="pref_title__drawer_card_color">Card View</string>
+    <string name="pref_title__drawer_fast_scroll_color">Scrollbar</string>
+    <string name="pref_title__drawer_label_color">Label</string>
+    <string name="pref_title__drawer_label_font_size">Label Font Size</string>
+    <string name="pref_title__drawer_remember_position">Remember Last Page</string>
+    <string name="pref_title__drawer_show_card_view">Card View</string>
+    <string name="pref_title__drawer_show_label">Show Labels</string>
+    <string name="pref_title__drawer_show_position_indicator">Position Indicator</string>
+    <string name="pref_title__drawer_style">Style</string>
+    <string name="pref_title__feels">Feels</string>
+    <string name="pref_title__gesture_double_tap">Double Tap</string>
+    <string name="pref_title__gesture_feedback">Gesture Feedback</string>
+    <string name="pref_title__gesture_notifications">Notification Badge</string>
+    <string name="pref_title__gesture_pinch_in">Pinch In</string>
+    <string name="pref_title__gesture_pinch_out">Pinch Out</string>
+    <string name="pref_title__gesture_quick_swipe">Quick Swipe Drawer</string>
+    <string name="pref_title__gesture_swipe_down">Swipe Down</string>
+    <string name="pref_title__gesture_swipe_up">Swipe Up</string>
+    <string name="pref_title__gestures">Gestures</string>
+    <string name="pref_title__hide_apps">Hide Apps</string>
+    <string name="pref_title__icon_pack">Icon Pack</string>
+    <string name="pref_title__icon_size">Icon Size</string>
+    <string name="pref_title__icons">Icons</string>
+    <string name="pref_title__inputs">Inputs</string>
+    <string name="pref_title__interfaces">Interfaces</string>
+    <string name="pref_title__language">Language</string>
+    <string name="pref_title__others">Others</string>
+    <string name="pref_title__primary_color">Primary Color</string>
+    <string name="pref_title__reset_database">Reset Database</string>
+    <string name="pref_title__reset_settings">Reset Settings</string>
+    <string name="pref_title__restart">Restart</string>
+    <string name="pref_title__restore">Restore</string>
+    <string name="pref_title__search_bar">Search Bar</string>
+    <string name="pref_title__search_bar_base_uri">Search URI</string>
+    <string name="pref_title__search_bar_enable">Search Bar</string>
+    <string name="pref_title__search_bar_force_browser">Force browser search</string>
+    <string name="pref_title__search_bar_show_hidden_apps">Show hidden apps</string>
+    <string name="pref_title__search_bar_starts_with">Search apps by name</string>
+    <string name="pref_title__settings">Settings</string>
+    <string name="pref_title__size">Size</string>
+    <string name="pref_title__style">Style</string>
+    <string name="pref_title__theme">Theme</string>
+    <string name="project_contribution_info">Contribution Info</string>
+    <string name="project_license">Project License</string>
+    <string name="project_team">Project Team</string>
+    <string name="rate_the_app">Rate</string>
+    <string name="remove">Remove</string>
+    <string name="resize">Resize</string>
+    <string name="rows">Rows</string>
+    <string name="scroll_inverse">Inverse</string>
+    <string name="scroll_normal">Normal</string>
+    <string name="scroll_off">Off</string>
+    <string name="search_hint">Apps suchen…</string>
+    <string name="select_app">Select App</string>
+    <string name="select_icon_pack">Select Icon Pack</string>
+    <string name="select_wallpaper">Select Wallpaper</string>
+    <string name="source_code">Source Code</string>
+    <string name="toast_app_uninstalled">App uninstalled.</string>
+    <string name="toast_backup_error">Something went wrong.</string>
+    <string name="toast_backup_success">Backup completed.</string>
+    <string name="toast_database_deleted">Database deleted.</string>
+    <string name="toast_device_admin_required">Please enable device administration.</string>
+    <string name="toast_icon_pack_error">Please read access for external storage.</string>
+    <string name="toast_no_free_space">Kein freier Platz auf dem Homescreen.</string>
+    <string name="toast_not_enough_space">Not enough space.</string>
+    <string name="toast_notification_permission_required">Please enable notifications.</string>
+    <string name="toast_remove_from_group_first">Remove item from group first.</string>
+    <string name="toast_settings_restored">Settings restored.</string>
+    <string name="toast_update_group_due_to_missing_items">Uninstalled or hidden apps were removed from this group.</string>
+    <string name="translate">Translate</string>
+    <string name="uninstall">Uninstall</string>
+    <string name="version">Version</string>
+    <string name="vertical_scroll_drawer">Vertical</string>
+    <string name="volume_level_media">Media</string>
+    <string name="volume_level_notification">Notification</string>
+    <string name="volume_level_ringtone">Ringtone</string>
+    <string name="volume_level_system">System</string>
+    <string name="widget">Widget</string>
+    <style name="FilePickerTheme" parent="NNF_BaseTheme">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <style name="Home.Light" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowLayoutInDisplayCutoutMode" ns1:targetApi="28">shortEdges</item>
+        <item name="android:navigationBarColor" ns1:targetApi="21">@android:color/transparent</item>
+        <item name="android:colorPrimaryDark" ns1:targetApi="21">@android:color/transparent</item>
+        <item name="android:windowShowWallpaper">true</item>
+
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:textColorPrimary">@color/Light.TextColor</item>
+        <item name="android:textColor">@color/Light.TextColor</item>
+        <item name="android:textColorSecondary">@color/Light.TextColorSecondary</item>
+    </style>
+    <style name="IntroTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowTranslucentStatus" ns1:ignore="NewApi">true</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowShowWallpaper">true</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <style name="NormalActivity.Black" parent="Theme.AppCompat.NoActionBar">
+            <item name="android:windowTranslucentStatus">true</item>
+            <item name="android:windowTranslucentNavigation">true</item>
+            <item name="android:windowLayoutInDisplayCutoutMode" ns1:targetApi="28">shortEdges</item>
+            <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+            <item name="colorPrimary">#000000</item>
+            <item name="colorPrimaryDark">#000000</item>
+            <item name="colorAccent">@color/colorAccent</item>
+    
+                    <item name="android:windowBackground">@color/Black.Background</item>
+                    <item name="android:textColorPrimary">#FFFFFF</item>
+                    <item name="android:textColor">#FFFFFF</item>
+                    <item name="android:textColorSecondary">#EEEEEE</item>
+                </style>
+    <style name="NormalActivity.Dark" parent="Theme.AppCompat.NoActionBar">
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:windowBackground">@color/Dark.Background</item>
+        <item name="android:textColorPrimary">@color/Dark.TextColor</item>
+        <item name="android:textColor">@color/Dark.TextColor</item>
+        <item name="android:textColorSecondary">@color/Dark.TextColorSecondary</item>
+    </style>
+    <style name="NormalActivity.Light" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowLayoutInDisplayCutoutMode" ns1:targetApi="28">shortEdges</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:windowBackground">@color/Light.Background</item>
+        <item name="android:textColorPrimary">@color/Light.TextColor</item>
+        <item name="android:textColor">@color/Light.TextColor</item>
+        <item name="android:textColorSecondary">@color/Light.TextColorSecondary</item>
+    </style>
+    <style name="PickerEditText">
+		<item name="android:layout_width">match_parent</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:layout_margin">4dp</item>
+		<item name="android:imeOptions">actionNext</item>
+		<item name="android:singleLine">true</item>
+		<item name="android:textSize">22sp</item>
+	</style>
+    <style name="Toolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="colorControlNormal">@color/white</item>
+        <item name="titleTextColor">@color/white</item>
+        <item name="background">@color/colorPrimary</item>
+    </style>
+    <declare-styleable name="AbsCustomSlider">
+		<attr format="boolean" name="inVerticalOrientation"/>
+	</declare-styleable>
+    <declare-styleable name="ColorPickerPreference">
+		<attr format="boolean" name="alphaSlider"/>
+		<attr format="boolean" name="lightnessSlider"/>
+		<attr format="boolean" name="border"/>
+		<attr format="integer" name="density"/>
+		<attr format="integer" name="initialColor"/>
+		<attr format="enum" name="wheelType">
+			<enum name="FLOWER" value="0"/>
+			<enum name="CIRCLE" value="1"/>
+		</attr>
+		<attr format="reference" name="lightnessSliderView"/>
+		<attr format="reference" name="alphaSliderView"/>
+		<attr format="boolean" name="pickerColorEdit"/>
+		<attr format="integer" name="pickerColorEditTextColor"/>
+		<attr format="reference|string" name="pickerTitle"/>
+		<attr format="reference|string" name="pickerButtonOk"/>
+		<attr format="reference|string" name="pickerButtonCancel"/>
+	</declare-styleable>
+</resources>

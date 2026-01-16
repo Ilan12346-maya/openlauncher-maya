@@ -7,6 +7,9 @@ This fork was created because I could not find a launcher that met my specific r
 While this project is primarily for my own use, I am making it available for anyone who might share similar requirements or preferences. The codebase has been updated to reflect current standards, and several new features have been implemented.
 
 ### Key Changes and Features
+*   **Performance Optimization (v0.9.1):** Implementation of Lazy Icon Loading, RAM-Caching (LruCache), and asynchronous background loading for an "instant-start" experience and reduced memory footprint.
+*   **Enhanced Gestures (v0.9.1):** Split-screen swipe gestures (Up/Down) for the desktop, allowing separate actions for the top and bottom halves (4 gestures total).
+*   **Recent Apps Action:** New launcher action to quickly toggle the system's recent apps overview via gestures or minibar.
 *   **Updated Codebase:** The project has been brought up to date with modern Android development standards.
 *   **Batch App Removal:** Efficiently uninstall multiple applications at once.
 *   **Page0 Webview:** A fullscreen webview integrated on page 0 for quick access to web content.

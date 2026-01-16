@@ -42,9 +42,9 @@ public final class Dock extends CellContainer implements DesktopCallback {
         List<Item> dockItems = HomeActivity._db.getDock();
         removeAllViews();
         for (Item item : dockItems) {
-            if (item._x + item._spanX <= columns && item._y + item._spanY <= rows) {
-                addItemToPage(item, 0);
-            }
+            if (item._x + item._spanX > columns) item._x = Math.max(0, columns - item._spanX);
+            if (item._y + item._spanY > rows) item._y = Math.max(0, rows - item._spanY);
+            addItemToPage(item, 0);
         }
 
         // call onMeasure to set the height
@@ -152,6 +152,13 @@ public final class Dock extends CellContainer implements DesktopCallback {
 
     public boolean addItemToPoint(@NonNull Item item, int x, int y) {
         LayoutParams positionToLayoutPrams = coordinateToLayoutParams(x, y, item._spanX, item._spanY);
+        if (positionToLayoutPrams == null) {
+            Point pos = new Point();
+            touchPosToCoordinate(pos, x, y, item._spanX, item._spanY, false);
+            if (pos.x != -1 && pos.y != -1) {
+                positionToLayoutPrams = new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT, pos.x, pos.y, item._spanX, item._spanY);
+            }
+        }
         if (positionToLayoutPrams == null) {
             return false;
         }

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.benny.openlauncher.R;
@@ -27,13 +28,28 @@ public abstract class ColorActivity extends AppCompatActivity {
             setTheme(R.style.NormalActivity_Black);
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int flags = getWindow().getDecorView().getSystemUiVisibility();
+            if (_appSettings.getTheme().equals("0")) {
+                flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+                }
+            }
+            getWindow().getDecorView().setSystemUiVisibility(flags);
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(dark(_appSettings.getPrimaryColor(), 0.8));
-            getWindow().setNavigationBarColor(_appSettings.getPrimaryColor());
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+            getWindow().setNavigationBarColor(Color.TRANSPARENT);
         }
 
         super.onCreate(savedInstanceState);
     }
+
+    // Add necessary import for View if not present
+    // ... wait, I need to check imports.
+
 
     @Override
     protected void onResume() {

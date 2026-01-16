@@ -4,10 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.preference.Preference;
 import android.view.View;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.benny.openlauncher.R;
-import com.benny.openlauncher.activity.HomeActivity;
 import com.benny.openlauncher.model.App;
 import com.benny.openlauncher.util.AppManager;
 import com.benny.openlauncher.util.AppSettings;
@@ -31,8 +29,7 @@ public class SettingsBehaviorFragment extends SettingsBaseFragment {
 
     @Override
     public boolean onPreferenceTreeClick(Preference preference) {
-        HomeActivity homeActivity = HomeActivity._launcher;
-        int key = new ContextUtils(homeActivity).getResId(ContextUtils.ResType.STRING, preference.getKey());
+        int key = new ContextUtils(getActivity()).getResId(ContextUtils.ResType.STRING, preference.getKey());
         switch (key) {
             case R.string.pref_key__gesture_double_tap:
             case R.string.pref_key__gesture_swipe_up:
@@ -78,6 +75,7 @@ public class SettingsBehaviorFragment extends SettingsBaseFragment {
 
         for (int resId : gestures) {
             Preference preference = findPreference(getString(resId));
+            if (preference == null) continue;
             Object gesture = AppSettings.get().getGesture(resId);
             if (gesture instanceof Intent) {
                 preference.setSummary(String.format(Locale.ENGLISH, "%s: %s", getString(R.string.app), AppManager.getInstance(getContext()).findApp((Intent) gesture)._label));

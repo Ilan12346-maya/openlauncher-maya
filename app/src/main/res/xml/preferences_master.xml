@@ -1,67 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:title="@string/pref_title__settings">
 
     <com.benny.openlauncher.widget.ColorPreferenceCategory android:title="@string/pref_title__interfaces">
-
-        <PreferenceScreen
+        <Preference
             android:fragment="com.benny.openlauncher.fragment.SettingsDesktopFragment"
             android:icon="@drawable/ic_desktop"
             android:key="@string/pref_key__cat_desktop"
-            android:title="@string/pref_title__desktop" />
-
-        <PreferenceScreen
+            android:title="@string/pref_title__desktop"
+            android:layout="@layout/preference_dashboard_item" />
+        <Preference
             android:fragment="com.benny.openlauncher.fragment.SettingsDockFragment"
             android:icon="@drawable/ic_dock"
             android:key="@string/pref_key__cat_dock"
-            android:title="@string/pref_title__dock" />
-
-        <PreferenceScreen
+            android:title="@string/pref_title__dock"
+            android:layout="@layout/preference_dashboard_item" />
+        <Preference
             android:fragment="com.benny.openlauncher.fragment.SettingsAppDrawerFragment"
             android:icon="@drawable/ic_apps"
             android:key="@string/pref_key__cat_app_drawer"
-            android:title="@string/pref_title__app_drawer" />
-
-        <PreferenceScreen
+            android:title="@string/pref_title__app_drawer"
+            android:layout="@layout/preference_dashboard_item" />
+        <Preference
             android:fragment="com.benny.openlauncher.fragment.SettingsAppearanceFragment"
             android:icon="@drawable/ic_palette"
             android:key="@string/pref_key__cat_appearance"
-            android:title="@string/pref_title__appearance" />
-
-        <PreferenceScreen
+            android:title="@string/pref_title__appearance"
+            android:layout="@layout/preference_dashboard_item" />
+        <Preference
             android:fragment="com.benny.openlauncher.fragment.SettingsPage0Fragment"
             android:icon="@drawable/ic_search"
             android:key="pref_key__cat_page0"
-            android:title="Seite 0" />
-
+            android:title="Seite 0"
+            android:layout="@layout/preference_dashboard_item" />
     </com.benny.openlauncher.widget.ColorPreferenceCategory>
 
     <com.benny.openlauncher.widget.ColorPreferenceCategory android:title="@string/pref_title__others">
-
-        <PreferenceScreen
+        <Preference
             android:fragment="com.benny.openlauncher.fragment.SettingsBehaviorFragment"
             android:icon="@drawable/ic_behavior"
             android:key="@string/pref_key__cat_behavior"
-            android:title="@string/pref_title__behavior" />
-
-        <PreferenceScreen
+            android:title="@string/pref_title__behavior"
+            android:layout="@layout/preference_dashboard_item" />
+        <Preference
             android:fragment="com.benny.openlauncher.fragment.SettingsMiscellaneousFragment"
             android:icon="@drawable/ic_code"
             android:key="@string/pref_key__cat_advanced"
-            android:title="@string/pref_title__advanced" />
-
-        <PreferenceScreen
+            android:title="@string/pref_title__advanced"
+            android:layout="@layout/preference_dashboard_item" />
+        <Preference
             android:icon="@drawable/ic_visibility"
             android:key="@string/pref_key__cat_hide_apps"
-            android:title="@string/pref_title__hide_apps" />
-
-        <PreferenceScreen
+            android:title="@string/pref_title__hide_apps"
+            android:layout="@layout/preference_dashboard_item" />
+        <Preference
             android:icon="@drawable/ic_info"
             android:key="@string/pref_key__cat_about"
-            android:title="@string/pref_title__about" />
-
+            android:title="@string/pref_title__about"
+            android:layout="@layout/preference_dashboard_item" />
     </com.benny.openlauncher.widget.ColorPreferenceCategory>
 
 </PreferenceScreen>

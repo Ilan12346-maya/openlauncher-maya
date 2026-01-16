@@ -28,8 +28,4 @@ public class SettingsPage0Fragment extends SettingsBaseFragment {
         }
         return super.onPreferenceTreeClick(preference);
     }
-
-    @Override
-    public void updateSummaries() {
-    }
 }

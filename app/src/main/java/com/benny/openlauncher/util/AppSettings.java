@@ -375,7 +375,7 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
     }
 
     public String getDesktopPage0Url() {
-        return getString("pref_key__desktop_page_0_url", "http://127.0.0.1:9003/menu.html?token=b7686db20ea4d439ff74b232e7f716e6060ded15ae1257e7");
+        return getString("pref_key__desktop_page_0_url", "https://www.google.de");
     }
 
     public void setDesktopPage0Url(String value) {

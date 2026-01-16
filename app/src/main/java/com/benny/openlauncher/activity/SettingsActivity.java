@@ -42,9 +42,8 @@ public class SettingsActivity extends ColorActivity implements SettingsBaseFragm
 
         toolbar.setTitle(R.string.pref_title__settings);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_white));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
-        toolbar.setBackgroundColor(_appSettings.getPrimaryColor());
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_holder, new SettingsMasterFragment()).commit();

@@ -35,6 +35,7 @@ import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -63,7 +64,7 @@ public final class ItemOptionView extends FrameLayout {
     private final OverlayView _overlayView;
     private final Paint _paint;
     private PointF _previewLocation;
-    private final HashMap<DropTargetListener, DragFlag> _registeredDropTargetEntries;
+    private final LinkedHashMap<DropTargetListener, DragFlag> _registeredDropTargetEntries;
     private boolean _showFolderPreview;
     private final SlideInLeftAnimator _slideInLeftAnimator;
     private final SlideInRightAnimator _slideInRightAnimator;
@@ -149,7 +150,7 @@ public final class ItemOptionView extends FrameLayout {
         super(context, attrs);
         this.DRAG_THRESHOLD = 20.0f;
         _paint = new Paint(1);
-        _registeredDropTargetEntries = new HashMap<>();
+        _registeredDropTargetEntries = new LinkedHashMap<>();
         _tempArrayOfInt2 = new int[2];
         _dragLocation = new PointF();
         _dragLocationStart = new PointF();
@@ -502,33 +503,42 @@ public final class ItemOptionView extends FrameLayout {
     private final void handleMovement() {
         if (!_dragExceedThreshold && (Math.abs(_dragLocationStart.x - _dragLocation.x) > this.DRAG_THRESHOLD || Math.abs(_dragLocationStart.y - _dragLocation.y) > this.DRAG_THRESHOLD)) {
             _dragExceedThreshold = true;
-            for (Entry dropTarget : _registeredDropTargetEntries.entrySet()) {
-                if (!((DragFlag) dropTarget.getValue()).getShouldIgnore()) {
-                    convertPoint(((DropTargetListener) dropTarget.getKey()).getView());
-                    DropTargetListener dropTargetListener = (DropTargetListener) dropTarget.getKey();
-
-                    dropTargetListener.onStartDrag(_dragAction, _dragLocationConverted);
+            for (Entry<DropTargetListener, DragFlag> dropTarget : _registeredDropTargetEntries.entrySet()) {
+                if (!dropTarget.getValue().getShouldIgnore()) {
+                    convertPoint(dropTarget.getKey().getView());
+                    dropTarget.getKey().onStartDrag(_dragAction, _dragLocationConverted);
                 }
             }
         }
         if (_dragExceedThreshold) {
             collapse();
         }
+
+        DropTargetListener topTarget = null;
+        for (Entry<DropTargetListener, DragFlag> dropTarget2 : _registeredDropTargetEntries.entrySet()) {
+            if (!dropTarget2.getValue().getShouldIgnore()) {
+                if (isViewContains(dropTarget2.getKey().getView(), (int) _dragLocation.x, (int) _dragLocation.y)) {
+                    topTarget = dropTarget2.getKey();
+                }
+            }
+        }
+
         for (Entry<DropTargetListener, DragFlag> dropTarget2 : _registeredDropTargetEntries.entrySet()) {
             DropTargetListener dropTargetListener = dropTarget2.getKey();
-            if (!dropTarget2.getValue().getShouldIgnore()) {
-                convertPoint(dropTarget2.getKey().getView());
-                if (isViewContains(dropTarget2.getKey().getView(), (int) _dragLocation.x, (int) _dragLocation.y)) {
+            DragFlag dragFlag = dropTarget2.getValue();
+            if (dragFlag.getShouldIgnore()) continue;
 
-                    dropTargetListener.onMove(_dragAction, _dragLocationConverted);
-                    if (dropTarget2.getValue().getPreviousOutside()) {
-                        dropTarget2.getValue().setPreviousOutside(false);
-                        dropTargetListener = dropTarget2.getKey();
-                        dropTargetListener.onEnter(_dragAction, _dragLocationConverted);
-                    }
-                } else if (!dropTarget2.getValue().getPreviousOutside()) {
-                    dropTarget2.getValue().setPreviousOutside(true);
-                    dropTargetListener = dropTarget2.getKey();
+            if (dropTargetListener == topTarget) {
+                convertPoint(dropTargetListener.getView());
+                dropTargetListener.onMove(_dragAction, _dragLocationConverted);
+                if (dragFlag.getPreviousOutside()) {
+                    dragFlag.setPreviousOutside(false);
+                    dropTargetListener.onEnter(_dragAction, _dragLocationConverted);
+                }
+            } else {
+                if (!dragFlag.getPreviousOutside()) {
+                    dragFlag.setPreviousOutside(true);
+                    convertPoint(dropTargetListener.getView());
                     dropTargetListener.onExit(_dragAction, _dragLocationConverted);
                 }
             }
@@ -537,17 +547,22 @@ public final class ItemOptionView extends FrameLayout {
 
     private void handleDragFinished() {
         _dragging = false;
-        for (Entry dropTarget : _registeredDropTargetEntries.entrySet()) {
-            if (!((DragFlag) dropTarget.getValue()).getShouldIgnore()) {
-                if (isViewContains(((DropTargetListener) dropTarget.getKey()).getView(), (int) _dragLocation.x, (int) _dragLocation.y)) {
-                    convertPoint(((DropTargetListener) dropTarget.getKey()).getView());
-                    DropTargetListener dropTargetListener = (DropTargetListener) dropTarget.getKey();
-                    dropTargetListener.onDrop(_dragAction, _dragLocationConverted, _dragItem);
+        DropTargetListener topTarget = null;
+        for (Entry<DropTargetListener, DragFlag> dropTarget : _registeredDropTargetEntries.entrySet()) {
+            if (!dropTarget.getValue().getShouldIgnore()) {
+                if (isViewContains(dropTarget.getKey().getView(), (int) _dragLocation.x, (int) _dragLocation.y)) {
+                    topTarget = dropTarget.getKey();
                 }
             }
         }
-        for (Entry dropTarget2 : _registeredDropTargetEntries.entrySet()) {
-            ((DropTargetListener) dropTarget2.getKey()).onEnd();
+
+        if (topTarget != null) {
+            convertPoint(topTarget.getView());
+            topTarget.onDrop(_dragAction, _dragLocationConverted, _dragItem);
+        }
+
+        for (Entry<DropTargetListener, DragFlag> dropTarget2 : _registeredDropTargetEntries.entrySet()) {
+            dropTarget2.getKey().onEnd();
         }
         cancelFolderPreview();
     }

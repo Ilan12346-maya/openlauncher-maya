@@ -155,14 +155,18 @@ public class DialogHelper {
                     .withOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                            String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
+                            if (android.os.Build.VERSION.SDK_INT >= 33) {
+                                permission = Manifest.permission.READ_MEDIA_IMAGES;
+                            }
+                            if (ActivityCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED) {
                                 appManager._recreateAfterGettingApps = true;
                                 AppSettings.get().setIconPack(resolveInfos.get(mI).activityInfo.packageName);
                                 appManager.getAllApps();
                                 dialog.dismiss();
                             } else {
                                 Tool.toast(context, (activity.getString(R.string.toast_icon_pack_error)));
-                                ActivityCompat.requestPermissions(HomeActivity.Companion.getLauncher(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, HomeActivity.REQUEST_PERMISSION_STORAGE);
+                                ActivityCompat.requestPermissions(HomeActivity.Companion.getLauncher(), new String[]{permission}, HomeActivity.REQUEST_PERMISSION_STORAGE);
                             }
                         }
                     }));

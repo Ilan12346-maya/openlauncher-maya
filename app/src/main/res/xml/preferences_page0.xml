@@ -1,26 +1,25 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="Allgemein">
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="Seite 0">
+    <com.benny.openlauncher.widget.ColorPreferenceCategory android:title="Allgemein">
         <SwitchPreference
             android:defaultValue="true"
             android:key="pref_key__desktop_page_0_enabled"
             android:title="Seite 0 aktivieren"
             android:summary="Zeigt eine WebView-Seite ganz links an." />
-            
         <EditTextPreference
-            android:defaultValue="http://127.0.0.1:9003/menu.html?token=b7686db20ea4d439ff74b232e7f716e6060ded15ae1257e7"
+            android:defaultValue="https://www.google.de"
             android:key="pref_key__desktop_page_0_url"
             android:title="WebView URL"
             android:summary="Die URL, die auf Seite 0 geladen werden soll." />
-
         <SwitchPreference
             android:defaultValue="false"
             android:key="pref_key__desktop_page_0_persistence"
             android:title="Persistenz"
             android:summary="Verhindert das Neuladen und Beenden des WebViews im Hintergrund." />
-            
         <Preference
             android:key="pref_key__desktop_page_0_clear"
             android:title="Seite 0 zurücksetzen"
             android:summary="Löscht Cookies, Cache und setzt den WebView zurück." />
-    </PreferenceCategory>
+    </com.benny.openlauncher.widget.ColorPreferenceCategory>
 </PreferenceScreen>

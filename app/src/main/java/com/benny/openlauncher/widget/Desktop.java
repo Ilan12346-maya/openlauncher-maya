@@ -378,8 +378,8 @@ public final class Desktop extends ViewPager implements DesktopCallback {
             CellContainer layout = _desktop.getPages().get(pageIndex);
             // Add padding to account for SearchBar at top and Dock at bottom
             // Increased top padding to move grid lower
-            int topPadding = Tool.dp2px(Setup.appSettings().getSearchBarEnable() ? 110 : 60);
-            int bottomPadding = Tool.dp2px(80);
+            int topPadding = Tool.dp2px(Setup.appSettings().getSearchBarEnable() ? 120 : 70);
+            int bottomPadding = Tool.dp2px(115);
             layout.setPadding(0, topPadding, 0, bottomPadding);
             
             if (layout.getParent() != null) {

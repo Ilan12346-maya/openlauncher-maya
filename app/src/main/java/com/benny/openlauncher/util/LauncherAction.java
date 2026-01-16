@@ -26,7 +26,7 @@ import java.util.List;
 public class LauncherAction {
 
     public enum Action {
-        EditMinibar, SetWallpaper, LockScreen, LauncherSettings, VolumeDialog, DeviceSettings, AppDrawer, SearchBar, MobileNetworkSettings, ShowNotifications, TurnOffScreen, Camera, Restart
+        EditMinibar, SetWallpaper, LockScreen, LauncherSettings, VolumeDialog, DeviceSettings, AppDrawer, SearchBar, MobileNetworkSettings, ShowNotifications, TurnOffScreen, Camera, Restart, RecentApps
     }
 
     public static ActionDisplayItem[] actionDisplayItems = new ActionDisplayItem[]{
@@ -41,6 +41,7 @@ public class LauncherAction {
             new ActionDisplayItem(Action.MobileNetworkSettings, HomeActivity._launcher.getResources().getString(R.string.minibar_title__mobile_network), HomeActivity._launcher.getResources().getString(R.string.minibar_summary__mobile_network), R.drawable.ic_network, 46),
             new ActionDisplayItem(Action.ShowNotifications, HomeActivity._launcher.getResources().getString(R.string.minibar_title__notification_bar), HomeActivity._launcher.getResources().getString(R.string.minibar_summary__notification_bar), R.drawable.ic_notifications, 46),
             new ActionDisplayItem(Action.Camera, HomeActivity._launcher.getResources().getString(R.string.minibar_title__camera), HomeActivity._launcher.getResources().getString(R.string.minibar_summary__camera), R.drawable.ic_camera_, 13),
+            new ActionDisplayItem(Action.RecentApps, HomeActivity._launcher.getResources().getString(R.string.minibar_title__recent_apps), HomeActivity._launcher.getResources().getString(R.string.minibar_summary__recent_apps), R.drawable.ic_desktop, 14),
             new ActionDisplayItem(Action.Restart, "Restart Launcher", "Kills and restarts the launcher process", R.drawable.ic_android, 99)
 
     };
@@ -136,6 +137,16 @@ public class LauncherAction {
                 break;
             case Camera:
                 context.startActivity(new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA));
+                break;
+            case RecentApps:
+                try {
+                    Object statusBarService = context.getSystemService("statusbar");
+                    Class<?> statusBarManager = Class.forName("android.app.StatusBarManager");
+                    Method statusBarExpand = statusBarManager.getMethod("toggleRecentApps");
+                    statusBarExpand.invoke(statusBarService);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
             case Restart:
                 if (context instanceof android.app.Activity) {

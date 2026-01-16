@@ -52,11 +52,20 @@ public final class Desktop extends ViewPager implements DesktopCallback {
     private final List<CellContainer> _pages = new ArrayList<>();
     private final Point _previousDragPoint = new Point();
 
+    private float _lastDownY;
     private Point _coordinate = new Point(-1, -1);
     private DesktopAdapter _adapter;
     private Item _previousItem;
     private View _previousItemView;
     private int _previousPage;
+
+    public float getLastDownY() {
+        return _lastDownY;
+    }
+
+    public void setLastDownY(float lastDownY) {
+        _lastDownY = lastDownY;
+    }
 
     public Desktop(Context context) {
         super(context, null);

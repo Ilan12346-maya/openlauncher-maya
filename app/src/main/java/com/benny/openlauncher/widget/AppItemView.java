@@ -16,6 +16,7 @@ import android.view.View;
 import com.benny.openlauncher.R;
 import com.benny.openlauncher.activity.HomeActivity;
 import com.benny.openlauncher.manager.Setup;
+import com.benny.openlauncher.model.App;
 import com.benny.openlauncher.model.Item;
 import com.benny.openlauncher.notifications.NotificationListener;
 import com.benny.openlauncher.util.AppManager;
@@ -26,11 +27,14 @@ import com.benny.openlauncher.util.Tool;
 import com.benny.openlauncher.viewutil.DesktopCallback;
 import com.benny.openlauncher.viewutil.GroupDrawable;
 
+import com.benny.openlauncher.util.iconloader.AsyncIconLoader;
+
 public class AppItemView extends View implements Drawable.Callback, NotificationListener.NotificationCallback {
     private static final int MIN_ICON_TEXT_MARGIN = 8;
     private static final char ELLIPSIS = '…';
 
     private Drawable _icon = null;
+    private boolean _isIconLoading = false;
     private String _label;
     private Paint _textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private Paint _notifyTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -220,7 +224,23 @@ public class AppItemView extends View implements Drawable.Callback, Notification
 
         public Builder setAppItem(final Item item) {
             _view.setLabel(item.getLabel());
-            _view.setIcon(item.getIcon());
+            final App app = AppManager.getInstance(_view.getContext()).findApp(item._intent);
+            if (app != null) {
+                _view.setIcon(app.getIcon()); // Versucht erst aus Cache zu laden
+                if (app._icon == null) {
+                    // Icon ist noch nicht geladen, asynchron nachholen
+                    AsyncIconLoader.getInstance().loadIcon(app, new AsyncIconLoader.IconCallback() {
+                        @Override
+                        public void onIconLoaded(Drawable icon) {
+                            _view.setIcon(icon);
+                            _view.invalidate();
+                        }
+                    });
+                }
+            } else {
+                _view.setIcon(item.getIcon());
+            }
+
             _view.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {

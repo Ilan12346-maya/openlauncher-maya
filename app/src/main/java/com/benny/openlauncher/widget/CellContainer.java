@@ -275,6 +275,12 @@ public class CellContainer extends ViewGroup {
         if (_blockTouch) {
             return super.onTouchEvent(event);
         }
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            HomeActivity launcher = HomeActivity.Companion.getLauncher();
+            if (launcher != null) {
+                launcher.getDesktop().setLastDownY(event.getY());
+            }
+        }
         try {
             SimpleFingerGestures simpleFingerGestures = _gestures;
             simpleFingerGestures.onTouch(this, event);

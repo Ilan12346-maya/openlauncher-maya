@@ -107,7 +107,9 @@ public class AppManager {
         try {
             ResolveInfo info = _packageManager.resolveActivity(intent, 0);
             List<ShortcutInfo> shortcutInfo = Tool.getShortcutInfo(getContext(), intent.getComponent().getPackageName());
-            return new App(_packageManager, info, shortcutInfo);
+            App app = new App(_packageManager, info, shortcutInfo);
+            // Icon wird erst bei Bedarf geladen
+            return app;
         } catch (Exception e) {
             e.printStackTrace();
             return null;

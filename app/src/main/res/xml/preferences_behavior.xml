@@ -25,12 +25,20 @@
             android:title="@string/pref_title__gesture_double_tap" />
         <Preference
             android:defaultValue="0"
-            android:key="@string/pref_key__gesture_swipe_up"
-            android:title="@string/pref_title__gesture_swipe_up" />
+            android:key="@string/pref_key__gesture_swipe_up_top"
+            android:title="@string/pref_title__gesture_swipe_up_top" />
         <Preference
             android:defaultValue="0"
-            android:key="@string/pref_key__gesture_swipe_down"
-            android:title="@string/pref_title__gesture_swipe_down" />
+            android:key="@string/pref_key__gesture_swipe_up_bottom"
+            android:title="@string/pref_title__gesture_swipe_up_bottom" />
+        <Preference
+            android:defaultValue="0"
+            android:key="@string/pref_key__gesture_swipe_down_top"
+            android:title="@string/pref_title__gesture_swipe_down_top" />
+        <Preference
+            android:defaultValue="0"
+            android:key="@string/pref_key__gesture_swipe_down_bottom"
+            android:title="@string/pref_title__gesture_swipe_down_bottom" />
         <Preference
             android:defaultValue="0"
             android:key="@string/pref_key__gesture_pinch_in"

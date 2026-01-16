@@ -209,12 +209,20 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
         return getGesture(R.string.pref_key__gesture_double_tap);
     }
 
-    public Object getGestureSwipeUp() {
-        return getGesture(R.string.pref_key__gesture_swipe_up);
+    public Object getGestureSwipeUpTop() {
+        return getGesture(R.string.pref_key__gesture_swipe_up_top);
     }
 
-    public Object getGestureSwipeDown() {
-        return getGesture(R.string.pref_key__gesture_swipe_down);
+    public Object getGestureSwipeUpBottom() {
+        return getGesture(R.string.pref_key__gesture_swipe_up_bottom);
+    }
+
+    public Object getGestureSwipeDownTop() {
+        return getGesture(R.string.pref_key__gesture_swipe_down_top);
+    }
+
+    public Object getGestureSwipeDownBottom() {
+        return getGesture(R.string.pref_key__gesture_swipe_down_bottom);
     }
 
     public Object getGesturePinch() {

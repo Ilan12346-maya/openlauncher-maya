@@ -147,11 +147,16 @@
     <string name="pref_summary__gesture_feedback">Get feedback when long pressing an item on the desktop.</string>
     <string name="pref_title__gesture_quick_swipe">Quick Swipe Drawer</string>
     <string name="pref_summary__gesture_quick_swipe">Swipe upwards on the dock to open the app drawer.</string>
-    <string name="pref_title__gesture_double_tap">Double Tap</string>
-    <string name="pref_title__gesture_swipe_up">Swipe Up</string>
-    <string name="pref_title__gesture_swipe_down">Swipe Down</string>
-    <string name="pref_title__gesture_pinch_in">Pinch In</string>
-    <string name="pref_title__gesture_pinch_out">Pinch Out</string>
+    <string name="pref_title__gesture_double_tap">Doppeltippen</string>
+    <string name="pref_title__gesture_swipe_up_top">Wischen nach oben (Obere Hälfte)</string>
+    <string name="pref_title__gesture_swipe_up_bottom">Wischen nach oben (Untere Hälfte)</string>
+    <string name="pref_title__gesture_swipe_down_top">Wischen nach unten (Obere Hälfte)</string>
+    <string name="pref_title__gesture_swipe_down_bottom">Wischen nach unten (Untere Hälfte)</string>
+    <string name="pref_title__gesture_pinch_in">Zuziehen (Pinch In)</string>
+    <string name="pref_title__gesture_pinch_out">Aufziehen (Pinch Out)</string>
+
+    <string name="minibar_title__recent_apps">Letzte Apps</string>
+    <string name="minibar_summary__recent_apps">Übersicht der zuletzt verwendeten Apps öffnen.</string>
 
     <string name="pref_title__theme">Theme</string>
     <string name="pref_summary__theme">Set the theme for the entire app.</string>

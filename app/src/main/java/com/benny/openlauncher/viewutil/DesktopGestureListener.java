@@ -7,13 +7,15 @@ import in.championswimmer.sfg.lib.SimpleFingerGestures;
 public class DesktopGestureListener implements SimpleFingerGestures.OnFingerGestureListener {
 
     public enum Type {
-        SwipeUp,
-        SwipeDown,
         SwipeLeft,
         SwipeRight,
         Pinch,
         Unpinch,
-        DoubleTap
+        DoubleTap,
+        SwipeUpTop,
+        SwipeUpBottom,
+        SwipeDownTop,
+        SwipeDownBottom
     }
 
     private final DesktopGestureCallback _callback;
@@ -26,12 +28,20 @@ public class DesktopGestureListener implements SimpleFingerGestures.OnFingerGest
 
     @Override
     public boolean onSwipeUp(int i, long l, double v) {
-        return _callback.onDrawerGesture(_desktop, Type.SwipeUp);
+        if (_desktop.getLastDownY() < (float) _desktop.getHeight() / 2) {
+            return _callback.onDrawerGesture(_desktop, Type.SwipeUpTop);
+        } else {
+            return _callback.onDrawerGesture(_desktop, Type.SwipeUpBottom);
+        }
     }
 
     @Override
     public boolean onSwipeDown(int i, long l, double v) {
-        return _callback.onDrawerGesture(_desktop, Type.SwipeDown);
+        if (_desktop.getLastDownY() < (float) _desktop.getHeight() / 2) {
+            return _callback.onDrawerGesture(_desktop, Type.SwipeDownTop);
+        } else {
+            return _callback.onDrawerGesture(_desktop, Type.SwipeDownBottom);
+        }
     }
 
     @Override

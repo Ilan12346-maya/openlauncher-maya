@@ -64,8 +64,10 @@
     <string name="pref_key__gesture_feedback" translatable="false">pref_key__gesture_feedback</string>
     <string name="pref_key__gesture_quick_swipe" translatable="false">pref_key__gesture_quick_swipe</string>
     <string name="pref_key__gesture_double_tap" translatable="false">pref_key__gesture_double_tap</string>
-    <string name="pref_key__gesture_swipe_up" translatable="false">pref_key__gesture_swipe_up</string>
-    <string name="pref_key__gesture_swipe_down" translatable="false">pref_key__gesture_swipe_down</string>
+    <string name="pref_key__gesture_swipe_up_top" translatable="false">pref_key__gesture_swipe_up_top</string>
+    <string name="pref_key__gesture_swipe_up_bottom" translatable="false">pref_key__gesture_swipe_up_bottom</string>
+    <string name="pref_key__gesture_swipe_down_top" translatable="false">pref_key__gesture_swipe_down_top</string>
+    <string name="pref_key__gesture_swipe_down_bottom" translatable="false">pref_key__gesture_swipe_down_bottom</string>
     <string name="pref_key__gesture_pinch_in" translatable="false">pref_key__gesture_pinch_in</string>
     <string name="pref_key__gesture_pinch_out" translatable="false">pref_key__gesture_pinch_out</string>
 

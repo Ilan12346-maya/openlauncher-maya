@@ -22,11 +22,17 @@ public class HpGestureCallback implements DesktopGestureListener.DesktopGestureC
     public boolean onDrawerGesture(Desktop desktop, DesktopGestureListener.Type event) {
         Object gesture = null;
         switch (event) {
-            case SwipeUp:
-                gesture = _appSettings.getGestureSwipeUp();
+            case SwipeUpTop:
+                gesture = _appSettings.getGestureSwipeUpTop();
                 break;
-            case SwipeDown:
-                gesture = _appSettings.getGestureSwipeDown();
+            case SwipeUpBottom:
+                gesture = _appSettings.getGestureSwipeUpBottom();
+                break;
+            case SwipeDownTop:
+                gesture = _appSettings.getGestureSwipeDownTop();
+                break;
+            case SwipeDownBottom:
+                gesture = _appSettings.getGestureSwipeDownBottom();
                 break;
             case SwipeLeft:
             case SwipeRight:

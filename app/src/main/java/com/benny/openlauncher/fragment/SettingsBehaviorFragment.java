@@ -32,8 +32,10 @@ public class SettingsBehaviorFragment extends SettingsBaseFragment {
         int key = new ContextUtils(getActivity()).getResId(ContextUtils.ResType.STRING, preference.getKey());
         switch (key) {
             case R.string.pref_key__gesture_double_tap:
-            case R.string.pref_key__gesture_swipe_up:
-            case R.string.pref_key__gesture_swipe_down:
+            case R.string.pref_key__gesture_swipe_up_top:
+            case R.string.pref_key__gesture_swipe_up_bottom:
+            case R.string.pref_key__gesture_swipe_down_top:
+            case R.string.pref_key__gesture_swipe_down_bottom:
             case R.string.pref_key__gesture_pinch_in:
             case R.string.pref_key__gesture_pinch_out:
                 DialogHelper.selectGestureDialog(getActivity(), preference.getTitle().toString(), new MaterialDialog.ListCallback() {
@@ -67,8 +69,10 @@ public class SettingsBehaviorFragment extends SettingsBaseFragment {
     public void updateSummaries() {
         List<Integer> gestures = new ArrayList<>(Arrays.asList(
                 R.string.pref_key__gesture_double_tap,
-                R.string.pref_key__gesture_swipe_up,
-                R.string.pref_key__gesture_swipe_down,
+                R.string.pref_key__gesture_swipe_up_top,
+                R.string.pref_key__gesture_swipe_up_bottom,
+                R.string.pref_key__gesture_swipe_down_top,
+                R.string.pref_key__gesture_swipe_down_bottom,
                 R.string.pref_key__gesture_pinch_in,
                 R.string.pref_key__gesture_pinch_out
         ));

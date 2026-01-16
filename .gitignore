@@ -18,3 +18,4 @@ full_log.txt
 .idea/
 *.iml
 local.properties
+build.sh

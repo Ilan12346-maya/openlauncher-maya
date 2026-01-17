@@ -1,4 +1,4 @@
-# Key Changes and Features (v0.9.6 - Maya Edition)
+# Key Changes and Features (v0.9.6)
 *   **Massive UI Performance:** Re-engineered icon scaling and rendering logic, reducing CPU overhead by up to 70% during drawer scrolling.
 *   **Asynchronous Architecture:** Background processing for icon caching, disk storage, and database loading for a stutter-free experience.
 *   **Maya Grid Design:** Modernized desktop grid with clean crosses at cell intersections for a professional, minimalist look.
@@ -6,8 +6,6 @@
 *   **Enhanced Edit Mode:** Page 0 and Infinite Scrolling are automatically disabled while editing to provide a stable workspace.
 *   **Stealth Integration:** Launcher is completely hidden from the Android "Recent Apps" list.
 *   **Advanced UX:** Added exit protection for Desktop Options (requires back button or long-press) to prevent accidental closures.
-
-# Key Changes and Features (v0.9.2)
 *   **Performance Optimization:** Near-instant app icon loading through localized disk caching and optimized loading sequences (current page -> other pages -> app drawer).
 *   **iOS Style Dock:** New option for a rounded, semi-transparent dock background with larger icons, similar to iOS.
 *   **Infinite Scrolling:** Seamless infinite scrolling for the desktop with optimized dummy page transitions to prevent "blank" pages during fast scrolls.

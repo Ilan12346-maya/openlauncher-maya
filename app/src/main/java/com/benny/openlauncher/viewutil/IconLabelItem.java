@@ -157,11 +157,15 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
         // icon specific padding
         holder.textView.setCompoundDrawablePadding(_iconPadding);
         if (_iconSize != Integer.MAX_VALUE && _icon != null) {
-            Bitmap original = Tool.drawableToBitmap(_icon);
-            float scale = Math.min((float) _iconSize / original.getWidth(), (float) _iconSize / original.getHeight());
-            int width = Math.round(original.getWidth() * scale);
-            int height = Math.round(original.getHeight() * scale);
-            _icon = new BitmapDrawable(Setup.appContext().getResources(), Bitmap.createScaledBitmap(original, width, height, true));
+            if (_icon instanceof BitmapDrawable) {
+                Bitmap bitmap = ((BitmapDrawable) _icon).getBitmap();
+                if (bitmap != null && (bitmap.getWidth() != _iconSize || bitmap.getHeight() != _iconSize)) {
+                    _icon = new BitmapDrawable(Setup.appContext().getResources(), Bitmap.createScaledBitmap(bitmap, _iconSize, _iconSize, true));
+                }
+            } else {
+                Bitmap original = Tool.drawableToBitmap(_icon);
+                _icon = new BitmapDrawable(Setup.appContext().getResources(), Bitmap.createScaledBitmap(original, _iconSize, _iconSize, true));
+            }
         }
 
         if (_iconColor != Integer.MAX_VALUE) {

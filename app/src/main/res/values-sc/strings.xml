@@ -1,40 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <!-- Intro -->
+    
     <string name="intro1_text">Un\'allughidore de aplicatziones cun unu muntone de funtzionalidades ùtiles.</string>
     <string name="intro1_community">S\'allughidore dae sa comunidade pro sa comunidade</string>
     <string name="intro1_features">Prenu de funtzionalidades</string>
     <string name="intro1_customizable">Personalizàbile</string>
-    <string name="intro2_text">Iscurre cara a su tzentru dae s\'oru de s\'ischermu printzipale pro abèrrere sa minibarra. In cue as a agatare sas impostatziones e as a pòdere cambiare s\'immàgine de isfundu e fàghere meda àteras cosas.</string>
     <string name="intro3_text">Podes cunfigurare s\'iscrivania tua, su menù de sas aplicatziones e sa barra de sas aplicatziones de suta, proa·lu!</string>
     <string name="intro4_text">Chirca in su web o filtra sas aplicatziones tuas dae sa barra de chirca.</string>
 
-    <!-- Minibar -->
-    <string name="minibar">Minibarra</string>
-    <string name="minibar_title__edit_minibar">Impostatziones de sa minibarra</string>
-    <string name="minibar_summary__edit_minibar">Muda sa dispositzione de sa minibarra.</string>
-    <string name="minibar_title__set_wallpaper">Imposta s\'immàgine de isfundu</string>
-    <string name="minibar_summary__set_wallpaper">Imposta s\'immàgine de isfondu de s\'iscrivania.</string>
-    <string name="minibar_title__lock_screen">Bloca s\'ischermu</string>
-    <string name="minibar_summary__lock_screen">Bloca s\'ischermu immediatamente. Tenet bisòngiu de dos diritos de amministratzione de su dispositivu.</string>
-    <string name="minibar_title__device_settings">Impostatziones de su dispositivu</string>
-    <string name="minibar_summary__device_settings">Incurtzada a sas impostatziones de su dispositivu.</string>
-    <string name="minibar_title__launcher_settings">Impostatziones de s\'allughidore</string>
-    <string name="minibar_summary__launcher_settings">Incurtzada a sas impostatziones de OpenLauncher.</string>
-    <string name="minibar_title__volume_dialog">Diàlogu de su volume</string>
-    <string name="minibar_summary__volume_dialog">Ammustra totu sas barras de su volume.</string>
-    <string name="minibar_title__app_drawer">Aberi su menù de sas aplicatziones</string>
-    <string name="minibar_summary__app_drawer">Aberi su menù de sas aplicatziones.</string>
-    <string name="minibar_title__search_bar">Aberi sa barra de chirca</string>
-    <string name="minibar_summary__search_bar">Aberi sa barra de chirca.</string>
-    <string name="minibar_title__mobile_network">Impostatziones pro sa retza mòbile</string>
-    <string name="minibar_summary__mobile_network">Impostatziones pro sas retzas mòbiles.</string>
-    <string name="minibar_title__notification_bar">Ammustra sas notìficas</string>
-    <string name="minibar_summary__notification_bar">Ismànnia s\'àrea de sas notìficas in pitzu de s\'ischermu.</string>
-    <string name="minibar_title__camera">Fotocàmera</string>
-    <string name="minibar_summary__camera">Faghe una fotografia cun s\'aplicatzione de fotocàmera tua</string>
-
-    <!-- About -->
+    
     <string name="about_libs">Librerias a mitza aberta</string>
     <string name="about_rate">Dae unu votu a s\'aplicatzione</string>
     <string name="about_credit">Contribuidores</string>
@@ -63,7 +37,7 @@
     <string name="more_info_support">Àteras informatziones a pitzu de comente fàghere donatziones o suportare custu progetu</string>
     <string name="android_contribution_guide">Ghia a sa contributzione pro Android</string>
 
-    <!-- Settings -->
+    
     <string name="pref_title__settings">Impostatziones</string>
     <string name="pref_title__desktop">Iscrivania</string>
     <string name="pref_title__dock">Barra de suta</string>
@@ -176,7 +150,7 @@
     <string name="pref_title__restart">Torra a allùghere</string>
     <string name="pref_summary__restart">Torra a allùghere s\'allughidore.</string>
 
-    <!-- Arrays -->
+    
     <string name="vertical_scroll_drawer">Verticale</string>
     <string name="horizontal_paged_drawer">Orizontale</string>
 
@@ -198,7 +172,7 @@
     <string name="dark">Iscuru</string>
     <string name="black">Nieddu</string>
 
-    <!-- Dialogs -->
+    
     <string name="please_wait">Chirchende sas aplicatziones installadas. Pro praghere iseta.</string>
     <string name="are_you_sure">Seguru ses? Totu sas incurtzadas tuas ant a èssere bogadas.</string>
     <string name="device_admin_title">Permissu de amministratzione de su dispositivu netzessàriu</string>
@@ -213,7 +187,7 @@
     <string name="notification_title">Atzessu pro sas notìficas</string>
     <string name="notification_summary">OpenLauncher tenet bisòngiu de su permissu pro sas notìficas pro mustrare sos contadores in sas iconas.</string>
 
-    <!-- Other -->
+    
     <string name="columns">Colunnas</string>
     <string name="rows">Rigas</string>
     <string name="on">Alluta</string>
@@ -227,20 +201,20 @@
     <string name="default_folder">Chene nùmene</string>
     <string name="default_icons">Predefinidu</string>
 
-    <!-- Drag Option View -->
+    
     <string name="edit">Muda</string>
     <string name="info">Informatziones</string>
     <string name="uninstall">Disinstalla</string>
     <string name="remove">Boga</string>
     <string name="resize">Muda de mannesa</string>
 
-    <!-- Desktop Option View -->
+    
     <string name="home">Pàg. printzipale</string>
     <string name="action">Atzione</string>
     <string name="lock">Bloca</string>
     <string name="widget">Widget</string>
 
-    <!-- Toasts -->
+    
     <string name="toast_not_enough_space">Non b\'est memòria bastante.</string>
     <string name="toast_app_uninstalled">Aplicatzione disinstallada.</string>
     <string name="toast_device_admin_required">Pro praghere abìlita s\'amministratzione de su dispositivu.</string>

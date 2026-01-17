@@ -59,6 +59,12 @@
             android:key="@string/pref_key__cat_about"
             android:title="@string/pref_title__about"
             android:layout="@layout/preference_dashboard_item" />
+        <Preference
+            android:fragment="com.benny.openlauncher.fragment.SettingsDebugFragment"
+            android:icon="@drawable/ic_bug"
+            android:key="pref_key__cat_debug"
+            android:title="@string/pref_title__debug"
+            android:layout="@layout/preference_dashboard_item" />
     </com.benny.openlauncher.widget.ColorPreferenceCategory>
 
 </PreferenceScreen>

@@ -13,6 +13,8 @@ app/build/
 # Logs
 *.log
 full_log.txt
+build.index
+LAST_BACKUP_NAME
 
 # Android Studio / IntelliJ
 .idea/

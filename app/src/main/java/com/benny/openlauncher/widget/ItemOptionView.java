@@ -276,6 +276,9 @@ public final class ItemOptionView extends FrameLayout {
     }
 
     public final void startDragNDropOverlay(@NonNull View view, @NonNull Item item, @NonNull Action action) {
+        if (com.benny.openlauncher.util.Logger.isEnabled()) {
+            com.benny.openlauncher.util.Logger.log(this, "startDragNDropOverlay: " + item.getLabel() + ", action: " + action);
+        }
         _dragging = true;
         _dragExceedThreshold = false;
         _overlayIconScale = 0.0f;
@@ -295,11 +298,17 @@ public final class ItemOptionView extends FrameLayout {
     }
 
     protected void onDetachedFromWindow() {
+        if (com.benny.openlauncher.util.Logger.isEnabled()) {
+            com.benny.openlauncher.util.Logger.log(this, "onDetachedFromWindow");
+        }
         cancelAllDragNDrop();
         super.onDetachedFromWindow();
     }
 
     public final void cancelAllDragNDrop() {
+        if (com.benny.openlauncher.util.Logger.isEnabled()) {
+            com.benny.openlauncher.util.Logger.log(this, "cancelAllDragNDrop, dragging: " + _dragging);
+        }
         _dragging = false;
         if (!_overlayPopupShowing) {
             _dragView = null;
@@ -503,6 +512,7 @@ public final class ItemOptionView extends FrameLayout {
     private final void handleMovement() {
         if (!_dragExceedThreshold && (Math.abs(_dragLocationStart.x - _dragLocation.x) > this.DRAG_THRESHOLD || Math.abs(_dragLocationStart.y - _dragLocation.y) > this.DRAG_THRESHOLD)) {
             _dragExceedThreshold = true;
+            com.benny.openlauncher.util.Logger.log(this, "handleMovement: drag threshold exceeded");
             for (Entry<DropTargetListener, DragFlag> dropTarget : _registeredDropTargetEntries.entrySet()) {
                 if (!dropTarget.getValue().getShouldIgnore()) {
                     convertPoint(dropTarget.getKey().getView());
@@ -532,11 +542,13 @@ public final class ItemOptionView extends FrameLayout {
                 convertPoint(dropTargetListener.getView());
                 dropTargetListener.onMove(_dragAction, _dragLocationConverted);
                 if (dragFlag.getPreviousOutside()) {
+                    com.benny.openlauncher.util.Logger.log(this, "handleMovement: entering target " + dropTargetListener.getClass().getSimpleName());
                     dragFlag.setPreviousOutside(false);
                     dropTargetListener.onEnter(_dragAction, _dragLocationConverted);
                 }
             } else {
                 if (!dragFlag.getPreviousOutside()) {
+                    com.benny.openlauncher.util.Logger.log(this, "handleMovement: exiting target " + dropTargetListener.getClass().getSimpleName());
                     dragFlag.setPreviousOutside(true);
                     convertPoint(dropTargetListener.getView());
                     dropTargetListener.onExit(_dragAction, _dragLocationConverted);
@@ -546,6 +558,7 @@ public final class ItemOptionView extends FrameLayout {
     }
 
     private void handleDragFinished() {
+        com.benny.openlauncher.util.Logger.log(this, "handleDragFinished, dragging: " + _dragging + ", x: " + _dragLocation.x + ", y: " + _dragLocation.y);
         _dragging = false;
         DropTargetListener topTarget = null;
         for (Entry<DropTargetListener, DragFlag> dropTarget : _registeredDropTargetEntries.entrySet()) {
@@ -557,8 +570,17 @@ public final class ItemOptionView extends FrameLayout {
         }
 
         if (topTarget != null) {
+            com.benny.openlauncher.util.Logger.log(this, "handleDragFinished: dropping on target: " + topTarget.getClass().getSimpleName());
             convertPoint(topTarget.getView());
             topTarget.onDrop(_dragAction, _dragLocationConverted, _dragItem);
+        } else {
+            com.benny.openlauncher.util.Logger.log(this, "handleDragFinished: no target found, reverting item");
+            // Get the Desktop instance and call revertLastItem()
+            HomeActivity launcher = HomeActivity.Companion.getLauncher();
+            if (launcher != null) {
+                launcher.getDesktop().revertLastItem();
+                launcher.getDock().revertLastItem();
+            }
         }
 
         for (Entry<DropTargetListener, DragFlag> dropTarget2 : _registeredDropTargetEntries.entrySet()) {

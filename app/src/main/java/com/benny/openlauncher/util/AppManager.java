@@ -85,10 +85,21 @@ public class AppManager {
 
     public void init() {
         // Load saved apps first for instant display
-        _apps = Setup.dataManager().getSavedApps();
-        if (_apps.size() > 0) {
-            notifyUpdateListeners(_apps);
-        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final List<App> savedApps = Setup.dataManager().getSavedApps();
+                if (savedApps.size() > 0) {
+                    new android.os.Handler(android.os.Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            _apps = savedApps;
+                            notifyUpdateListeners(_apps);
+                        }
+                    });
+                }
+            }
+        }).start();
         getAllApps();
     }
 

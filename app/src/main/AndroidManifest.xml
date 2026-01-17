@@ -79,22 +79,26 @@
         <activity
             android:name="com.benny.openlauncher.activity.BackupLogActivity"
             android:label="Backup Log"
+            android:excludeFromRecents="true"
             android:theme="@style/NormalActivity.Light"
             android:exported="false" />
         <activity
             android:name="com.benny.openlauncher.activity.CrashActivity"
             android:label="Crash"
+            android:excludeFromRecents="true"
             android:theme="@style/Theme.CrashReport"
             android:process=":error_activity"
             android:exported="false" />
         <activity
             android:name="com.benny.openlauncher.activity.HideAppsActivity"
             android:label="@string/app_name"
+            android:excludeFromRecents="true"
             android:theme="@style/NormalActivity.Light"
             android:exported="false" />
         <activity
             android:name="com.benny.openlauncher.activity.MoreInfoActivity"
             android:parentActivityName="com.benny.openlauncher.activity.SettingsActivity"
+            android:excludeFromRecents="true"
             android:theme="@style/NormalActivity.Light"
             android:exported="false">
             <meta-data

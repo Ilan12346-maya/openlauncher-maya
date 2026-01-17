@@ -1,41 +1,17 @@
-### v1.0.0
-* Please see either of the links for changes in the v1.0.0 version:
-* https://github.com/OpenLauncherTeam/openlauncher/compare/v0.7.4...v1.0.0
-* https://github.com/OpenLauncherTeam/openlauncher/milestone/2?closed=1
-* https://github.com/OpenLauncherTeam/openlauncher/commits/master
+### v0.9.6 (Maya Edition)
+* Massive performance optimizations for icon loading and scaling (reduced UI thread overhead).
+* Implementation of asynchronous icon caching and disk storage to prevent UI stutters.
+* Asynchronous loading of saved apps during startup for near-instant interaction.
+* Optimized icon pack processing (XML parsing O(N^2) -> O(N)).
+* Modernized desktop grid design using clean crosses at intersections.
+* Enhanced Desktop Edit Mode: Page 0 and Infinite Scrolling are now temporarily disabled while editing.
+* Restricted Edit Mode exit: Single taps no longer exit the mode; requires Back button or Long-press.
+* Launcher is now completely hidden from the "Recent Apps" list for a more integrated feel.
+* Fixed IndexOutOfBoundsException and page count logic errors during desktop mode transitions.
 
-### v0.5.1
-* fix incorrect label clipping
-* improve free space calculation for widgets
-* slight changes to settings page
-* fix crash related to group items
-* maximum grid size set to twenty
-* labels can be edited from the drag menu
-
-### v0.5.0
-* Settings have been redesigned and will be reset
-* Add ability launch app with gesture
-* Custom search bar layout without requiring google services
-* Option to lock the desktop from changes
-* Lots of bug fixes
-* Layout fixes
-
-### v0.4.0
-* Desktop is now saved in database and will be reset
-* Move launcheranim and smoothviewpager to app
-* Lots of bug fixes
-
-### v0.3.1
-* Update build scheme
-* Add nightly icons
-* Add CircleCI
-* Update library strings
-* Optimize icons
-* Refactor activities
-* Add minibar edit fragment
-* Using ButterKnife in the Home activity, using CustomOnCrash.. lib to catch any error. #36 (quick fix)
-* Remove unused resources, extra translations
-* Add settings button in desktop preview (when long pressing the desktop)
-* Add a switch to disable the minibar
-* Move backup dialog to dialog utils and rename backup folder
-* Refactor project to use default android gradle project layout
+### v0.9.4
+* Added a new "Debug" section in settings with detailed logging and a built-in log viewer.
+* Fixed a race condition where icons could disappear after a long press during activity restarts.
+* Improved app launch reliability and added fallback mechanisms.
+* Increased dock bottom margin to 16dp for better visual spacing.
+* Removed redundant vertical offsets in iOS dock style.

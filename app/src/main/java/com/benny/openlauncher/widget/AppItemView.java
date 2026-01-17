@@ -10,6 +10,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Process;
 import androidx.core.content.ContextCompat;
+import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -36,8 +37,8 @@ public class AppItemView extends View implements Drawable.Callback, Notification
     private Drawable _icon = null;
     private boolean _isIconLoading = false;
     private String _label;
-    private Paint _textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private Paint _notifyTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private TextPaint _textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+    private TextPaint _notifyTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
     private Paint _notifyPaint = new Paint();
     private Rect _textContainer = new Rect(), testTextContainer = new Rect();
     private float _iconSize;
@@ -88,6 +89,7 @@ public class AppItemView extends View implements Drawable.Callback, Notification
 
     public void setLabel(String label) {
         _label = label;
+        updateLabels();
     }
 
     public void notificationCallback(Integer count) {
@@ -102,6 +104,7 @@ public class AppItemView extends View implements Drawable.Callback, Notification
 
     public void setIconSize(float iconSize) {
         _iconSize = iconSize;
+        updateLabels();
     }
 
     public boolean getShowLabel() {
@@ -126,35 +129,43 @@ public class AppItemView extends View implements Drawable.Callback, Notification
         setMeasuredDimension((int) Math.ceil(mWidth), (int) Math.ceil((int) mHeight) + Tool.dp2px(2) + _targetedHeightPadding * 2);
     }
 
+    private String _displayLabel;
+    private float _textX, _textY;
+
+    private void updateLabels() {
+        if (_label == null || !_showLabel) {
+            _displayLabel = null;
+            return;
+        }
+
+        int maxTextWidth = getWidth() - MIN_ICON_TEXT_MARGIN * 2;
+        if (maxTextWidth <= 0) return;
+
+        _displayLabel = android.text.TextUtils.ellipsize(_label, _textPaint, maxTextWidth, android.text.TextUtils.TruncateAt.END).toString();
+        _textPaint.getTextBounds(_displayLabel, 0, _displayLabel.length(), _textContainer);
+        
+        _textX = (getWidth() - _textContainer.width()) / 2f;
+        _textY = getHeight() - _heightPadding;
+    }
+
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
+        _heightPadding = (getHeight() - _iconSize - (_showLabel ? _labelHeight : 0)) / 2f;
+        updateLabels();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        _heightPadding = (getHeight() - _iconSize - (_showLabel ? _labelHeight : 0)) / 2f;
+        if (_displayLabel == null && _label != null && _showLabel) {
+            _heightPadding = (getHeight() - _iconSize - (_showLabel ? _labelHeight : 0)) / 2f;
+            updateLabels();
+        }
 
-        if (_label != null && _showLabel) {
-            _textPaint.getTextBounds(_label, 0, _label.length(), _textContainer);
-            int maxTextWidth = getWidth() - MIN_ICON_TEXT_MARGIN * 2;
-
-            // use ellipsis if the label is too long
-            if (_textContainer.width() > maxTextWidth) {
-                String testLabel = _label + ELLIPSIS;
-                _textPaint.getTextBounds(testLabel, 0, testLabel.length(), testTextContainer);
-
-                //Premeditate to be faster
-                float characterSize = testTextContainer.width() / testLabel.length();
-                int charsToTruncate = (int) ((testTextContainer.width() - maxTextWidth) / characterSize);
-
-                canvas.drawText(_label.substring(0, _label.length() - charsToTruncate) + ELLIPSIS,
-                        MIN_ICON_TEXT_MARGIN, getHeight() - _heightPadding, _textPaint);
-            } else {
-                canvas.drawText(_label, (getWidth() - _textContainer.width()) / 2f, getHeight() - _heightPadding, _textPaint);
-            }
+        if (_displayLabel != null && _showLabel) {
+            canvas.drawText(_displayLabel, _textX, _textY, _textPaint);
         }
 
         // center the _icon

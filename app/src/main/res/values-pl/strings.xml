@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <!-- Toasts -->
+    
     <string name="toast_device_admin_required">Włącz administratora urządzenia.</string>
 
-    <!-- Intro -->
+    
     <string name="intro2_text">Przesuń od lewej krawędzi do środka ekranu domowego, żeby przywołać minipasek. Z jego pomocą możesz modyfikować ustawienia, zmienić tapetę i zrobić wiele innych rzeczy.</string>
     <string name="intro3_text">Możesz konfigurować swój pulpit, menu aplikacji oraz dok. Wypróbuj!</string>
     <string name="intro1_community">Launcher od społeczności dla społeczności</string>
@@ -11,22 +11,12 @@
     <string name="intro1_customizable">Konfigurowalny</string>
     <string name="custom">Niestandardowy</string>
 
-    <!-- Minibar -->
-    <string name="minibar">Minipasek</string>
-    <string name="minibar_summary__edit_minibar">Zmień układ minipaska.</string>
-    <string name="minibar_summary__set_wallpaper">Ustaw lub rozmyj tapetę.</string>
-    <string name="minibar_summary__lock_screen">Natychmiast zablokuj ekran. Wymaga uprawnień administratora urządzenia.</string>
-    <string name="minibar_summary__device_settings">Skrót do ustawień urządzenia.</string>
-    <string name="minibar_summary__launcher_settings">Skrót do ustawień launchera.</string>
-    <string name="minibar_summary__volume_dialog">Pokaż suwak głośności.</string>
-    <string name="minibar_summary__app_drawer">Otwórz menu aplikacji.</string>
-
-    <!-- About -->
+    
     <string name="about_libs">Biblioteki open-source</string>
     <string name="about_rate">Oceń</string>
     <string name="about_credit">Współtwórcy</string>
 
-    <!-- Settings -->
+    
 
     <string name="pref_title__desktop">Pulpit</string>
     <string name="pref_title__dock">Dok</string>
@@ -120,10 +110,10 @@
     <string name="vertical_scroll_drawer">Pionowy</string>
     <string name="horizontal_paged_drawer">Poziomy</string>
 
-    <!-- Item Labels -->
+    
     <string name="default_icons">Domyślne</string>
 
-    <!-- Dialogs -->
+    
     <string name="placeholder">Witaj świecie!</string>
     <string name="please_wait">Szukanie zainstalowanych aplikacji. Proszę czekać.</string>
     <string name="on">Wł.</string>
@@ -150,29 +140,29 @@
     <string name="pref_title__date_bar_date_format_custom_1">Niestandardowy format: 1 linia</string>
     <string name="pref_title__date_bar_date_format_custom_2">Niestandardowy format: 2 linia</string>
 
-    <!-- Titles -->
+    
     <string name="pref_title__settings">Ustawienia</string>
 
-    <!-- Drag Option View -->
+    
     <string name="edit">Edytuj</string>
     <string name="info">Informacja</string>
     <string name="uninstall">Odinstaluj</string>
     <string name="remove">Usuń</string>
 
-    <!-- Desktop Option View -->
+    
     <string name="home">Dom</string>
     <string name="action">Czynność</string>
     <string name="lock">Zablokuj</string>
     <string name="widget">Widżet</string>
 
-    <!-- Toasts -->
+    
     <string name="toast_not_enough_space">Brak miejsca.</string>
     <string name="toast_app_uninstalled">Aplikacja odinstalowana.</string>
 
-    <!-- Item Labels -->
+    
     <string name="default_folder">Bez nazwy</string>
 
-    <!-- Dialogs -->
+    
     <string name="search_hint">Szukaj…</string>
     <string name="bad_format">Nieprawidłowy format</string>
     <string name="are_you_sure">Czy jesteś pewien? Wszystkie twoje skróty zostaną usunięte.</string>
@@ -201,15 +191,6 @@
     <string name="contributors_public_info">Pokaż informacje o deweloperach. Deweloperzy mogą udostępnić informacje, które zostaną tutaj wyświetlone (opt-in)</string>
     <string name="contribute">Przyłącz się</string>
 
-    <string name="minibar_title__set_wallpaper">Ustaw tapetę</string>
     <string name="none">Nic</string>
-    <string name="minibar_title__edit_minibar">Ustawienia minipaska</string>
-    <string name="minibar_title__lock_screen">Zablokuj ekran</string>
-    <string name="minibar_title__device_settings">Ustawienia urządzenia</string>
-    <string name="minibar_title__launcher_settings">Ustawienia launchera</string>
-    <string name="minibar_title__volume_dialog">Okno dialogowe głośności</string>
-    <string name="minibar_title__app_drawer">Otwórz menu aplikacji</string>
     <string name="app">Uruchom aplikację</string>
-    <string name="minibar_summary__mobile_network">Ustawienia sieci mobilnych</string>
-
-</resources>
+    </resources>

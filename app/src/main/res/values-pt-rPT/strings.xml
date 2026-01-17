@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <!-- Intro -->
+    
     <string name="intro1_text">Uma aplicação Open Source com diversas funcionalidades.</string>
     <string name="intro1_community">Grande comunidade</string>
     <string name="intro1_features">Repleto de funcionalidades</string>
@@ -9,30 +9,7 @@
     <string name="intro3_text">Pode escolher um estilo para o menu de aplicações e ocultar aplicações não utilizadas.</string>
     <string name="intro4_text">Pesquisar na web ou filtrar aplicações na barra de pesquisa.</string>
 
-    <!-- Minibar -->
-    <string name="minibar">Mini-barra</string>
-    <string name="minibar_title__edit_minibar">Editar mini-barra</string>
-    <string name="minibar_summary__edit_minibar">Mudar disposição da mini-barra.</string>
-    <string name="minibar_title__set_wallpaper">Definir papel de parede</string>
-    <string name="minibar_summary__set_wallpaper">Definir o fundo do ecrã.</string>
-    <string name="minibar_title__lock_screen">Bloquear ecrã</string>
-    <string name="minibar_summary__lock_screen">Bloquear ecrã imediatamente.</string>
-    <string name="minibar_title__device_settings">Definições do dispositivo</string>
-    <string name="minibar_summary__device_settings">Atalho para as definições do dispositivo.</string>
-    <string name="minibar_title__launcher_settings">Definições da aplicação</string>
-    <string name="minibar_summary__launcher_settings">Atalho para as definições do OpenLauncher.</string>
-    <string name="minibar_title__volume_dialog">Diálogo de volume</string>
-    <string name="minibar_summary__volume_dialog">Mostrar todos os controlos de volume.</string>
-    <string name="minibar_title__app_drawer">Abrir menu de aplicações</string>
-    <string name="minibar_summary__app_drawer">Abrir menu de aplicações.</string>
-    <string name="minibar_title__search_bar">Abrir barra de pesquisa</string>
-    <string name="minibar_summary__search_bar">Abrir barra de pesquisa.</string>
-    <string name="minibar_title__mobile_network">Definições em redes móveis</string>
-    <string name="minibar_summary__mobile_network">Atalho para as definições de redes móveis.</string>
-    <string name="minibar_title__notification_bar">Mostrar notificações</string>
-    <string name="minibar_summary__notification_bar">Expandir notificações no topo do ecrã.</string>
-
-    <!-- About -->
+    
     <string name="about_libs">Bibliotecas de código aberto</string>
     <string name="about_rate">Avaliar</string>
     <string name="about_credit">Colaboradores</string>
@@ -61,7 +38,7 @@
     <string name="more_info_support">Mais informações sobre donativos ou outro tipo de ajuda para este projeto</string>
     <string name="android_contribution_guide">Manual de contributos para Android</string>
 
-    <!-- Settings -->
+    
     <string name="pref_title__settings">Definições</string>
     <string name="pref_title__desktop">Área de trabalho</string>
     <string name="pref_title__dock">Doca</string>
@@ -185,7 +162,7 @@
     <string name="dark">Escuro</string>
     <string name="black">Preto</string>
 
-    <!-- Dialogs -->
+    
     <string name="please_wait">A pesquisar as aplicações instaladas. Aguarde...</string>
     <string name="are_you_sure">Tem a certeza? Esta ação não pode ser revertida.</string>
     <string name="device_admin_title">Requer administração de dispositivo</string>
@@ -198,7 +175,7 @@
     <string name="volume_level_system">Sistema</string>
     <string name="volume_level_media">Multimédia</string>
 
-    <!-- Other -->
+    
     <string name="columns">Colunas</string>
     <string name="rows">Linhas</string>
     <string name="on">Ligado</string>
@@ -212,19 +189,19 @@
     <string name="default_folder">Sem nome</string>
     <string name="default_icons">Padrão</string>
 
-    <!-- Drag Option View -->
+    
     <string name="edit">Editar</string>
     <string name="info">Informação</string>
     <string name="uninstall">Desinstalar</string>
     <string name="remove">Remover</string>
 
-    <!-- Desktop Option View -->
+    
     <string name="home">Início</string>
     <string name="action">Ação</string>
     <string name="lock">Bloquear</string>
     <string name="widget">Widget</string>
 
-    <!-- Toasts -->
+    
     <string name="toast_not_enough_space">Espaço insuficiente.</string>
     <string name="toast_app_uninstalled">Aplicação desinstalada.</string>
     <string name="toast_device_admin_required">Por favor, ative a administração do dispositivo.</string>

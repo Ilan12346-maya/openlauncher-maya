@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <com.benny.openlauncher.widget.ColorPreferenceCategory android:title="@string/pref_title__debug">
+        <SwitchPreference
+            android:key="@string/pref_key__debug_mode"
+            android:title="@string/pref_title__logging"
+            android:summary="@string/pref_summary__logging"
+            android:defaultValue="false" />
+        <Preference
+            android:key="pref_key__copy_logs"
+            android:title="@string/pref_title__copy_logs"
+            android:summary="@string/pref_summary__copy_logs" />
+        <Preference
+            android:key="pref_key__clear_logs"
+            android:title="@string/pref_title__clear_logs" />
+        <com.benny.openlauncher.widget.LogViewPreference
+            android:key="pref_key__log_view"
+            android:layout="@layout/preference_log_view"
+            android:selectable="false" />
+    </com.benny.openlauncher.widget.ColorPreferenceCategory>
+</PreferenceScreen>

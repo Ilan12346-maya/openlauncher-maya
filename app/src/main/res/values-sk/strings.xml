@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <!-- Toasts -->
+    
     <string name="toast_device_admin_required">Prosím umožnite správu zariadenia.</string>
 
-    <!-- Intro -->
+    
     <string name="intro2_text">Potiahnutím od ľavého okraja do stredu na ploche za zobrazí mini panel. Tam nájdete nastavenia, môžete zmeniť tapetu a mnoho ďalších vecí.</string>
     <string name="intro3_text">Môžete si nastaviť plochu, spúšťač aplikácií, dokovaciu oblasť, vyskúšajte si to!</string>
     <string name="intro1_community">Spúštač z komunity pre komunitu</string>
@@ -11,22 +11,12 @@
     <string name="intro1_customizable">Prispôsobiteľný</string>
     <string name="custom">Prispôsobené</string>
 
-    <!-- Minibar -->
-    <string name="minibar">Mini lišta</string>
-    <string name="minibar_summary__edit_minibar">Zmeniť rozloženie mini panela.</string>
-    <string name="minibar_summary__set_wallpaper">Rozostriť tapetu</string>
-    <string name="minibar_summary__lock_screen">Okamžité uzamknutie obrazovky vyžaduje práva správcu zariadenia</string>
-    <string name="minibar_summary__device_settings">Skratka k nastaveniam zariadenia.</string>
-    <string name="minibar_summary__launcher_settings">Skratka k nastaveniam OpenLaunchera.</string>
-    <string name="minibar_summary__volume_dialog">Zobraziť posuvník hlasitosti.</string>
-    <string name="minibar_summary__app_drawer">Otvoriť zoznam aplikácií.</string>
-
-    <!-- About -->
+    
     <string name="about_libs">Knižnice Open Source</string>
     <string name="about_rate">Hodnotenie</string>
     <string name="about_credit">Prispievatelia</string>
 
-    <!-- Settings -->
+    
 
     <string name="pref_title__desktop">Plocha</string>
     <string name="pref_title__dock">Dokovacia oblasť</string>
@@ -120,10 +110,10 @@
     <string name="vertical_scroll_drawer">Zvisle</string>
     <string name="horizontal_paged_drawer">Stránkované</string>
 
-    <!-- Item Labels -->
+    
     <string name="default_icons">Prednastavené</string>
 
-    <!-- Dialogs -->
+    
     <string name="placeholder">Ahoj svet!</string>
     <string name="please_wait">Vyhľadávanie nainštalovaných aplikácií. Prosím čakajte.</string>
     <string name="on">Zap.</string>
@@ -150,29 +140,29 @@
     <string name="pref_title__date_bar_date_format_custom_1">Vlastný formát: Riadok 1</string>
     <string name="pref_title__date_bar_date_format_custom_2">Vlastný formát: Riadok 2</string>
 
-    <!-- Titles -->
+    
     <string name="pref_title__settings">Nastavenia</string>
 
-    <!-- Drag Option View -->
+    
     <string name="edit">Upraviť</string>
     <string name="info">Info</string>
     <string name="uninstall">Odinštalovať</string>
     <string name="remove">Odobrať</string>
 
-    <!-- Desktop Option View -->
+    
     <string name="home">Domov</string>
     <string name="action">Akcia</string>
     <string name="lock">Zámok</string>
     <string name="widget">Miniaplikácia</string>
 
-    <!-- Toasts -->
+    
     <string name="toast_not_enough_space">Nedostatok miesta.</string>
     <string name="toast_app_uninstalled">Applikácia bola odinštalovaná.</string>
 
-    <!-- Item Labels -->
+    
     <string name="default_folder">Bez mena</string>
 
-    <!-- Dialogs -->
+    
     <string name="search_hint">Hľadať...</string>
     <string name="bad_format">Zlý formát</string>
     <string name="are_you_sure">Ste si istý? Všetky vaše skratky budú odstránené.</string>
@@ -201,15 +191,6 @@
     <string name="contributors_public_info">Zobraziť informácie o prispievateľoch. Prispievatelia môžu poskytnúť informácie ktoré sa tu budú zobrazovať (voliteľne) ak prispejú.</string>
     <string name="contribute">Zapojte sa</string>
 
-    <string name="minibar_title__set_wallpaper">Nastaviť tapetu</string>
     <string name="none">Žiadne</string>
-    <string name="minibar_title__edit_minibar">Nastavenia mini lišty</string>
-    <string name="minibar_title__lock_screen">Zamknúť obrazovku</string>
-    <string name="minibar_title__device_settings">Nastavenie zariadenia</string>
-    <string name="minibar_title__launcher_settings">Nastavenia spúštača</string>
-    <string name="minibar_title__volume_dialog">Nastavenia zvuku</string>
-    <string name="minibar_title__app_drawer">Otvoriť zoznam aplikácií.</string>
     <string name="app">Spustiť aplikáciu</string>
-    <string name="minibar_summary__mobile_network">Nastavenie mobilnej siete</string>
-
-</resources>
+    </resources>

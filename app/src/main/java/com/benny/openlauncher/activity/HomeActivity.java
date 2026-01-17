@@ -370,6 +370,9 @@ public final class HomeActivity extends Activity implements OnDesktopEditListene
 
         getDesktop().addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                if (getDesktop().getInEditMode()) {
+                    return;
+                }
                 if (appSettings.getDesktopPage0Enabled() && position == 0) {
                     float alpha = positionOffset;
                     
@@ -411,24 +414,31 @@ public final class HomeActivity extends Activity implements OnDesktopEditListene
                     findViewById(R.id.leftDragHandle).setAlpha(0.0f);
                     findViewById(R.id.rightDragHandle).setAlpha(0.0f);
                     
-                    // Ensure visibility is restored if we were on page 0
-                    getSearchBar().setVisibility(appSettings.getSearchBarEnable() ? View.VISIBLE : View.GONE);
-                    if (appSettings.getDockEnable()) {
-                        getDock().setVisibility(View.VISIBLE);
-                        if (iosDockBg != null && appSettings.getDockIosStyle()) iosDockBg.setVisibility(View.VISIBLE);
+                    // Ensure visibility is restored if we were on page 0, but only if NOT in edit mode
+                    if (!getDesktop().getInEditMode()) {
+                        getSearchBar().setVisibility(appSettings.getSearchBarEnable() ? View.VISIBLE : View.GONE);
+                        if (appSettings.getDockEnable()) {
+                            getDock().setVisibility(View.VISIBLE);
+                            if (iosDockBg != null && appSettings.getDockIosStyle()) iosDockBg.setVisibility(View.VISIBLE);
+                        }
+                        getDesktopIndicator().setVisibility(appSettings.getDesktopShowIndicator() ? View.VISIBLE : View.GONE);
+                        findViewById(R.id.status_frame).setVisibility(View.VISIBLE);
+                        findViewById(R.id.navigation_frame).setVisibility(View.VISIBLE);
                     }
-                    getDesktopIndicator().setVisibility(appSettings.getDesktopShowIndicator() ? View.VISIBLE : View.GONE);
-                    findViewById(R.id.status_frame).setVisibility(View.VISIBLE);
-                    findViewById(R.id.navigation_frame).setVisibility(View.VISIBLE);
                 }
             }
 
             public void onPageSelected(int position) {
+                com.benny.openlauncher.util.Logger.log("HomeActivity", "onPageSelected: " + position);
                 getDesktopOptionView().updateHomeIcon(appSettings.getDesktopPageCurrent() == (position - 1));
                 
                 // Force layout update
                 final View itemOption = findViewById(R.id.item_option);
                 itemOption.requestApplyInsets();
+
+                if (getDesktop().getInEditMode()) {
+                    return;
+                }
 
                 if (appSettings.getDesktopPage0Enabled() && position == 0) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -459,8 +469,9 @@ public final class HomeActivity extends Activity implements OnDesktopEditListene
             }
 
             public void onPageScrollStateChanged(int state) {
+                com.benny.openlauncher.util.Logger.log("HomeActivity", "onPageScrollStateChanged: " + state);
                 AppSettings appSettings = AppSettings.get();
-                if (appSettings.getDesktopInfiniteScrolling()) {
+                if (appSettings.getDesktopInfiniteScrolling() && !getDesktop().getInEditMode()) {
                     int current = getDesktop().getCurrentItem();
                     int count = getDesktop().getAdapter().getCount();
                     boolean page0Enabled = appSettings.getDesktopPage0Enabled();
@@ -506,6 +517,7 @@ public final class HomeActivity extends Activity implements OnDesktopEditListene
         // iOS dock background
         View iosDockBg = findViewById(R.id.ios_dock_background);
         if (iosDockBg != null) {
+            iosDockBg.setAlpha(0f);
             if (appSettings.getDockIosStyle()) {
                 iosDockBg.setVisibility(View.VISIBLE);
                 
@@ -536,12 +548,7 @@ public final class HomeActivity extends Activity implements OnDesktopEditListene
                 float gap = settingsIconSize * 0.30f;
                 
                 // Height: dockIconSize + 2 * gap = 1.1 + 0.6 = 1.7 * settingsIconSize
-                int bgHeight = (int) (settingsIconSize * 1.7f);
-                
-                // Move the whole assembly a bit lower (but not as much as before)
-                float offset = Tool.dp2px(8);
-                iosDockBg.setTranslationY(offset);
-                getDock().setTranslationY(offset);
+                int bgHeight = (int) (settingsIconSize * 1.7f) + Tool.dp2px(10);
                 
                 iosDockBg.post(() -> {
                     ViewGroup.LayoutParams params = iosDockBg.getLayoutParams();
@@ -643,6 +650,7 @@ public final class HomeActivity extends Activity implements OnDesktopEditListene
         updateDesktopIndicator(false);
         updateDock(false);
         updateSearchBar(false);
+        setSystemBarsVisible(false);
     }
 
     public void onFinishDesktopEdit() {
@@ -650,6 +658,37 @@ public final class HomeActivity extends Activity implements OnDesktopEditListene
         updateDesktopIndicator(true);
         updateDock(true);
         updateSearchBar(true);
+        
+        // Restore system bars only if not on page 0
+        if (getDesktop().getCurrentItem() != 0 || !Setup.appSettings().getDesktopPage0Enabled()) {
+            setSystemBarsVisible(true);
+        }
+    }
+
+    public final void setSystemBarsVisible(boolean visible) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            android.view.WindowInsetsController controller = getWindow().getInsetsController();
+            if (controller != null) {
+                if (visible) {
+                    controller.show(android.view.WindowInsets.Type.statusBars() | android.view.WindowInsets.Type.navigationBars());
+                } else {
+                    controller.hide(android.view.WindowInsets.Type.statusBars() | android.view.WindowInsets.Type.navigationBars());
+                    controller.setSystemBarsBehavior(android.view.WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+                }
+            }
+        } else {
+            if (visible) {
+                getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+            } else {
+                getWindow().getDecorView().setSystemUiVisibility(
+                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                | View.SYSTEM_UI_FLAG_FULLSCREEN);
+            }
+        }
     }
 
     public final void dimBackground() {
@@ -863,12 +902,14 @@ public final class HomeActivity extends Activity implements OnDesktopEditListene
     @Override
     protected void onResume() {
         super.onResume();
+        android.util.Log.i("OpenLauncher", "HomeActivity: onResume");
         _appWidgetHost.startListening();
         _launcher = this;
 
         // handle restart if something needs to be reset
         AppSettings appSettings = Setup.appSettings();
         if (appSettings.getAppRestartRequired()) {
+            android.util.Log.i("OpenLauncher", "HomeActivity: Restart required, recreating...");
             appSettings.setAppRestartRequired(false);
             recreate();
             return;
@@ -892,8 +933,11 @@ public final class HomeActivity extends Activity implements OnDesktopEditListene
 
     @Override
     protected void onDestroy() {
+        android.util.Log.i("OpenLauncher", "HomeActivity: onDestroy");
         _appWidgetHost.stopListening();
-        _launcher = null;
+        if (_launcher == this) {
+            _launcher = null;
+        }
 
         unregisterReceiver(_appUpdateReceiver);
         unregisterReceiver(_shortcutReceiver);
@@ -902,6 +946,7 @@ public final class HomeActivity extends Activity implements OnDesktopEditListene
     }
 
     private void handleLauncherResume() {
+        android.util.Log.i("OpenLauncher", "HomeActivity: handleLauncherResume (ignoreResume=" + ignoreResume + ")");
         if (ignoreResume) {
             // only triggers when a new activity is launched that should leave launcher state alone
             // uninstall package activity and pick widget activity
@@ -912,14 +957,15 @@ public final class HomeActivity extends Activity implements OnDesktopEditListene
             // close app option menu
             getItemOptionView().collapse();
             if (getDesktop().getInEditMode()) {
-                // exit desktop edit mode
-                getDesktop().getCurrentPage().performClick();
+                android.util.Log.i("OpenLauncher", "HomeActivity: Exiting edit mode on resume");
+                getDesktop().exitDesktopEditMode();
             } else if (getAppDrawerController().getDrawer().getVisibility() == View.VISIBLE) {
+                android.util.Log.i("OpenLauncher", "HomeActivity: Closing app drawer on resume");
                 closeAppDrawer();
             }
             if (getDesktop().getCurrentItem() != 0) {
                 AppSettings appSettings = Setup.appSettings();
-                getDesktop().setCurrentItem(appSettings.getDesktopPageCurrent() + 1);
+                getDesktop().setCurrentItem(appSettings.getDesktopPageCurrent() + (appSettings.getDesktopPage0Enabled() ? 1 : 0));
             }
         }
     }

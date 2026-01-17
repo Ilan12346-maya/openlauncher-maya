@@ -1,14 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<!-- TRANSLATION NOTES: "minibar" is "barra lateral"
-                        "launcher" is "lanzador de apps" on titles and "lanzador de aplicaciones" on longer descriptions
-                        "app" is "app" on titles and "aplicación" on longer descriptions
-                        "dock" is "dock"-->
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <!-- Toasts -->
+    
     <string name="toast_device_admin_required">Bonvole, ebligi la aparatmastrumadan opcion.</string>
 
-    <!-- Intro -->
+    
     <string name="intro2_text">Ŝovumi ene maldekstrrando de via komencekrano por malfermi la laterbreton. Ĉi tien povas trovi agordilo,
         ŝanĝi ekranfonon, kaj fari multajn aĵojn.</string>
     <string name="intro3_text">Vi povas agordi vian labortablon, la aplikaĵujon kaj doko, ¡provu!</string>
@@ -16,22 +11,12 @@
     <string name="intro1_features">Kun multa funkcioj</string>
     <string name="intro1_customizable">Tajlorebla</string>
 
-    <!-- Minibar -->
-    <string name="minibar">Laterbreto</string>
-    <string name="minibar_summary__edit_minibar">Ŝangi laterbretan stilon.</string>
-    <string name="minibar_summary__set_wallpaper">Agordi aŭ malklari ekranfonon.</string>
-    <string name="minibar_summary__lock_screen">Ŝlosi nun ekranon, estas nepra havi ĉefuzantajn privilegiojn.</string>
-    <string name="minibar_summary__device_settings">Mallongindiko al aparata agordoj.</string>
-    <string name="minibar_summary__launcher_settings">Mallongindiko al OpenLauncher-a agordoj.</string>
-    <string name="minibar_summary__volume_dialog">Malfermi volumpanelo.</string>
-    <string name="minibar_summary__app_drawer">Malfermi aplikaĵujon.</string>
-
-    <!-- About -->
+    
     <string name="about_libs">Malfermitkoda biblioteko</string>
     <string name="about_rate">Taksi</string>
     <string name="about_credit">Kontribuanto</string>
 
-    <!-- Settings -->
+    
 
     <string name="pref_title__desktop">Labortablo</string>
     <string name="pref_title__dock">Doko</string>
@@ -122,10 +107,10 @@
     <string name="vertical_scroll_drawer">Vertikala</string>
     <string name="horizontal_paged_drawer">Paĝe</string>
 
-    <!-- Item Labels -->
+    
     <string name="default_icons">Defaŭlta</string>
 
-    <!-- Dialogs -->
+    
     <string name="placeholder">Saluton Mondo!</string>
     <string name="please_wait">Serĉanta instalitajn aplikajojn. Bonvole, atendu.</string>
     <string name="on">Ŝaltita</string>
@@ -148,29 +133,29 @@
     <string name="pref_title__debug">Senerarado</string>
 
 
-    <!-- Titles -->
+    
     <string name="pref_title__settings">Agordoj</string>
 
-    <!-- Drag Option View -->
+    
     <string name="edit">Redakti</string>
     <string name="info">Pri</string>
     <string name="uninstall">Malinstali</string>
     <string name="remove">Forigi</string>
 
-    <!-- Desktop Option View -->
+    
     <string name="home">Ĉefpaĝo</string>
     <string name="action">Ago</string>
     <string name="lock">Ŝlosi</string>
     <string name="widget">Fenestraĵo</string>
 
-    <!-- Toasts -->
+    
     <string name="toast_not_enough_space">Memorilo ne sufiĉa.</string>
     <string name="toast_app_uninstalled">Aplikaĵo malistalita.</string>
 
-    <!-- Item Labels -->
+    
     <string name="default_folder">Nenomita</string>
 
-    <!-- Dialogs -->
+    
     <string name="search_hint">Serĉi…</string>
 
 </resources>

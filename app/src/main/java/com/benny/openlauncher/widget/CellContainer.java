@@ -276,6 +276,9 @@ public class CellContainer extends ViewGroup {
             return super.onTouchEvent(event);
         }
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (com.benny.openlauncher.util.Logger.isEnabled()) {
+                com.benny.openlauncher.util.Logger.log(this, "onTouchEvent: ACTION_DOWN at " + event.getX() + ", " + event.getY());
+            }
             HomeActivity launcher = HomeActivity.Companion.getLauncher();
             if (launcher != null) {
                 launcher.getDesktop().setLastDownY(event.getY());
@@ -293,11 +296,18 @@ public class CellContainer extends ViewGroup {
 
     public boolean onInterceptTouchEvent(@NonNull MotionEvent ev) {
         if (_blockTouch) return true;
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+             if (com.benny.openlauncher.util.Logger.isEnabled()) {
+                 com.benny.openlauncher.util.Logger.log(this, "onInterceptTouchEvent: ACTION_DOWN");
+             }
+        }
         return super.onInterceptTouchEvent(ev);
     }
 
     public void init() {
         setWillNotDraw(false);
+        setClipChildren(false);
+        setClipToPadding(false);
     }
 
     public final void animateBackgroundShow() {
@@ -344,33 +354,17 @@ public class CellContainer extends ViewGroup {
         if (_cells == null)
             return;
 
-        float s = 7f;
-        for (int x = 0; x < _cellSpanH; x++) {
-            for (int y = 0; y < _cellSpanV; y++) {
-                if (x >= _cells.length || y >= _cells[0].length)
-                    continue;
-
-                Rect cell = _cells[x][y];
-
-                canvas.save();
-                canvas.rotate(45f, cell.left, cell.top);
-                canvas.drawRect(cell.left - s, cell.top - s, cell.left + s, cell.top + s, _paint);
-                canvas.restore();
-
-                canvas.save();
-                canvas.rotate(45f, cell.left, cell.bottom);
-                canvas.drawRect(cell.left - s, cell.bottom - s, cell.left + s, cell.bottom + s, _paint);
-                canvas.restore();
-
-                canvas.save();
-                canvas.rotate(45f, cell.right, cell.top);
-                canvas.drawRect(cell.right - s, cell.top - s, cell.right + s, cell.top + s, _paint);
-                canvas.restore();
-
-                canvas.save();
-                canvas.rotate(45f, cell.right, cell.bottom);
-                canvas.drawRect(cell.right - s, cell.bottom - s, cell.right + s, cell.bottom + s, _paint);
-                canvas.restore();
+        // Draw grid crosses
+        if (!_hideGrid || _paint.getAlpha() > 0) {
+            float s = Tool.dp2px(2);
+            for (int x = 0; x <= _cellSpanH; x++) {
+                for (int y = 0; y <= _cellSpanV; y++) {
+                    float cx = x * _cellWidth + getPaddingLeft();
+                    float cy = y * _cellHeight + getPaddingTop();
+                    
+                    canvas.drawLine(cx - s, cy, cx + s, cy, _paint);
+                    canvas.drawLine(cx, cy - s, cx, cy + s, _paint);
+                }
             }
         }
 
@@ -426,10 +420,14 @@ public class CellContainer extends ViewGroup {
     }
 
     public final void setOccupied(boolean b, @NonNull LayoutParams lp) {
+        com.benny.openlauncher.util.Logger.log(this, "setOccupied: " + b + " at (" + lp.getX() + "," + lp.getY() + ") span (" + lp.getXSpan() + "," + lp.getYSpan() + ")");
         int xSpan = lp.getX() + lp.getXSpan();
+        int ySpan = lp.getY() + lp.getYSpan();
+
         for (int x = lp.getX(); x < xSpan; x++) {
-            int ySpan = lp.getY() + lp.getYSpan();
+            if (x < 0 || x >= _cellSpanH) continue;
             for (int y = lp.getY(); y < ySpan; y++) {
+                if (y < 0 || y >= _cellSpanV) continue;
                 _occupied[x][y] = b;
             }
         }

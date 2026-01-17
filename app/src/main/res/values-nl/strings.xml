@@ -1,40 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <!-- Intro -->
+    
     <string name="intro1_text">Een open source app launcer met veel handige functies.</string>
     <string name="intro1_community">Grote Community</string>
     <string name="intro1_features">Vele functies</string>
     <string name="intro1_customizable">Aanpasbaar</string>
-    <string name="intro2_text">Swipe naar binnen vanaf de linkerkant van het scherm om de minibar to openen en een actie te selecteren.</string>
     <string name="intro3_text">Je kan de stijl van de App Drawer kiezen en ook apps verbergen die je niet gebruikt.</string>
     <string name="intro4_text">Zoek iets op het web of filter je apps vanuit de zoekbalk.</string>
 
-    <!-- Minibar -->
-    <string name="minibar">Minibar</string>
-    <string name="minibar_title__edit_minibar">Minibar aanpassen</string>
-    <string name="minibar_summary__edit_minibar">Wijzig de minibar layout.</string>
-    <string name="minibar_title__set_wallpaper">Achtergrond</string>
-    <string name="minibar_summary__set_wallpaper">Kies de achtergrondafbeelding.</string>
-    <string name="minibar_title__lock_screen">Scherm vergrendelen</string>
-    <string name="minibar_summary__lock_screen">Knop om het scherm te vergrendelen.</string>
-    <string name="minibar_title__device_settings">Toestel Instellingen</string>
-    <string name="minibar_summary__device_settings">Snelkoppeling naar toestel instellingen.</string>
-    <string name="minibar_title__launcher_settings">Launcher Instellingen</string>
-    <string name="minibar_summary__launcher_settings">Snelkoppeling naar OpenLauncher instellingen.</string>
-    <string name="minibar_title__volume_dialog">Volume aanpassen</string>
-    <string name="minibar_summary__volume_dialog">Toon alle beschikbare volume knoppen.</string>
-    <string name="minibar_title__app_drawer">App Drawer</string>
-    <string name="minibar_summary__app_drawer">Open het app menu.</string>
-    <string name="minibar_title__search_bar">Open zoekbalk</string>
-    <string name="minibar_summary__search_bar">Open de zoekbalk.</string>
-    <string name="minibar_title__mobile_network">Mobiel Netwerk Instellingen</string>
-    <string name="minibar_summary__mobile_network">Snelkoppeling naar de mobiele netwerk instellingen.</string>
-    <string name="minibar_title__notification_bar">Notificaties tonen</string>
-    <string name="minibar_summary__notification_bar">Bekijk notificaties boven aan het scherm.</string>
-    <string name="minibar_title__camera">Camera</string>
-    <string name="minibar_summary__camera">Neem een foto met de camera app.</string>
-
-    <!-- About -->
+    
     <string name="about_libs">Open Source Libraries</string>
     <string name="about_rate">Rate</string>
     <string name="about_credit">Contributors</string>
@@ -63,7 +37,7 @@
     <string name="more_info_support">More information on donating or otherwise supporting this project.</string>
     <string name="android_contribution_guide">Android Development</string>
 
-    <!-- Settings -->
+    
     <string name="pref_title__settings">Instellingen</string>
     <string name="pref_title__desktop">Desktop</string>
     <string name="pref_title__dock">Dock</string>
@@ -177,7 +151,7 @@
     <string name="pref_title__restart">Herstart</string>
     <string name="pref_summary__restart">Dit kan gebruikt worden om manueel instellen toe te passen.</string>
 
-    <!-- Arrays -->
+    
     <string name="vertical_scroll_drawer">Verticaal</string>
     <string name="horizontal_paged_drawer">Pagina\'s</string>
 
@@ -198,7 +172,7 @@
     <string name="dark">Donker</string>
     <string name="black">Zwart</string>
 
-    <!-- Dialogs -->
+    
     <string name="please_wait">Zoeken naar geïnstalleerde apps. Even geduld.</string>
     <string name="are_you_sure">Bent u zeker? Deze actie kan niet ongedaan gemaakt worden behalve als je een backup hebt.</string>
     <string name="device_admin_title">Apparaatbeheer</string>
@@ -213,7 +187,7 @@
     <string name="notification_title">Notificatie Toegang</string>
     <string name="notification_summary">OpenLauncher heeft notificatie toestemming nodig om icoon badges weer te geven.</string>
 
-    <!-- Other -->
+    
     <string name="columns">Kolommen</string>
     <string name="rows">Rijen</string>
     <string name="on">Aan</string>
@@ -227,20 +201,20 @@
     <string name="default_folder">Onbenoemd</string>
     <string name="default_icons">Standaard</string>
 
-    <!-- Drag Option View -->
+    
     <string name="edit">Wijzigen</string>
     <string name="info">Info</string>
     <string name="uninstall">De-installeren</string>
     <string name="remove">Verwijderen</string>
     <string name="resize">Grootte</string>
 
-    <!-- Desktop Option View -->
+    
     <string name="home">Home</string>
     <string name="action">Actie</string>
     <string name="lock">Vergrendel</string>
     <string name="widget">Widget</string>
 
-    <!-- Toasts -->
+    
     <string name="toast_not_enough_space">Niet genoeg vrije ruimte.</string>
     <string name="toast_app_uninstalled">App verwijderd.</string>
     <string name="toast_device_admin_required">Schakel toestemming voor apparaat beheer in.</string>

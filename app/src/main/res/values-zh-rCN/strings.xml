@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <!-- Intro -->
+    
     <string name="intro1_text">一款拥有众多有用功能的开源启动器</string>
     <string name="intro1_community">大型社区</string>
     <string name="intro1_features">功能众多</string>
@@ -9,32 +9,7 @@
     <string name="intro3_text">你可以为你的应用程序抽屉选择一个样式，并在设置中隐藏不用的应用程序。</string>
     <string name="intro4_text">在网络上搜索或从搜索栏过滤你的应用程序。</string>
 
-    <!-- Minibar -->
-    <string name="minibar">迷你栏</string>
-    <string name="minibar_title__edit_minibar">编辑迷你栏</string>
-    <string name="minibar_summary__edit_minibar">更改迷你栏布局</string>
-    <string name="minibar_title__set_wallpaper">设置壁纸</string>
-    <string name="minibar_summary__set_wallpaper">设置桌面壁纸</string>
-    <string name="minibar_title__lock_screen">锁定屏幕</string>
-    <string name="minibar_summary__lock_screen">立即锁屏</string>
-    <string name="minibar_title__device_settings">设备设置</string>
-    <string name="minibar_summary__device_settings">设备设置快捷方式</string>
-    <string name="minibar_title__launcher_settings">启动器设置</string>
-    <string name="minibar_summary__launcher_settings">OpenLauncher 设置快捷方式</string>
-    <string name="minibar_title__volume_dialog">音量对话框</string>
-    <string name="minibar_summary__volume_dialog">展示所有可用的音量滑块</string>
-    <string name="minibar_title__app_drawer">打开应用抽屉</string>
-    <string name="minibar_summary__app_drawer">打开应用抽屉</string>
-    <string name="minibar_title__search_bar">打开搜索栏</string>
-    <string name="minibar_summary__search_bar">打开搜索栏</string>
-    <string name="minibar_title__mobile_network">移动网络设置</string>
-    <string name="minibar_summary__mobile_network">移动网络设置快捷方式</string>
-    <string name="minibar_title__notification_bar">显示通知栏</string>
-    <string name="minibar_summary__notification_bar">展开屏幕顶部的通知视图</string>
-    <string name="minibar_title__camera">相机</string>
-    <string name="minibar_summary__camera">用你的相机应用拍一张照片</string>
-
-    <!-- About -->
+    
     <string name="about_libs">开源库</string>
     <string name="about_rate">评价</string>
     <string name="about_credit">贡献者</string>
@@ -63,7 +38,7 @@
     <string name="more_info_support">更多关于捐赠或支持这个项目的信息。</string>
     <string name="android_contribution_guide">安卓开发</string>
 
-    <!-- Settings -->
+    
     <string name="pref_title__settings">设置</string>
     <string name="pref_title__desktop">桌面</string>
     <string name="pref_title__dock">托盘</string>
@@ -177,7 +152,7 @@
     <string name="pref_title__restart">重启</string>
     <string name="pref_summary__restart">这可被用来手动应用一些设置</string>
 
-    <!-- Arrays -->
+    
     <string name="vertical_scroll_drawer">垂直</string>
     <string name="horizontal_paged_drawer">分页</string>
 
@@ -199,7 +174,7 @@
     <string name="dark">深色</string>
     <string name="black">黑色</string>
 
-    <!-- Dialogs -->
+    
     <string name="please_wait">正在搜索已安装应用。请等候。</string>
     <string name="are_you_sure">你确定吗？除非你有备份，否则此操作无法撤消。</string>
     <string name="device_admin_title">设备管理员</string>
@@ -214,7 +189,7 @@
     <string name="notification_title">通知访问</string>
     <string name="notification_summary">OpenLauncher 需要通知权限来展示图标徽章</string>
 
-    <!-- Other -->
+    
     <string name="columns">列</string>
     <string name="rows">行</string>
     <string name="on">打开</string>
@@ -228,20 +203,20 @@
     <string name="default_folder">未命名</string>
     <string name="default_icons">默认</string>
 
-    <!-- Drag Option View -->
+    
     <string name="edit">编辑</string>
     <string name="info">信息</string>
     <string name="uninstall">卸载</string>
     <string name="remove">移除</string>
     <string name="resize">调整大小</string>
 
-    <!-- Desktop Option View -->
+    
     <string name="home">主页</string>
     <string name="action">操作</string>
     <string name="lock">锁定</string>
     <string name="widget">小部件</string>
 
-    <!-- Toasts -->
+    
     <string name="toast_not_enough_space">空间不足</string>
     <string name="toast_app_uninstalled">应用已被卸载</string>
     <string name="toast_device_admin_required">请启用设备管理权限</string>

@@ -17,11 +17,14 @@ public final class DragHandler {
     public static void startDrag(View view, Item item, DragAction.Action action, final DesktopCallback desktopCallback) {
         _cachedDragBitmap = loadBitmapFromView(view);
 
-        if (HomeActivity.Companion.getLauncher() != null)
-            HomeActivity._launcher.getItemOptionView().startDragNDropOverlay(view, item, action);
-
-        if (desktopCallback != null)
-            desktopCallback.setLastItem(item, view);
+        HomeActivity launcher = HomeActivity.Companion.getLauncher();
+        if (launcher != null) {
+            launcher.getItemOptionView().startDragNDropOverlay(view, item, action);
+            if (desktopCallback != null)
+                desktopCallback.setLastItem(item, view);
+        } else {
+            com.benny.openlauncher.util.Logger.log("DragHandler", "Cannot start drag: Launcher is null!");
+        }
     }
 
     public static View.OnLongClickListener getLongClick(final Item item, final DragAction.Action action, final DesktopCallback desktopCallback) {

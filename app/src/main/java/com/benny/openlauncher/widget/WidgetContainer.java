@@ -32,6 +32,10 @@ public class WidgetContainer extends FrameLayout {
     public WidgetContainer(Context context, WidgetView widgetView, Item item) {
         super(context);
 
+        setPadding(0, 0, 0, 0);
+        setClipChildren(false);
+        setClipToPadding(false);
+
         addView(widgetView);
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         layoutInflater.inflate(R.layout.view_widget_container, this);
@@ -134,10 +138,13 @@ public class WidgetContainer extends FrameLayout {
         }
 
         Bundle newOps = new Bundle();
-        newOps.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, item.getSpanX() * cellWidth);
-        newOps.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, item.getSpanX() * cellWidth);
-        newOps.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, item.getSpanY() * cellHeight);
-        newOps.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, item.getSpanY() * cellHeight);
+        // Increase dimensions reporting by 50% to allow widgets to use full space
+        int width = (int) (item.getSpanX() * cellWidth * 1.5f);
+        int height = (int) (item.getSpanY() * cellHeight * 1.5f);
+        newOps.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, width);
+        newOps.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, width);
+        newOps.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, height);
+        newOps.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, height);
         HomeActivity._appWidgetManager.updateAppWidgetOptions(item.getWidgetValue(), newOps);
     }
 }

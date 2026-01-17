@@ -19,12 +19,17 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class AppSettings extends SharedPreferencesPropertyBackend {
+    private static AppSettings _instance;
+
     public AppSettings(Context context) {
         super(context, "app");
     }
 
     public static AppSettings get() {
-        return new AppSettings(AppObject.get());
+        if (_instance == null) {
+            _instance = new AppSettings(AppObject.get());
+        }
+        return _instance;
     }
 
     public int getDesktopColumnCount() {
@@ -371,5 +376,13 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
             recentApps.remove(recentApps.size() - 1);
         }
         setStringList("pref_key__recent_apps", recentApps);
+    }
+
+    public boolean getDebugMode() {
+        return getBool(R.string.pref_key__debug_mode, false);
+    }
+
+    public void setDebugMode(boolean value) {
+        setBool(R.string.pref_key__debug_mode, value);
     }
 }

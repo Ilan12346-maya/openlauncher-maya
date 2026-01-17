@@ -1,34 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <!-- Intro -->
+    
     <string name="intro1_text">Pokretač otvorenog koda sa puno korisnih mogućnosti.</string>
     <string name="intro1_community">Velika Zajednica</string>
     <string name="intro1_customizable">Prijagodljivo</string>
-    <string name="intro2_text">Kliznite od lijevog ruba početnog zaslona da bi ste otvorili minibar i odabrali radnju.</string>
-
-    <!-- Minibar -->
-    <string name="minibar">Minibar</string>
-    <string name="minibar_title__edit_minibar">Izmjeni Minibar</string>
-    <string name="minibar_summary__edit_minibar">Promijeni izgled minibar-a.</string>
-    <string name="minibar_title__set_wallpaper">Postavi pozadinu</string>
-    <string name="minibar_summary__set_wallpaper">Postavite pozadinu početnog zaslona.</string>
-    <string name="minibar_title__lock_screen">Zaključaj Zaslon</string>
-    <string name="minibar_summary__lock_screen">Odmah zaključaj zaslon.</string>
-    <string name="minibar_title__device_settings">Postavke Uređaja</string>
-    <string name="minibar_summary__device_settings">Prečac za postavke uređaja.</string>
-    <string name="minibar_title__launcher_settings">Postavke Pokretača</string>
-    <string name="minibar_summary__launcher_settings">Prečac za OpenLauncher postavke.</string>
-    <string name="minibar_title__app_drawer">Otvori Ladicu aplikacija</string>
-    <string name="minibar_summary__app_drawer">Otvori ladicu aplikacija.</string>
-    <string name="minibar_title__search_bar">Otvori Tražilicu</string>
-    <string name="minibar_summary__search_bar">Otvori tražilicu.</string>
-    <string name="minibar_title__mobile_network">Postavke Mobilne Mreže</string>
-    <string name="minibar_summary__mobile_network">Prečac za postavke mobilne mreže.</string>
-    <string name="minibar_title__notification_bar">Prikaži Notifikacijsku Traku</string>
-    <string name="minibar_title__camera">Kamera</string>
-    <string name="minibar_summary__camera">Fotografirajte sa aplikacijom kamera</string>
-
-    <!-- About -->
     <string name="about_libs">Knjižnica Otvorenog Koda</string>
     <string name="about_rate">Ocijenite</string>
     <string name="about_credit">Doprinosioci</string>
@@ -51,7 +26,7 @@
     <string name="bug_reports">Prijavite probleme</string>
     <string name="android_contribution_guide">Android Razvoj</string>
 
-    <!-- Settings -->
+    
     <string name="pref_title__settings">Postavke</string>
     <string name="pref_title__desktop">Radna površina</string>
     <string name="pref_title__app_drawer">Ladica aplikacija</string>
@@ -127,7 +102,7 @@
     <string name="pref_summary__reset_database">Obriši sve stavke sa radne površine.</string>
     <string name="pref_title__restart">Ponovno pokreni</string>
 
-    <!-- Arrays -->
+    
     <string name="vertical_scroll_drawer">Vertikalno</string>
     <string name="horizontal_paged_drawer">Stranično</string>
 
@@ -147,7 +122,7 @@
     <string name="dark">Tamna</string>
     <string name="black">Crna</string>
 
-    <!-- Dialogs -->
+    
     <string name="please_wait">Tražimo instalirane aplikacije.\n
  Molim pričekajte.</string>
     <string name="are_you_sure">Da li ste sigurni? Ova radnja se ne može poništiti osim u slučaju da imate sigurnosnu kopiju.</string>
@@ -160,7 +135,7 @@
     <string name="volume_level_system">Sistem</string>
     <string name="volume_level_media">Medija</string>
 
-    <!-- Other -->
+    
     <string name="columns">Rubrike</string>
     <string name="rows">Redovi</string>
     <string name="on">Uključi</string>
@@ -173,18 +148,18 @@
     <string name="default_folder">Neimenovano</string>
     <string name="default_icons">Standardno</string>
 
-    <!-- Drag Option View -->
+    
     <string name="edit">Uredi</string>
     <string name="info">Informacije</string>
     <string name="uninstall">Izbriši</string>
     <string name="remove">Izbriši</string>
 
-    <!-- Desktop Option View -->
+    
     <string name="home">Početna</string>
     <string name="action">Radnja</string>
     <string name="lock">Zaključaj</string>
 
-    <!-- Toasts -->
+    
     <string name="toast_not_enough_space">Nedovoljno mjesta.</string>
     <string name="toast_app_uninstalled">Aplikacija deinstalirana</string>
     <string name="toast_device_admin_required">Molimo omogućite Administratora uređaja.</string>

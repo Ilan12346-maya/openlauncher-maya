@@ -161,9 +161,21 @@ public class Tool {
 
     public static void startApp(Context context, App app, View view) {
         HomeActivity launcher = HomeActivity.Companion.getLauncher();
+        if (launcher == null && context instanceof HomeActivity) {
+            launcher = (HomeActivity) context;
+        }
         if (launcher != null && app != null) {
             AppSettings.get().addRecentApp(app._packageName, app._className);
             launcher.onStartApp(context, app, view);
+        } else if (app != null) {
+            // Fallback for starting app if launcher reference is lost
+            com.benny.openlauncher.util.Logger.log("Tool", "Launcher reference lost, using context fallback to start app");
+            try {
+                Intent intent = getIntentFromApp(app);
+                context.startActivity(intent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -241,18 +253,23 @@ public class Tool {
         return null;
     }
 
-    public static void saveIcon(Context context, Bitmap icon, String filename) {
-        File directory = new File(context.getFilesDir() + "/icons/");
-        if (!directory.exists()) directory.mkdir();
-        File file = new File(directory, filename + ".png");
-        try {
-            file.createNewFile();
-            FileOutputStream out = new FileOutputStream(file);
-            icon.compress(Bitmap.CompressFormat.PNG, 100, out);
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public static void saveIcon(final Context context, final Bitmap icon, final String filename) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                File directory = new File(context.getFilesDir() + "/icons/");
+                if (!directory.exists()) directory.mkdir();
+                File file = new File(directory, filename + ".png");
+                try {
+                    file.createNewFile();
+                    FileOutputStream out = new FileOutputStream(file);
+                    icon.compress(Bitmap.CompressFormat.PNG, 100, out);
+                    out.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     public static void removeIcon(Context context, String filename) {

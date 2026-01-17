@@ -28,6 +28,10 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -74,7 +78,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public final class HomeActivity extends Activity implements OnDesktopEditListener {
+public final class HomeActivity extends Activity implements OnDesktopEditListener, SensorEventListener {
     public static final Companion Companion = new Companion();
     public static final int REQUEST_CREATE_APPWIDGET = 0x6475;
     public static final int REQUEST_PERMISSION_STORAGE = 0x3648;
@@ -86,6 +90,16 @@ public final class HomeActivity extends Activity implements OnDesktopEditListene
     public static boolean ignoreResume;
     public static float _itemTouchX;
     public static float _itemTouchY;
+
+    // sensor variables
+    private SensorManager _sensorManager;
+    private Sensor _rotationVectorSensor;
+    private final float[] _rotationMatrix = new float[9];
+    private final float[] _orientationValues = new float[3];
+    private float _baseAzimuth = 0;
+    private float _basePitch = 0;
+    private float _baseRoll = 0;
+    private boolean _baseOrientationSet = false;
 
     // static launcher variables
     public static HomeActivity _launcher;
@@ -300,6 +314,9 @@ public final class HomeActivity extends Activity implements OnDesktopEditListene
         _appWidgetManager = AppWidgetManager.getInstance(this);
         _appWidgetHost = new WidgetHost(getApplicationContext(), R.id.app_widget_host);
         _appWidgetHost.startListening();
+
+        _sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        _rotationVectorSensor = _sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
 
         // item drag and drop
         HpDragOption hpDragOption = new HpDragOption();
@@ -906,6 +923,21 @@ public final class HomeActivity extends Activity implements OnDesktopEditListene
         _appWidgetHost.startListening();
         _launcher = this;
 
+        if (Setup.appSettings().getDesktopParallax() && _rotationVectorSensor != null) {
+            _sensorManager.registerListener(this, _rotationVectorSensor, SensorManager.SENSOR_DELAY_UI);
+            _baseOrientationSet = false;
+
+            float zoom = Setup.appSettings().getDesktopParallaxZoom();
+            if (zoom > 0) {
+                android.app.WallpaperManager wm = android.app.WallpaperManager.getInstance(this);
+                android.util.DisplayMetrics metrics = new android.util.DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getMetrics(metrics);
+                int width = (int) (metrics.widthPixels * (1f + zoom));
+                int height = (int) (metrics.heightPixels * (1f + zoom));
+                wm.suggestDesiredDimensions(width, height);
+            }
+        }
+
         // handle restart if something needs to be reset
         AppSettings appSettings = Setup.appSettings();
         if (appSettings.getAppRestartRequired()) {
@@ -929,6 +961,12 @@ public final class HomeActivity extends Activity implements OnDesktopEditListene
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
         handleLauncherResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        _sensorManager.unregisterListener(this);
     }
 
     @Override
@@ -999,5 +1037,42 @@ public final class HomeActivity extends Activity implements OnDesktopEditListene
 
     public final void closeAppDrawer() {
         getAppDrawerController().close(cx, cy);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
+            SensorManager.getRotationMatrixFromVector(_rotationMatrix, event.values);
+            SensorManager.getOrientation(_rotationMatrix, _orientationValues);
+
+            float azimuth = _orientationValues[0];
+            float pitch = _orientationValues[1];
+            float roll = _orientationValues[2];
+
+            if (!_baseOrientationSet) {
+                _baseAzimuth = azimuth;
+                _basePitch = pitch;
+                _baseRoll = roll;
+                _baseOrientationSet = true;
+            }
+
+            float diffPitch = pitch - _basePitch;
+            float diffRoll = roll - _baseRoll;
+
+            // Clamp and scale
+            float maxAngle = (float) Math.toRadians(20);
+            diffPitch = Math.max(-maxAngle, Math.min(maxAngle, diffPitch));
+            diffRoll = Math.max(-maxAngle, Math.min(maxAngle, diffRoll));
+
+            float parallaxX = diffRoll / maxAngle;
+            float parallaxY = diffPitch / maxAngle;
+
+            float factor = Setup.appSettings().getDesktopParallaxDistance();
+            getDesktop().setParallaxOffsets(parallaxX * factor, parallaxY * factor);
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
 }

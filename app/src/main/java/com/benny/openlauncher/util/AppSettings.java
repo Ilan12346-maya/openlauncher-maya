@@ -77,6 +77,18 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
         return getBool(R.string.pref_key__desktop_show_label, true);
     }
 
+    public boolean getDesktopParallax() {
+        return getBool(R.string.pref_key__desktop_parallax, false);
+    }
+
+    public float getDesktopParallaxDistance() {
+        return getInt(R.string.pref_key__desktop_parallax_distance, 20) / 100f;
+    }
+
+    public float getDesktopParallaxZoom() {
+        return getInt(R.string.pref_key__desktop_parallax_zoom, 10) / 100f;
+    }
+
     public boolean getDesktopInfiniteScrolling() {
         return getBool(R.string.pref_key__desktop_infinite_scrolling, false);
     }

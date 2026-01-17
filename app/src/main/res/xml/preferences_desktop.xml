@@ -64,6 +64,28 @@
             android:title="@string/pref_title__desktop_show_label" />
     </com.benny.openlauncher.widget.ColorPreferenceCategory>
 
+    <com.benny.openlauncher.widget.ColorPreferenceCategory android:title="@string/pref_title__desktop_parallax">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/pref_key__desktop_parallax"
+            android:summary="@string/pref_summary__desktop_parallax"
+            android:title="@string/pref_title__desktop_parallax" />
+        <com.benny.openlauncher.widget.ValueSeekBarPreference
+            android:defaultValue="20"
+            android:dependency="@string/pref_key__desktop_parallax"
+            android:key="@string/pref_key__desktop_parallax_distance"
+            android:max="100"
+            android:title="@string/pref_title__desktop_parallax_distance"
+            app:min="0" />
+        <com.benny.openlauncher.widget.ValueSeekBarPreference
+            android:defaultValue="10"
+            android:dependency="@string/pref_key__desktop_parallax"
+            android:key="@string/pref_key__desktop_parallax_zoom"
+            android:max="100"
+            android:title="@string/pref_title__desktop_parallax_zoom"
+            app:min="0" />
+    </com.benny.openlauncher.widget.ColorPreferenceCategory>
+
     <com.benny.openlauncher.widget.ColorPreferenceCategory android:title="@string/pref_title__color">
         <com.flask.colorpicker.ColorPickerPreference
             android:defaultValue="@color/transparent"

@@ -62,6 +62,9 @@ public final class Desktop extends ViewPager implements DesktopCallback {
     private View _previousItemView;
     private int _previousPage;
 
+    private float _parallaxX;
+    private float _parallaxY;
+
     public float getLastDownY() {
         return _lastDownY;
     }
@@ -856,6 +859,24 @@ public final class Desktop extends ViewPager implements DesktopCallback {
 
     @Override
     protected void onPageScrolled(int position, float offset, int offsetPixels) {
+        updateWallpaperOffset(position, offset);
+        super.onPageScrolled(position, offset, offsetPixels);
+    }
+
+    private float _currentPosition;
+    private float _currentOffset;
+
+    public void updateWallpaperOffset() {
+        updateWallpaperOffset(_currentPosition, _currentOffset);
+    }
+
+    private void updateWallpaperOffset(int position, float offset) {
+        _currentPosition = position;
+        _currentOffset = offset;
+        updateWallpaperOffset((float) position, offset);
+    }
+
+    private void updateWallpaperOffset(float position, float offset) {
         Definitions.WallpaperScroll scroll = Setup.appSettings().getDesktopWallpaperScroll();
         float xOffset = (position + offset) / (getAdapter().getCount() - 1);
         if (scroll.equals(Inverse)) {
@@ -863,12 +884,28 @@ public final class Desktop extends ViewPager implements DesktopCallback {
         } else if (scroll.equals(Off)) {
             xOffset = 0.5f;
         }
-        
+
         xOffset = Math.max(0, Math.min(1, xOffset));
 
+        // Add parallax
+        float finalXOffset = xOffset + _parallaxX;
+        float finalYOffset = 0.5f + _parallaxY;
+
+        finalXOffset = Math.max(0, Math.min(1, finalXOffset));
+        finalYOffset = Math.max(0, Math.min(1, finalYOffset));
+
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(getContext());
-        wallpaperManager.setWallpaperOffsets(getWindowToken(), xOffset, 0.0f);
-        super.onPageScrolled(position, offset, offsetPixels);
+        try {
+            wallpaperManager.setWallpaperOffsets(getWindowToken(), finalXOffset, finalYOffset);
+        } catch (Exception e) {
+            // Ignore
+        }
+    }
+
+    public void setParallaxOffsets(float x, float y) {
+        _parallaxX = x;
+        _parallaxY = y;
+        updateWallpaperOffset();
     }
 
     public interface OnDesktopEditListener {

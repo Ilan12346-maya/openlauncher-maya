@@ -168,7 +168,7 @@ public final class ItemOptionView extends FrameLayout {
         _overlayPopup.setAlpha(0);
         _overlayPopup.setOverScrollMode(2);
         _overlayPopup.setLayoutManager(new LinearLayoutManager(context, 1, false));
-        _overlayPopup.setItemAnimator(_slideInLeftAnimator);
+        _overlayPopup.setItemAnimator(null);
         _overlayPopup.setAdapter(_overlayPopupAdapter);
         addView(_overlayView, new LayoutParams(-1, -1));
         addView(_overlayPopup, new LayoutParams(-2, -2));

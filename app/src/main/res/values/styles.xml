@@ -48,9 +48,9 @@
     <style name="PreferenceTheme" parent="@style/PreferenceThemeOverlay.v14.Material">
         <item name="preferenceCategoryStyle">@style/PreferenceCategoryStyle</item>
         <item name="preferenceStyle">@style/PreferenceItemStyle</item>
-        <item name="checkBoxPreferenceStyle">@style/PreferenceItemStyle</item>
-        <item name="switchPreferenceStyle">@style/PreferenceItemStyle</item>
-        <item name="switchPreferenceCompatStyle">@style/PreferenceItemStyle</item>
+        <item name="checkBoxPreferenceStyle">@style/CheckBoxPreferenceStyle</item>
+        <item name="switchPreferenceStyle">@style/SwitchPreferenceStyle</item>
+        <item name="switchPreferenceCompatStyle">@style/SwitchPreferenceStyle</item>
         <item name="editTextPreferenceStyle">@style/PreferenceItemStyle</item>
         <item name="dialogPreferenceStyle">@style/PreferenceItemStyle</item>
         <item name="seekBarPreferenceStyle">@style/SeekBarPreferenceStyle</item>
@@ -66,6 +66,12 @@
 
     <style name="PreferenceItemStyle" parent="Preference.Material">
         <item name="android:layout">@layout/preference_material</item>
+    </style>
+
+    <style name="SwitchPreferenceStyle" parent="@style/Preference.SwitchPreference">
+    </style>
+
+    <style name="CheckBoxPreferenceStyle" parent="@style/Preference.CheckBoxPreference">
     </style>
 
     <style name="Toolbar" parent="ThemeOverlay.Material3.Dark.ActionBar">
@@ -86,6 +92,16 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="Theme.CrashReport" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowShowWallpaper">true</item>
     </style>
 
 </resources>

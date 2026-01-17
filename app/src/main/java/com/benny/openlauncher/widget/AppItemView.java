@@ -308,7 +308,7 @@ public class AppItemView extends View implements Drawable.Callback, Notification
                     Tool.createScaleInScaleOutAnim(_view, new Runnable() {
                         @Override
                         public void run() {
-                            LauncherAction.ActionDisplayItem actionItem = LauncherAction.getActionItem(item.getActionValue());
+                            LauncherAction.ActionDisplayItem actionItem = LauncherAction.getActionItem(item.getActionValue(), _view.getContext());
                             if (actionItem != null) {
                                 LauncherAction.RunAction(actionItem, _view.getContext());
                             } else if (item.getActionValue() == 99) {

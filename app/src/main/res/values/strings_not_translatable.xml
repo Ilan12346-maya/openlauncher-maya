@@ -8,8 +8,6 @@
     <string name="app_source_code_url" translatable="false">https://github.com/openlauncherteam/openlauncher</string>
     <string name="app_contribution_info_url" translatable="false">https://github.com/openlauncherteam/openlauncher/blob/master/README.md#contributions</string>
 
-    <string name="pref_default__date_bar_date_format_custom_1" translatable="false"><![CDATA[EEEE\', \'dd\'.\']]></string>
-    <string name="pref_default__date_bar_date_format_custom_2" translatable="false"><![CDATA[MMMM yyyy\', KW \'ww]]></string>
     <string name="pref_default__search_bar_base_uri" translatable="false"><![CDATA[https://duckduckgo.com/?kae=c&k1=-1&kaj=m&kv=l&kp=-1&q={query}]]></string>
 
     <string name="icon_badge_service_title" translatable="false">Icon Badges</string>
@@ -20,9 +18,7 @@
     <string name="pref_key__desktop_indicator_style" translatable="false">pref_key__desktop_indicator_style</string>
     <string name="pref_key__desktop_orientation" translatable="false">pref_key__desktop_orientation</string>
     <string name="pref_key__desktop_wallpaper_scroll" translatable="false">pref_key__desktop_wallpaper_scroll</string>
-    <string name="pref_key__minibar" translatable="false">pref_key__minibar</string>
-    <string name="pref_key__minibar_enable" translatable="false">pref_key__minibar_enable</string>
-    <string name="pref_key__minibar_items" translatable="false">pref_key__minibar_items</string>
+    <string name="pref_key__desktop_infinite_scrolling" translatable="false">pref_key__desktop_infinite_scrolling</string>
     <string name="pref_key__desktop_show_grid" translatable="false">pref_key__desktop_show_grid</string>
     <string name="pref_key__desktop_fullscreen" translatable="false">pref_key__desktop_fullscreen</string>
     <string name="pref_key__desktop_show_position_indicator" translatable="false">pref_key__desktop_show_position_indicator</string>
@@ -32,19 +28,16 @@
     <string name="pref_key__search_bar_base_uri" translatable="false">pref_key__search_bar_base_uri</string>
     <string name="pref_key__search_bar_force_browser" translatable="false">pref_key__search_bar_force_browser</string>
     <string name="pref_key__search_bar_show_hidden_apps" translatable="false">pref_key__search_bar_show_hidden_apps</string>
-    <string name="pref_key__date_bar_date_format_type" translatable="false">pref_key__date_bar_date_format_type</string>
-    <string name="pref_key__date_bar_date_format_custom_1" translatable="false">pref_key__date_bar_date_format_custom_1</string>
-    <string name="pref_key__date_bar_date_format_custom_2" translatable="false">pref_key__date_bar_date_format_custom_2</string>
-    <string name="pref_key__date_bar_date_text_color" translatable="false">pref_key__date_bar_date_text_color</string>
     <string name="pref_key__desktop_background_color" translatable="false">pref_key__desktop_background_color</string>
     <string name="pref_key__desktop_inset_color" translatable="false">pref_key__desktop_inset_color</string>
     <string name="pref_key__desktop_folder_color" translatable="false">pref_key__desktop_folder_color</string>
-    <string name="pref_key__minibar_background_color" translatable="false">pref_key__minibar_background_color</string>
 
     <string name="pref_key__dock_enable" translatable="false">pref_key__dock_enable</string>
     <string name="pref_key__dock_columns" translatable="false">pref_key__dock_columns</string>
     <string name="pref_key__dock_rows" translatable="false">pref_key__dock_rows</string>
     <string name="pref_key__dock_show_label" translatable="false">pref_key__dock_show_label</string>
+    <string name="pref_key__dock_ios_style" translatable="false">pref_key__dock_ios_style</string>
+    <string name="pref_key__dock_background_alpha" translatable="false">pref_key__dock_background_alpha</string>
     <string name="pref_key__dock_background_color" translatable="false">pref_key__dock_background_color</string>
 
     <string name="pref_key__drawer_columns" translatable="false">pref_key__drawer_columns</string>
@@ -83,6 +76,7 @@
     <string name="pref_key__reset_settings" translatable="false">pref_key__reset_settings</string>
     <string name="pref_key__reset_database" translatable="false">pref_key__reset_database</string>
     <string name="pref_key__restart" translatable="false">pref_key__restart</string>
+    <string name="pref_key__crash_test" translatable="false">pref_key__crash_test</string>
 
     <string name="pref_key__cat_desktop" translatable="false">pref_key__cat_desktop</string>
     <string name="pref_key__cat_dock" translatable="false">pref_key__cat_dock</string>

@@ -1,3 +1,15 @@
+# Key Changes and Features (v0.9.2)
+*   **Performance Optimization:** Near-instant app icon loading through localized disk caching and optimized loading sequences (current page -> other pages -> app drawer).
+*   **iOS Style Dock:** New option for a rounded, semi-transparent dock background with larger icons, similar to iOS.
+*   **Infinite Scrolling:** Seamless infinite scrolling for the desktop with optimized dummy page transitions to prevent "blank" pages during fast scrolls.
+*   **Recent Apps Action:** New launcher action to quickly toggle the system's recent apps overview via gestures.
+*   **Performance Optimization (v0.9.1):** Implementation of Lazy Icon Loading, RAM-Caching (LruCache), and asynchronous background loading.
+*   **Enhanced Gestures (v0.9.1):** Split-screen swipe gestures (Up/Down) for the desktop (top and bottom halves).
+*   **Batch App Removal:** Efficiently uninstall multiple applications at once.
+*   **Page0 Webview:** A fullscreen webview integrated on page 0 for quick access to web content.
+
+---
+
 ![graphic](https://raw.githubusercontent.com/OpenLauncherTeam/openlauncher/master/fastlane/metadata/android/en-US/images/featureGraphic.png)
 
 # Personal OpenLauncher Fork
@@ -5,14 +17,6 @@
 This fork was created because I could not find a launcher that met my specific requirements. I decided to fork OpenLauncher to create a version tailored to my personal preferences, specifically optimized for an 8.5" smartphone with a minimum DPI of 750 in developer options.
 
 While this project is primarily for my own use, I am making it available for anyone who might share similar requirements or preferences. The codebase has been updated to reflect current standards, and several new features have been implemented.
-
-### Key Changes and Features
-*   **Performance Optimization (v0.9.1):** Implementation of Lazy Icon Loading, RAM-Caching (LruCache), and asynchronous background loading for an "instant-start" experience and reduced memory footprint.
-*   **Enhanced Gestures (v0.9.1):** Split-screen swipe gestures (Up/Down) for the desktop, allowing separate actions for the top and bottom halves (4 gestures total).
-*   **Recent Apps Action:** New launcher action to quickly toggle the system's recent apps overview via gestures or minibar.
-*   **Updated Codebase:** The project has been brought up to date with modern Android development standards.
-*   **Batch App Removal:** Efficiently uninstall multiple applications at once.
-*   **Page0 Webview:** A fullscreen webview integrated on page 0 for quick access to web content.
 
 ---
 

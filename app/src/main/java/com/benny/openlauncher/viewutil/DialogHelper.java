@@ -20,6 +20,7 @@ import com.benny.openlauncher.model.App;
 import com.benny.openlauncher.model.Item;
 import com.benny.openlauncher.util.AppManager;
 import com.benny.openlauncher.util.AppSettings;
+import com.benny.openlauncher.util.Definitions;
 import com.benny.openlauncher.util.Tool;
 import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
@@ -184,6 +185,21 @@ public class DialogHelper {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static void backupDialog(Context context) {
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("application/zip");
+        intent.putExtra(Intent.EXTRA_TITLE, "openlauncher_backup.zip");
+        ((Activity) context).startActivityForResult(intent, Definitions.INTENT_BACKUP);
+    }
+
+    public static void restoreDialog(Context context) {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("application/zip");
+        ((Activity) context).startActivityForResult(intent, Definitions.INTENT_RESTORE);
     }
 
     public interface OnAppSelectedListener {

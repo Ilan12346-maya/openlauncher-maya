@@ -30,20 +30,10 @@ public class SettingsMiscellaneousFragment extends SettingsBaseFragment {
         int key = new ContextUtils(getActivity()).getResId(ContextUtils.ResType.STRING, preference.getKey());
         switch (key) {
             case R.string.pref_key__backup:
-                if (new PermissionChecker(getActivity()).doIfExtStoragePermissionGranted()) {
-                    Intent i = new Intent(getActivity(), FilePickerActivity.class)
-                            .putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, true)
-                            .putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_DIR);
-                    getActivity().startActivityForResult(i, Definitions.INTENT_BACKUP);
-                }
+                DialogHelper.backupDialog(getActivity());
                 return true;
             case R.string.pref_key__restore:
-                if (new PermissionChecker(getActivity()).doIfExtStoragePermissionGranted()) {
-                    Intent i = new Intent(getActivity(), FilePickerActivity.class)
-                            .putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false)
-                            .putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_FILE);
-                    getActivity().startActivityForResult(i, Definitions.INTENT_RESTORE);
-                }
+                DialogHelper.restoreDialog(getActivity());
                 return true;
             case R.string.pref_key__reset_settings:
                 DialogHelper.alertDialog(getActivity(), getString(R.string.pref_title__reset_settings), getString(R.string.are_you_sure), new MaterialDialog.SingleButtonCallback() {
@@ -71,6 +61,8 @@ public class SettingsMiscellaneousFragment extends SettingsBaseFragment {
                 if (homeActivity != null) homeActivity.recreate();
                 getActivity().finish();
                 return true;
+            case R.string.pref_key__crash_test:
+                throw new RuntimeException("Crash Test triggered by user.");
         }
         return false;
     }

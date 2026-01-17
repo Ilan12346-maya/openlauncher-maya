@@ -45,7 +45,7 @@ public class SettingsBehaviorFragment extends SettingsBaseFragment {
                             DialogHelper.selectActionDialog(getActivity(), new MaterialDialog.ListCallback() {
                                 @Override
                                 public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
-                                    AppSettings.get().setString(key, LauncherAction.getActionItem(position)._action.toString());
+                                    AppSettings.get().setString(key, LauncherAction.getActionItem(position, getActivity())._action.toString());
                                 }
                             });
                         } else if (position == 2) {

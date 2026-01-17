@@ -1,7 +1,11 @@
 package com.benny.openlauncher.widget;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.RectF;
 import androidx.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -9,6 +13,7 @@ import android.view.View;
 
 import com.benny.openlauncher.activity.HomeActivity;
 import com.benny.openlauncher.manager.Setup;
+import com.benny.openlauncher.util.DatabaseHelper;
 import com.benny.openlauncher.model.Item;
 import com.benny.openlauncher.util.Definitions.ItemPosition;
 import com.benny.openlauncher.util.DragAction.Action;
@@ -31,21 +36,29 @@ public final class Dock extends CellContainer implements DesktopCallback {
     private float _startPosX;
     private float _startPosY;
 
+    private Paint _paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private RectF _bgRect = new RectF();
+
     public Dock(Context context, AttributeSet attr) {
         super(context, attr);
+        setWillNotDraw(false);
     }
 
     public final void initDock() {
-        int columns = Setup.appSettings().getDockColumnCount();
-        int rows = Setup.appSettings().getDockRowCount();
+        final int columns = Setup.appSettings().getDockColumnCount();
+        final int rows = Setup.appSettings().getDockRowCount();
         setGridSize(columns, rows);
-        List<Item> dockItems = HomeActivity._db.getDock();
-        removeAllViews();
-        for (Item item : dockItems) {
-            if (item._x + item._spanX > columns) item._x = Math.max(0, columns - item._spanX);
-            if (item._y + item._spanY > rows) item._y = Math.max(0, rows - item._spanY);
-            addItemToPage(item, 0);
-        }
+        HomeActivity._db.getDockAsync(new DatabaseHelper.DataCallback<List<Item>>() {
+            @Override
+            public void onDataLoaded(List<Item> dockItems) {
+                removeAllViews();
+                for (Item item : dockItems) {
+                    if (item._x + item._spanX > columns) item._x = Math.max(0, columns - item._spanX);
+                    if (item._y + item._spanY > rows) item._y = Math.max(0, rows - item._spanY);
+                    addItemToPage(item, 0);
+                }
+            }
+        });
 
         // call onMeasure to set the height
         measure(getMeasuredWidth(), getMeasuredHeight());
@@ -75,6 +88,55 @@ public final class Dock extends CellContainer implements DesktopCallback {
                 }
             default:
                 break;
+        }
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        if (Setup.appSettings().getDockIosStyle()) {
+            int width = ((r - l) - getPaddingLeft()) - getPaddingRight();
+            int height = ((b - t) - getPaddingTop()) - getPaddingBottom();
+            int columns = getCellSpanH();
+            if (columns == 0) columns = 1;
+
+            int settingsIconSize = Tool.dp2px(Setup.appSettings().getIconSize());
+            int dockIconSize = (int) (settingsIconSize * 1.1f);
+            float gap = settingsIconSize * 0.30f;
+            
+            // Total background width matching HomeActivity
+            float bgWidth = columns * dockIconSize + (columns + 1) * gap;
+            
+            float bgLeft = (width - bgWidth) / 2f;
+            float startX = getPaddingLeft() + bgLeft + gap;
+
+            int count = getChildCount();
+            for (int i = 0; i < count; i++) {
+                View child = getChildAt(i);
+                if (child.getVisibility() != View.GONE) {
+                    LayoutParams lp = (LayoutParams) child.getLayoutParams();
+                    
+                    // Apply 10% larger size to the view if it's an AppItemView
+                    if (child instanceof AppItemView) {
+                        ((AppItemView) child).setIconSize(dockIconSize);
+                    }
+
+                    int childWidth = dockIconSize;
+                    int childHeight = height;
+                    
+                    child.measure(MeasureSpec.makeMeasureSpec(childWidth, MeasureSpec.EXACTLY), 
+                                 MeasureSpec.makeMeasureSpec(childHeight, MeasureSpec.EXACTLY));
+
+                    float left = startX + (lp.getX() * (dockIconSize + gap));
+                    child.layout((int)left, 0, (int)(left + childWidth), childHeight);
+                }
+            }
+        } else {
+            super.onLayout(changed, l, t, r, b);
         }
     }
 
@@ -117,6 +179,12 @@ public final class Dock extends CellContainer implements DesktopCallback {
             int iconSize = Setup.appSettings().getDockIconSize();
             int height = Tool.dp2px((iconSize + 20) * getCellSpanV());
             if (Setup.appSettings().getDockShowLabel()) height += Tool.dp2px(20);
+            
+            if (Setup.appSettings().getDockIosStyle()) {
+                // Ensure dock is high enough for the 170% background
+                height = (int) (Tool.dp2px(Setup.appSettings().getIconSize()) * 1.7f);
+            }
+            
             getLayoutParams().height = height;
             setMeasuredDimension(View.getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec), height);
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);

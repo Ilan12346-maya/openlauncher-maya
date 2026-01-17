@@ -55,22 +55,49 @@ public final class PagerIndicator extends View implements ViewPager.OnPageChange
     @Override
     protected void onDraw(Canvas canvas) {
         if (_pager == null) return;
+        
+        com.benny.openlauncher.util.AppSettings appSettings = com.benny.openlauncher.util.AppSettings.get();
+        boolean page0Enabled = appSettings.getDesktopPage0Enabled();
+        boolean infinite = appSettings.getDesktopInfiniteScrolling();
+        
         int pageCount = _pager.getAdapter().getCount();
+        int displayPageCount = pageCount;
+        int currentItem = _pager.getCurrentItem();
+        int displayCurrentItem = currentItem;
+        
+        if (infinite && pageCount > 1) {
+            if (page0Enabled) {
+                displayPageCount = pageCount - 1;
+                if (currentItem == pageCount - 1) {
+                    displayCurrentItem = 1;
+                }
+            } else {
+                displayPageCount = pageCount - 2;
+                if (currentItem == 0) {
+                    displayCurrentItem = displayPageCount - 1;
+                } else if (currentItem == pageCount - 1) {
+                    displayCurrentItem = 0;
+                } else {
+                    displayCurrentItem = currentItem - 1;
+                }
+            }
+        }
+
         switch (_mode) {
             case Mode.DOTS:
-                float circlesWidth = pageCount * (_dotSize + _pad * 2);
+                float circlesWidth = displayPageCount * (_dotSize + _pad * 2);
                 canvas.translate(getWidth() / 2 - circlesWidth / 2, 0f);
 
-                if (_realPreviousPage != _pager.getCurrentItem()) {
+                if (_realPreviousPage != displayCurrentItem) {
                     _shrinkFactor = 1f;
-                    _realPreviousPage = _pager.getCurrentItem();
+                    _realPreviousPage = displayCurrentItem;
                 }
 
-                for (int dot = 0; dot < pageCount; dot++) {
+                for (int dot = 0; dot < displayPageCount; dot++) {
                     float stepFactor = 0.05f;
                     float smallFactor = 1.0f;
                     float largeFactor = 1.5f;
-                    if (dot == _pager.getCurrentItem()) {
+                    if (dot == displayCurrentItem) {
                         // draw shrinking dot
                         if (_previousPage == -1)
                             _previousPage = dot;
@@ -78,7 +105,7 @@ public final class PagerIndicator extends View implements ViewPager.OnPageChange
                         canvas.drawCircle(_dotSize / 2 + _pad + (_dotSize + _pad * 2) * dot, (float) (getHeight() / 2), _shrinkFactor * _dotSize / 2, _paint);
                         if (_shrinkFactor != largeFactor)
                             invalidate();
-                    } else if (dot != _pager.getCurrentItem() && dot == _previousPage) {
+                    } else if (dot != displayCurrentItem && dot == _previousPage) {
                         // draw expanding dot
                         _expandFactor = Tool.clampFloat(_expandFactor - stepFactor, smallFactor, largeFactor);
                         canvas.drawCircle(_dotSize / 2 + _pad + (_dotSize + _pad * 2) * dot, (float) (getHeight() / 2), _expandFactor * _dotSize / 2, _paint);
@@ -95,12 +122,17 @@ public final class PagerIndicator extends View implements ViewPager.OnPageChange
                 }
                 break;
             case Mode.LINES:
-                float width = getWidth() / pageCount;
+                float width = getWidth() / displayPageCount;
                 float startX = (_scrollPosition + _scrollOffset) * width;
+                
+                // For simplicity in LINE mode, we just use the raw scroll values or adjust them
+                // Adjusting line mode for infinite scroll is complex, but DOTS is default.
+                
+                startX = displayCurrentItem * width; // Simple snap for line mode
+
                 float startY = getHeight() / 2;
 
                 canvas.drawLine(startX, startY, startX + width, startY, _paint);
-                if (_scrollOffset != 0f) invalidate();
                 break;
         }
     }

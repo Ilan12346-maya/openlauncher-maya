@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.benny.openlauncher.manager.Setup;
@@ -15,10 +17,50 @@ import com.benny.openlauncher.util.Definitions.ItemState;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
+    private final ExecutorService _executor = Executors.newSingleThreadExecutor();
+    private final Handler _mainHandler = new Handler(Looper.getMainLooper());
+
+    public interface DataCallback<T> {
+        void onDataLoaded(T data);
+    }
+
+    public void getDesktopAsync(final DataCallback<List<List<Item>>> callback) {
+        _executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                final List<List<Item>> desktop = getDesktop();
+                _mainHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        callback.onDataLoaded(desktop);
+                    }
+                });
+            }
+        });
+    }
+
+    public void getDockAsync(final DataCallback<List<Item>> callback) {
+        _executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                final List<Item> dock = getDock();
+                _mainHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        callback.onDataLoaded(dock);
+                    }
+                });
+            }
+        });
+    }
+
     private static final String DATABASE_HOME = "home.db";
     private static final String TABLE_HOME = "home";
+    private static final String TABLE_APPS = "apps";
 
     private static final String COLUMN_TIME = "time";
     private static final String COLUMN_TYPE = "type";
@@ -29,6 +71,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_PAGE = "page";
     private static final String COLUMN_DESKTOP = "desktop";
     private static final String COLUMN_STATE = "state";
+
+    // Apps columns
+    private static final String COLUMN_PACKAGE_NAME = "packageName";
+    private static final String COLUMN_CLASS_NAME = "className";
+    // Reuse COLUMN_LABEL
 
     private static final String SQL_DELETE = "DROP TABLE IF EXISTS ";
     private static final String SQL_QUERY = "SELECT * FROM ";
@@ -44,23 +91,67 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     + COLUMN_DESKTOP + " INTEGER,"
                     + COLUMN_STATE + " INTEGER)";
 
+    private static final String SQL_CREATE_APPS =
+            "CREATE TABLE " + TABLE_APPS + " ("
+                    + COLUMN_PACKAGE_NAME + " VARCHAR,"
+                    + COLUMN_CLASS_NAME + " VARCHAR,"
+                    + COLUMN_LABEL + " VARCHAR,"
+                    + "PRIMARY KEY (" + COLUMN_PACKAGE_NAME + ", " + COLUMN_CLASS_NAME + "))";
+
     protected SQLiteDatabase _db;
     protected Context _context;
 
     public DatabaseHelper(Context c) {
-        super(c, DATABASE_HOME, null, 1);
+        super(c, DATABASE_HOME, null, 2);
         _db = getWritableDatabase();
         _context = c;
     }
 
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE);
+        db.execSQL(SQL_CREATE_APPS);
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // discard the data and start over
-        db.execSQL(SQL_DELETE + TABLE_HOME);
-        onCreate(db);
+        if (oldVersion < 2) {
+            db.execSQL(SQL_CREATE_APPS);
+        }
+    }
+
+    public void saveApps(List<App> apps) {
+        _db.beginTransaction();
+        try {
+            _db.execSQL("DELETE FROM " + TABLE_APPS);
+            for (App app : apps) {
+                ContentValues values = new ContentValues();
+                values.put(COLUMN_PACKAGE_NAME, app._packageName);
+                values.put(COLUMN_CLASS_NAME, app._className);
+                values.put(COLUMN_LABEL, app._label);
+                _db.insert(TABLE_APPS, null, values);
+            }
+            _db.setTransactionSuccessful();
+        } finally {
+            _db.endTransaction();
+        }
+    }
+
+    public List<App> getSavedApps() {
+        List<App> apps = new ArrayList<>();
+        Cursor cursor = _db.rawQuery("SELECT * FROM " + TABLE_APPS, null);
+        if (cursor.moveToFirst()) {
+            int pkgIndex = cursor.getColumnIndex(COLUMN_PACKAGE_NAME);
+            int clsIndex = cursor.getColumnIndex(COLUMN_CLASS_NAME);
+            int lblIndex = cursor.getColumnIndex(COLUMN_LABEL);
+            do {
+                App app = new App();
+                app._packageName = cursor.getString(pkgIndex);
+                app._className = cursor.getString(clsIndex);
+                app._label = cursor.getString(lblIndex);
+                apps.add(app);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return apps;
     }
 
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {

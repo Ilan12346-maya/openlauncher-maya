@@ -82,6 +82,17 @@ public class AppDrawerPage extends ViewPager {
         }
     }
 
+    public void loadApps() {
+        List<App> allApps = Setup.appLoader().getAllApps(getContext(), false);
+        if (allApps.size() != 0) {
+            AppDrawerPage.this._apps = allApps;
+            calculatePage();
+            setAdapter(new Adapter());
+            if (_appDrawerIndicator != null && Setup.appSettings().getDrawerShowIndicator())
+                _appDrawerIndicator.setViewPager(AppDrawerPage.this);
+        }
+    }
+
     private void init(Context c) {
         if (isInEditMode()) return;
 
@@ -95,22 +106,19 @@ public class AppDrawerPage extends ViewPager {
             setLandscapeValue();
         }
 
-        List<App> allApps = Setup.appLoader().getAllApps(c, false);
-        if (allApps.size() != 0) {
-            AppDrawerPage.this._apps = allApps;
-            calculatePage();
-            setAdapter(new Adapter());
-            if (_appDrawerIndicator != null && Setup.appSettings().getDrawerShowIndicator())
-                _appDrawerIndicator.setViewPager(AppDrawerPage.this);
-        }
         Setup.appLoader().addUpdateListener(new AppUpdateListener() {
             @Override
-            public boolean onAppUpdated(List<App> apps) {
-                AppDrawerPage.this._apps = apps;
-                calculatePage();
-                setAdapter(new Adapter());
-                if (_appDrawerIndicator != null && Setup.appSettings().getDrawerShowIndicator())
-                    _appDrawerIndicator.setViewPager(AppDrawerPage.this);
+            public boolean onAppUpdated(final List<App> apps) {
+                post(new Runnable() {
+                    @Override
+                    public void run() {
+                        AppDrawerPage.this._apps = apps;
+                        calculatePage();
+                        setAdapter(new Adapter());
+                        if (_appDrawerIndicator != null && Setup.appSettings().getDrawerShowIndicator())
+                            _appDrawerIndicator.setViewPager(AppDrawerPage.this);
+                    }
+                });
 
                 return false;
             }

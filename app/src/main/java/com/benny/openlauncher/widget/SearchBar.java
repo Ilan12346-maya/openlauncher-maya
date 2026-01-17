@@ -45,10 +45,7 @@ import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.threeten.bp.ZonedDateTime;
-import org.threeten.bp.format.DateTimeFormatter;
 
-import java.sql.Date;
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
 import java.util.ArrayList;
@@ -60,7 +57,6 @@ public class SearchBar extends FrameLayout {
     private static Logger LOG = LoggerFactory.getLogger("SearchBar");
 
     private static final long ANIM_TIME = 200;
-    public TextView _searchClock;
     public AppCompatImageView _switchButton;
     public AppCompatImageView _searchButton;
     public AppCompatEditText _searchInput;
@@ -70,13 +66,7 @@ public class SearchBar extends FrameLayout {
     private FastItemAdapter<IconLabelItem> _adapter = new FastItemAdapter<>();
     private CallBack _callback;
     private boolean _expanded;
-    private int _searchClockTextSize = 28;
-    private float _searchClockSubTextFactor = 0.5f;
     private int bottomInset;
-
-    private HashMap<Integer, DateTimeFormatter> _clockModes = new HashMap<>(4);
-    private Integer _clockFormatterIndex = -1;
-    private DateTimeFormatter _clockFormatter = null;
 
     public SearchBar(@NonNull Context context) {
         super(context);
@@ -112,23 +102,6 @@ public class SearchBar extends FrameLayout {
         int searchTextMarginTop = dp1 * 4;
         int iconSize = dp1 * 24;
         int iconPadding = dp1 * 6;
-
-        // These have to match the Preferences Array, but without item 0 as that is a custom option which can be changed:
-        //   <item>@string/custom</item>
-        //   <item>February 17\nSaturday, 2018</item>
-        //   <item>February 17\n15:48</item>
-        //   <item>February 17, 2018\n15:48</item>
-        //   <item>15:48\nFebruary 17, 2018</item>
-        _clockModes.put(1, DateTimeFormatter.ofPattern("MMMM dd\nEEEE, yyyy", Locale.getDefault()));
-        _clockModes.put(2, DateTimeFormatter.ofPattern("MMMM dd\nHH:mm", Locale.getDefault()));
-        _clockModes.put(3, DateTimeFormatter.ofPattern("MMMM dd, yyyy\nHH:mm", Locale.getDefault()));
-        _clockModes.put(4, DateTimeFormatter.ofPattern("HH:mm\nMMMM dd, yyyy", Locale.getDefault()));
-
-        _searchClock = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.view_search_clock, this, false);
-        _searchClock.setTextSize(TypedValue.COMPLEX_UNIT_DIP, _searchClockTextSize);
-        LayoutParams clockParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        clockParams.setMargins(iconMarginOutside, dp1 * 4, 0, dp1 * 4);
-        clockParams.gravity = Gravity.START;
 
         _switchButton = new AppCompatImageView(getContext());
         _switchButton.setOnClickListener(new OnClickListener() {
@@ -281,7 +254,6 @@ public class SearchBar extends FrameLayout {
 
         final LayoutParams recyclerParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        addView(_searchClock, clockParams);
         addView(_searchRecycler, recyclerParams);
         addView(_searchCardContainer, inputCardParams);
         addView(_searchButton, buttonParams);
@@ -305,7 +277,6 @@ public class SearchBar extends FrameLayout {
 
         _icon.setIcon(getResources().getDrawable(R.drawable.ic_search));
 
-        Tool.visibleViews(ANIM_TIME, _searchClock);
         Tool.goneViews(ANIM_TIME, _searchCardContainer, _searchRecycler, _switchButton);
 
         _searchInput.getText().clear();
@@ -319,7 +290,6 @@ public class SearchBar extends FrameLayout {
         _icon.setIcon(getResources().getDrawable(R.drawable.ic_clear));
 
         Tool.visibleViews(ANIM_TIME, _searchCardContainer, _searchRecycler, _switchButton);
-        Tool.goneViews(ANIM_TIME, _searchClock);
     }
 
     private void updateSwitchIcon() {
@@ -360,26 +330,6 @@ public class SearchBar extends FrameLayout {
         return _searchButton;
     }
 
-    public void updateClock() {
-        AppSettings appSettings = AppSettings.get();
-        if (_searchClock != null) {
-            _searchClock.setTextColor(appSettings.getDesktopDateTextColor());
-        }
-
-        ZonedDateTime now = ZonedDateTime.now();
-        _clockFormatter = getSearchBarClockFormat(Setup.appSettings().getDesktopDateMode());
-
-        String text = now.format(_clockFormatter);
-        String[] lines = text.split("\n");
-        if (lines.length < 2) {
-            _searchClock.setText(lines[0]);
-        } else {
-            Spannable span = new SpannableString(text);
-            span.setSpan(new RelativeSizeSpan(_searchClockSubTextFactor), lines[0].length() + 1, lines[0].length() + 1 + lines[1].length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            _searchClock.setText(span);
-        }
-    }
-
     @Override
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
@@ -388,16 +338,6 @@ public class SearchBar extends FrameLayout {
             return insets;
         }
         return insets;
-    }
-
-    public DateTimeFormatter getSearchBarClockFormat(Integer id) {
-        if (_clockFormatterIndex != id && id > 0) {
-            if (_clockModes.containsKey(id)) {
-                return _clockModes.get(id);
-            }
-        }
-
-        return Setup.appSettings().getUserDateFormat();
     }
 
     public interface CallBack {

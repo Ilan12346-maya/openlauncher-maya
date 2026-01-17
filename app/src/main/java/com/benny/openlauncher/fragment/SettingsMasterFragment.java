@@ -36,9 +36,6 @@ public class SettingsMasterFragment extends SettingsBaseFragment {
                 case R.string.pref_key__cat_about:
                     startActivity(new Intent(getActivity(), MoreInfoActivity.class));
                     return true;
-                case R.string.pref_key__minibar:
-                    LauncherAction.RunAction(LauncherAction.Action.EditMinibar, getActivity());
-                    return true;
                 case R.string.pref_key__icon_pack:
                     DialogHelper.startPickIconPackIntent(getActivity());
                     return true;

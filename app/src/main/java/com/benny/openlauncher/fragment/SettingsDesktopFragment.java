@@ -13,16 +13,4 @@ public class SettingsDesktopFragment extends SettingsBaseFragment {
         super.onCreatePreferences(savedInstanceState, rootKey);
         addPreferencesFromResource(R.xml.preferences_desktop);
     }
-
-    @Override
-    public boolean onPreferenceTreeClick(Preference preference) {
-        HomeActivity homeActivity = HomeActivity._launcher;
-        int key = new ContextUtils(getActivity()).getResId(ContextUtils.ResType.STRING, preference.getKey());
-        switch (key) {
-            case R.string.pref_key__minibar:
-                LauncherAction.RunAction(LauncherAction.Action.EditMinibar, getActivity());
-                return true;
-        }
-        return false;
-    }
 }

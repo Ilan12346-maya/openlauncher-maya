@@ -161,7 +161,10 @@ public class Tool {
 
     public static void startApp(Context context, App app, View view) {
         HomeActivity launcher = HomeActivity.Companion.getLauncher();
-        launcher.onStartApp(context, app, view);
+        if (launcher != null && app != null) {
+            AppSettings.get().addRecentApp(app._packageName, app._className);
+            launcher.onStartApp(context, app, view);
+        }
     }
 
     public static Bitmap drawableToBitmap(Drawable drawable) {

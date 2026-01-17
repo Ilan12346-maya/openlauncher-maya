@@ -57,12 +57,17 @@ public class AppDrawerGrid extends FrameLayout {
         addView(view);
 
         _recyclerView = findViewById(R.id.recycler_view);
+        _recyclerView.setItemAnimator(null);
         _scrollBar = findViewById(R.id.scroll_bar);
         _searchBar = findViewById(R.id.search_bar);
         _batchUninstallButton = findViewById(R.id.batch_uninstall_button);
         _layoutManager = new GridLayoutManager(getContext(), Setup.appSettings().getDrawerColumnCount());
 
         init();
+    }
+
+    public void loadApps() {
+        updateAdapter(Setup.appLoader().getAllApps(getContext(), false));
     }
 
     private void init() {
@@ -130,11 +135,16 @@ public class AppDrawerGrid extends FrameLayout {
                 getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 _itemWidth = getWidth() / _layoutManager.getSpanCount();
                 _itemHeightPadding = Tool.dp2px(20);
-                updateAdapter(Setup.appLoader().getAllApps(getContext(), false));
+                
                 Setup.appLoader().addUpdateListener(new AppUpdateListener() {
                     @Override
-                    public boolean onAppUpdated(List<App> apps) {
-                        updateAdapter(apps);
+                    public boolean onAppUpdated(final List<App> apps) {
+                        post(new Runnable() {
+                            @Override
+                            public void run() {
+                                updateAdapter(apps);
+                            }
+                        });
                         return false;
                     }
                 });

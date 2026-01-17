@@ -71,5 +71,9 @@ public abstract class Setup {
         void showEditDialog(Context context, Item item, DialogListener.OnEditDialogListener listener);
 
         void showDeletePackageDialog(Context context, Item item);
+
+        void showBackupDialog(Context context);
+
+        void showRestoreDialog(Context context);
     }
 }

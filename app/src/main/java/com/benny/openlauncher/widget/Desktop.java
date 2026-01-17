@@ -21,6 +21,9 @@ import android.webkit.WebViewClient;
 
 import com.benny.openlauncher.activity.HomeActivity;
 import com.benny.openlauncher.manager.Setup;
+import com.benny.openlauncher.util.AppManager;
+import com.benny.openlauncher.util.AppSettings;
+import com.benny.openlauncher.util.DatabaseHelper;
 import com.benny.openlauncher.model.Item;
 import com.benny.openlauncher.model.Item.Type;
 import com.benny.openlauncher.util.Definitions;
@@ -167,12 +170,11 @@ public final class Desktop extends ViewPager implements DesktopCallback {
         private final Desktop _desktop;
         private WebView _webView;
 
-        public DesktopAdapter(Desktop desktop) {
+        public DesktopAdapter(Desktop desktop, int pageCount) {
             _desktop = desktop;
             _desktop.getPages().clear();
-            int count = HomeActivity._db.getDesktop().size();
-            if (count == 0) count++;
-            for (int i = 0; i < count; i++) {
+            if (pageCount == 0) pageCount++;
+            for (int i = 0; i < pageCount; i++) {
                 _desktop.getPages().add(getItemLayout());
             }
         }
@@ -252,7 +254,17 @@ public final class Desktop extends ViewPager implements DesktopCallback {
         @Override
         public int getCount() {
             boolean page0Enabled = Setup.appSettings().getDesktopPage0Enabled();
-            return _desktop.getPages().size() + (page0Enabled ? 1 : 0);
+            boolean infinite = Setup.appSettings().getDesktopInfiniteScrolling();
+            int count = _desktop.getPages().size() + (page0Enabled ? 1 : 0);
+            
+            if (infinite && _desktop.getPages().size() > 1) {
+                if (page0Enabled) {
+                    count++; // Dummy at the end (Page 1)
+                } else {
+                    count += 2; // Dummy at both ends (Page N and Page 1)
+                }
+            }
+            return count;
         }
 
         @Override
@@ -262,18 +274,7 @@ public final class Desktop extends ViewPager implements DesktopCallback {
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-            boolean page0Enabled = Setup.appSettings().getDesktopPage0Enabled();
-            if (page0Enabled && position == 0 && object instanceof android.widget.RelativeLayout) {
-                container.removeView((View) object);
-                if (!Setup.appSettings().getDesktopPage0Persistence()) {
-                    if (_webView != null) {
-                        _webView.destroy();
-                        _webView = null;
-                    }
-                }
-            } else {
-                container.removeView((View) object);
-            }
+            container.removeView((View) object);
         }
 
         public void clearPage0() {
@@ -289,8 +290,31 @@ public final class Desktop extends ViewPager implements DesktopCallback {
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            boolean page0Enabled = Setup.appSettings().getDesktopPage0Enabled();
-            if (page0Enabled && position == 0) {
+            AppSettings appSettings = Setup.appSettings();
+            boolean page0Enabled = appSettings.getDesktopPage0Enabled();
+            boolean infinite = appSettings.getDesktopInfiniteScrolling() && _desktop.getPages().size() > 1;
+            
+            int realPosition = position;
+            if (infinite) {
+                if (page0Enabled) {
+                    // WV (0) | P1 (1) | P2 (2) | D(P1) (3)
+                    if (position == getCount() - 1) {
+                        // Dummy at end
+                        return createDummyView(container, 0);
+                    }
+                } else {
+                    // D(PN) (0) | P1 (1) | P2 (2) | D(P1) (3)
+                    if (position == 0) {
+                        return createDummyView(container, _desktop.getPages().size() - 1);
+                    } else if (position == getCount() - 1) {
+                        return createDummyView(container, 0);
+                    }
+                    realPosition = position - 1;
+                }
+            }
+
+            if (page0Enabled && realPosition == 0) {
+                // WebView logic
                 if (_webView == null) {
                     _webView = new WebView(_desktop.getContext());
                     _webView.setFitsSystemWindows(false);
@@ -383,7 +407,17 @@ public final class Desktop extends ViewPager implements DesktopCallback {
                 return layout;
             }
             
-            int pageIndex = page0Enabled ? position - 1 : position;
+            int pageIndex;
+            if (infinite) {
+                if (page0Enabled) {
+                    pageIndex = realPosition - 1;
+                } else {
+                    pageIndex = realPosition;
+                }
+            } else {
+                pageIndex = page0Enabled ? position - 1 : position;
+            }
+            
             CellContainer layout = _desktop.getPages().get(pageIndex);
             // Add padding to account for SearchBar at top and Dock at bottom
             // Increased top padding to move grid lower
@@ -394,6 +428,30 @@ public final class Desktop extends ViewPager implements DesktopCallback {
             if (layout.getParent() != null) {
                 ((ViewGroup) layout.getParent()).removeView(layout);
             }
+            container.addView(layout);
+            return layout;
+        }
+
+        private View createDummyView(ViewGroup container, int targetPageIndex) {
+            CellContainer layout = getItemLayout();
+            
+            // Apply padding same as in instantiateItem
+            int topPadding = Tool.dp2px(Setup.appSettings().getSearchBarEnable() ? 120 : 70);
+            int bottomPadding = Tool.dp2px(115);
+            layout.setPadding(0, topPadding, 0, bottomPadding);
+
+            // Get items for the target page from the database (cached)
+            List<List<Item>> desktopItems = HomeActivity._db.getDesktop();
+            if (targetPageIndex < desktopItems.size()) {
+                List<Item> pageItems = desktopItems.get(targetPageIndex);
+                for (Item item : pageItems) {
+                    View itemView = ItemViewFactory.getItemView(_desktop.getContext(), _desktop, Action.DESKTOP, item);
+                    if (itemView != null) {
+                        layout.addViewToGrid(itemView, item._x, item._y, item._spanX, item._spanY);
+                    }
+                }
+            }
+
             container.addView(layout);
             return layout;
         }
@@ -474,23 +532,51 @@ public final class Desktop extends ViewPager implements DesktopCallback {
 
 
     public final void initDesktop() {
-        _adapter = new DesktopAdapter(this);
-        setAdapter(_adapter);
-        
-        boolean page0Enabled = Setup.appSettings().getDesktopPage0Enabled();
-        setCurrentItem(Setup.appSettings().getDesktopPageCurrent() + (page0Enabled ? 1 : 0));
-
-        if (Setup.appSettings().getDesktopShowIndicator() && _pageIndicator != null) {
-            _pageIndicator.setViewPager(this);
-        }
-        addItemsToPage();
+        initDesktop(null);
     }
 
-    private void addItemsToPage() {
+    public final void initDesktop(final Runnable onFinished) {
+        HomeActivity._db.getDesktopAsync(new DatabaseHelper.DataCallback<List<List<Item>>>() {
+            @Override
+            public void onDataLoaded(List<List<Item>> desktopItems) {
+                _adapter = new DesktopAdapter(Desktop.this, desktopItems.size());
+                setAdapter(_adapter);
+
+                boolean page0Enabled = Setup.appSettings().getDesktopPage0Enabled();
+                setCurrentItem(Setup.appSettings().getDesktopPageCurrent() + (page0Enabled ? 1 : 0));
+
+                if (Setup.appSettings().getDesktopShowIndicator() && _pageIndicator != null) {
+                    _pageIndicator.setViewPager(Desktop.this);
+                }
+                addItemsToPage(desktopItems);
+                
+                if (onFinished != null) {
+                    onFinished.run();
+                }
+            }
+        });
+    }
+
+    private void addItemsToPage(List<List<Item>> desktopItems) {
         int columns = Setup.appSettings().getDesktopColumnCount();
         int rows = Setup.appSettings().getDesktopRowCount();
-        List<List<Item>> desktopItems = HomeActivity._db.getDesktop();
+        int currentPageIndex = getCurrentPageIndex();
+
+        // Load current page first
+        if (currentPageIndex < desktopItems.size()) {
+            List<Item> page = desktopItems.get(currentPageIndex);
+            _pages.get(currentPageIndex).removeAllViews();
+            for (int itemCount = 0; itemCount < page.size(); itemCount++) {
+                Item item = page.get(itemCount);
+                if (item._x + item._spanX <= columns && item._y + item._spanY <= rows) {
+                    addItemToPage(item, currentPageIndex);
+                }
+            }
+        }
+
+        // Load other pages
         for (int pageCount = 0; pageCount < desktopItems.size(); pageCount++) {
+            if (pageCount == currentPageIndex) continue;
             List<Item> page = desktopItems.get(pageCount);
             _pages.get(pageCount).removeAllViews();
             for (int itemCount = 0; itemCount < page.size(); itemCount++) {
@@ -499,12 +585,16 @@ public final class Desktop extends ViewPager implements DesktopCallback {
                     addItemToPage(item, pageCount);
                 }
             }
-
         }
     }
 
     public final void updateDesktop() {
-        addItemsToPage();
+        HomeActivity._db.getDesktopAsync(new DatabaseHelper.DataCallback<List<List<Item>>>() {
+            @Override
+            public void onDataLoaded(List<List<Item>> desktopItems) {
+                addItemsToPage(desktopItems);
+            }
+        });
     }
 
     public final void addPageRight(boolean showGrid) {
@@ -660,12 +750,14 @@ public final class Desktop extends ViewPager implements DesktopCallback {
     @Override
     protected void onPageScrolled(int position, float offset, int offsetPixels) {
         Definitions.WallpaperScroll scroll = Setup.appSettings().getDesktopWallpaperScroll();
-        float xOffset = (position + offset) / (_pages.size() - 1);
+        float xOffset = (position + offset) / (getAdapter().getCount() - 1);
         if (scroll.equals(Inverse)) {
             xOffset = 1f - xOffset;
         } else if (scroll.equals(Off)) {
             xOffset = 0.5f;
         }
+        
+        xOffset = Math.max(0, Math.min(1, xOffset));
 
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(getContext());
         wallpaperManager.setWallpaperOffsets(getWindowToken(), xOffset, 0.0f);

@@ -29,6 +29,11 @@
             android:key="@string/pref_key__dock_show_label"
             android:summary="@string/pref_summary__dock_show_label"
             android:title="@string/pref_title__dock_show_label" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/pref_key__dock_ios_style"
+            android:summary="@string/pref_summary__dock_ios_style"
+            android:title="@string/pref_title__dock_ios_style" />
     </com.benny.openlauncher.widget.ColorPreferenceCategory>
 
     <com.benny.openlauncher.widget.ColorPreferenceCategory android:title="@string/pref_title__color">
@@ -38,6 +43,12 @@
             android:title="@string/pref_title__dock_background_color"
             app:lightnessSlider="true"
             app:alphaSlider="true" />
+        <com.benny.openlauncher.widget.ValueSeekBarPreference
+            android:defaultValue="150"
+            android:key="@string/pref_key__dock_background_alpha"
+            android:max="255"
+            android:title="@string/pref_title__dock_background_alpha"
+            app:min="0" />
     </com.benny.openlauncher.widget.ColorPreferenceCategory>
 
 </PreferenceScreen>

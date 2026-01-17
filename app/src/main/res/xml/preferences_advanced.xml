@@ -31,6 +31,10 @@
             android:key="@string/pref_key__restart"
             android:summary="@string/pref_summary__restart"
             android:title="@string/pref_title__restart" />
+        <Preference
+            android:key="@string/pref_key__crash_test"
+            android:summary="@string/pref_summary__crash_test"
+            android:title="@string/pref_title__crash_test" />
     </com.benny.openlauncher.widget.ColorPreferenceCategory>
 
 </PreferenceScreen>

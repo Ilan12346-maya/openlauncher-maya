@@ -25,6 +25,9 @@ public class App {
     private ResolveInfo _info;
     private LauncherActivityInfo _launcherInfo;
 
+    public App() {
+    }
+
     public App(PackageManager pm, ResolveInfo info, List<ShortcutInfo> shortcutInfo) {
         _pm = pm;
         _info = info;

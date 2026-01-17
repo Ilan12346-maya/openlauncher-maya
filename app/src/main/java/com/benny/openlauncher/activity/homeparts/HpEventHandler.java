@@ -43,4 +43,14 @@ public class HpEventHandler implements Setup.EventHandler {
     public void showDeletePackageDialog(Context context, Item item) {
         DialogHelper.deletePackageDialog(context, item);
     }
+
+    @Override
+    public void showBackupDialog(Context context) {
+        DialogHelper.backupDialog(context);
+    }
+
+    @Override
+    public void showRestoreDialog(Context context) {
+        DialogHelper.restoreDialog(context);
+    }
 }

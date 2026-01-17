@@ -133,6 +133,15 @@ public class AppDrawerController extends RevealFrameLayout {
         }
     }
 
+    public void loadApps() {
+        if (_drawerViewGrid != null) {
+            _drawerViewGrid.loadApps();
+        }
+        if (_drawerViewPage != null) {
+            _drawerViewPage.loadApps();
+        }
+    }
+
     public void init() {
         if (isInEditMode()) return;
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());

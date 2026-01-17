@@ -12,7 +12,7 @@ import com.benny.openlauncher.widget.SearchBar;
 
 import net.gsantner.opoc.util.ActivityUtils;
 
-public class HpSearchBar implements SearchBar.CallBack, View.OnClickListener {
+public class HpSearchBar implements SearchBar.CallBack {
     private HomeActivity _homeActivity;
     private SearchBar _searchBar;
 
@@ -24,8 +24,6 @@ public class HpSearchBar implements SearchBar.CallBack, View.OnClickListener {
 
     public void initSearchBar() {
         _searchBar.setCallback(this);
-        _searchBar._searchClock.setOnClickListener(this);
-        _homeActivity.updateSearchClock();
     }
 
     @Override
@@ -76,10 +74,5 @@ public class HpSearchBar implements SearchBar.CallBack, View.OnClickListener {
             }
         }, 100);
         Tool.hideKeyboard(_homeActivity, _searchBar._searchInput);
-    }
-
-    @Override
-    public void onClick(View v) {
-        new ActivityUtils(_homeActivity).startCalendarApp().freeContextRef();
     }
 }

@@ -25,9 +25,6 @@
             android:entryValues="@array/values__zero_to_one"
             android:key="@string/pref_key__desktop_indicator_style"
             android:title="@string/pref_title__desktop_indicator_style" />
-        <Preference
-            android:key="@string/pref_key__minibar"
-            android:title="@string/minibar" />
         <ListPreference
             android:defaultValue="0"
             android:entries="@array/entries__wallpaper_scroll"
@@ -40,6 +37,11 @@
             android:entryValues="@array/values__zero_to_two"
             android:key="@string/pref_key__desktop_orientation"
             android:title="@string/pref_title__desktop_orientation" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/pref_key__desktop_infinite_scrolling"
+            android:summary="@string/pref_summary__desktop_infinite_scrolling"
+            android:title="@string/pref_title__desktop_infinite_scrolling" />
         <SwitchPreference
             android:defaultValue="true"
             android:key="@string/pref_key__desktop_show_grid"
@@ -81,12 +83,6 @@
             android:title="@string/pref_title__desktop_folder_color"
             app:lightnessSlider="true"
             app:alphaSlider="true" />
-        <com.flask.colorpicker.ColorPickerPreference
-            android:defaultValue="@color/colorPrimary"
-            android:key="@string/pref_key__minibar_background_color"
-            android:title="@string/minibar"
-            app:lightnessSlider="true"
-            app:alphaSlider="true" />
     </com.benny.openlauncher.widget.ColorPreferenceCategory>
 
     <com.benny.openlauncher.widget.ColorPreferenceCategory android:title="@string/pref_title__search_bar">
@@ -121,33 +117,6 @@
             android:key="@string/pref_key__search_bar_show_hidden_apps"
             android:summary="@string/pref_summary__search_bar_show_hidden_apps"
             android:title="@string/pref_title__search_bar_show_hidden_apps" />
-    </com.benny.openlauncher.widget.ColorPreferenceCategory>
-
-    <com.benny.openlauncher.widget.ColorPreferenceCategory android:title="@string/pref_title__date_bar">
-        <com.flask.colorpicker.ColorPickerPreference
-            android:defaultValue="@color/white"
-            android:key="@string/pref_key__date_bar_date_text_color"
-            android:title="@string/pref_title__date_bar_text_color"
-            app:lightnessSlider="true"
-            app:alphaSlider="true" />
-        <ListPreference
-            android:defaultValue="1"
-            android:entries="@array/entries__date_format"
-            android:entryValues="@array/values__zero_to_four"
-            android:key="@string/pref_key__date_bar_date_format_type"
-            android:title="@string/pref_title__date_bar_date_format" />
-        <EditTextPreference
-            android:defaultValue="@string/pref_default__date_bar_date_format_custom_1"
-            android:hint="@string/pref_default__date_bar_date_format_custom_1"
-            android:key="@string/pref_key__date_bar_date_format_custom_1"
-            android:summary="@string/pref_title__date_bar"
-            android:title="@string/pref_title__date_bar_date_format_custom_1" />
-        <EditTextPreference
-            android:defaultValue="@string/pref_default__date_bar_date_format_custom_2"
-            android:hint="@string/pref_default__date_bar_date_format_custom_2"
-            android:key="@string/pref_key__date_bar_date_format_custom_2"
-            android:summary="@string/pref_title__date_bar"
-            android:title="@string/pref_title__date_bar_date_format_custom_2" />
     </com.benny.openlauncher.widget.ColorPreferenceCategory>
 
 </PreferenceScreen>

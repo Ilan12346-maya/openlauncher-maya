@@ -41,7 +41,7 @@ public class OnBoardActivity extends MaterialIntroActivity {
                 .backgroundColor(R.color.materialRed)
                 .buttonsColor(R.color.introButton)
                 .image(R.drawable.intro_2)
-                .title(getString(R.string.minibar))
+                .title(getString(R.string.app_name))
                 .description(getString(R.string.intro2_text))
                 .build());
 

@@ -28,10 +28,23 @@ public class HpDragOption {
                 @Override
                 public void run() {
                     int i = _homeActivity.getDesktop().getCurrentItem();
-                    if (i > 1) {
-                        _homeActivity.getDesktop().setCurrentItem(i - 1);
-                    } else if (i == 1) {
-                        _homeActivity.getDesktop().addPageLeft(true);
+                    boolean page0Enabled = Setup.appSettings().getDesktopPage0Enabled();
+                    boolean infinite = Setup.appSettings().getDesktopInfiniteScrolling();
+                    
+                    if (page0Enabled) {
+                        if (i > 1) {
+                            _homeActivity.getDesktop().setCurrentItem(i - 1);
+                        } else if (i == 1 && infinite) {
+                            _homeActivity.getDesktop().setCurrentItem(_homeActivity.getDesktop().getAdapter().getCount() - 2);
+                        }
+                    } else {
+                        if (i > 0) {
+                            _homeActivity.getDesktop().setCurrentItem(i - 1);
+                        } else if (infinite) {
+                            _homeActivity.getDesktop().setCurrentItem(_homeActivity.getDesktop().getAdapter().getCount() - 2);
+                        } else if (i == 0) {
+                            _homeActivity.getDesktop().addPageLeft(true);
+                        }
                     }
                     dragHandler.postDelayed(this, 1000);
                 }
@@ -86,10 +99,15 @@ public class HpDragOption {
                 @Override
                 public void run() {
                     int i = _homeActivity.getDesktop().getCurrentItem();
-                    int totalPagesIncludingWebview = _homeActivity.getDesktop().getPages().size();
-                    if (i < totalPagesIncludingWebview) {
+                    int totalPagesIncludingWebview = _homeActivity.getDesktop().getAdapter().getCount();
+                    boolean page0Enabled = Setup.appSettings().getDesktopPage0Enabled();
+                    boolean infinite = Setup.appSettings().getDesktopInfiniteScrolling();
+
+                    if (i < totalPagesIncludingWebview - 1) {
                         _homeActivity.getDesktop().setCurrentItem(i + 1);
-                    } else if (i == totalPagesIncludingWebview) {
+                    } else if (infinite) {
+                        _homeActivity.getDesktop().setCurrentItem(page0Enabled ? 1 : 0);
+                    } else {
                         _homeActivity.getDesktop().addPageRight(true);
                     }
                     dragHandler.postDelayed(this, 1000);

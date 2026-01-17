@@ -15,6 +15,7 @@ import android.os.UserManager;
 import androidx.annotation.NonNull;
 
 import com.benny.openlauncher.activity.HomeActivity;
+import com.benny.openlauncher.manager.Setup;
 import com.benny.openlauncher.interfaces.AppDeleteListener;
 import com.benny.openlauncher.interfaces.AppUpdateListener;
 import com.benny.openlauncher.model.App;
@@ -83,6 +84,11 @@ public class AppManager {
     }
 
     public void init() {
+        // Load saved apps first for instant display
+        _apps = Setup.dataManager().getSavedApps();
+        if (_apps.size() > 0) {
+            notifyUpdateListeners(_apps);
+        }
         getAllApps();
     }
 
@@ -253,6 +259,9 @@ public class AppManager {
         protected void onPostExecute(Object result) {
             _apps = appsTemp;
             _nonFilteredApps = nonFilteredAppsTemp;
+
+            // Save to database for next startup
+            Setup.dataManager().saveApps(_apps);
 
             if (removedApps.size() > 0) {
                 notifyRemoveListeners(removedApps);

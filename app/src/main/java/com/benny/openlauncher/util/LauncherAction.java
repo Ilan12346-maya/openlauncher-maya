@@ -15,7 +15,6 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.benny.openlauncher.R;
 import com.benny.openlauncher.activity.HomeActivity;
-import com.benny.openlauncher.activity.MinibarEditActivity;
 import com.benny.openlauncher.activity.SettingsActivity;
 import com.benny.openlauncher.viewutil.DialogHelper;
 
@@ -26,43 +25,40 @@ import java.util.List;
 public class LauncherAction {
 
     public enum Action {
-        EditMinibar, SetWallpaper, LockScreen, LauncherSettings, VolumeDialog, DeviceSettings, AppDrawer, SearchBar, MobileNetworkSettings, ShowNotifications, TurnOffScreen, Camera, Restart, RecentApps
+        SetWallpaper, LockScreen, LauncherSettings, VolumeDialog, DeviceSettings, AppDrawer, SearchBar, MobileNetworkSettings, ShowNotifications, TurnOffScreen, Camera, Restart, RecentApps, OpenQuickRecentDrawer
     }
 
     public static ActionDisplayItem[] actionDisplayItems = new ActionDisplayItem[]{
-            new ActionDisplayItem(Action.EditMinibar, HomeActivity._launcher.getResources().getString(R.string.minibar_title__edit_minibar), HomeActivity._launcher.getResources().getString(R.string.minibar_summary__edit_minibar), R.drawable.ic_edit, 98),
-            new ActionDisplayItem(Action.SetWallpaper, HomeActivity._launcher.getResources().getString(R.string.minibar_title__set_wallpaper), HomeActivity._launcher.getResources().getString(R.string.minibar_summary__set_wallpaper), R.drawable.ic_photo, 36),
-            new ActionDisplayItem(Action.LockScreen, HomeActivity._launcher.getResources().getString(R.string.minibar_title__lock_screen), HomeActivity._launcher.getResources().getString(R.string.minibar_summary__lock_screen), R.drawable.ic_lock, 24),
-            new ActionDisplayItem(Action.LauncherSettings, HomeActivity._launcher.getResources().getString(R.string.minibar_title__launcher_settings), HomeActivity._launcher.getResources().getString(R.string.minibar_summary__launcher_settings), R.drawable.ic_settings, 50),
-            new ActionDisplayItem(Action.VolumeDialog, HomeActivity._launcher.getResources().getString(R.string.minibar_title__volume_dialog), HomeActivity._launcher.getResources().getString(R.string.minibar_summary__volume_dialog), R.drawable.ic_volume, 71),
-            new ActionDisplayItem(Action.DeviceSettings, HomeActivity._launcher.getResources().getString(R.string.minibar_title__device_settings), HomeActivity._launcher.getResources().getString(R.string.minibar_summary__device_settings), R.drawable.ic_android, 25),
-            new ActionDisplayItem(Action.AppDrawer, HomeActivity._launcher.getResources().getString(R.string.minibar_title__app_drawer), HomeActivity._launcher.getResources().getString(R.string.minibar_summary__app_drawer), R.drawable.ic_apps, 73),
-            new ActionDisplayItem(Action.SearchBar, HomeActivity._launcher.getResources().getString(R.string.minibar_title__search_bar), HomeActivity._launcher.getResources().getString(R.string.minibar_summary__search_bar), R.drawable.ic_search, 89),
-            new ActionDisplayItem(Action.MobileNetworkSettings, HomeActivity._launcher.getResources().getString(R.string.minibar_title__mobile_network), HomeActivity._launcher.getResources().getString(R.string.minibar_summary__mobile_network), R.drawable.ic_network, 46),
-            new ActionDisplayItem(Action.ShowNotifications, HomeActivity._launcher.getResources().getString(R.string.minibar_title__notification_bar), HomeActivity._launcher.getResources().getString(R.string.minibar_summary__notification_bar), R.drawable.ic_notifications, 46),
-            new ActionDisplayItem(Action.Camera, HomeActivity._launcher.getResources().getString(R.string.minibar_title__camera), HomeActivity._launcher.getResources().getString(R.string.minibar_summary__camera), R.drawable.ic_camera_, 13),
-            new ActionDisplayItem(Action.RecentApps, HomeActivity._launcher.getResources().getString(R.string.minibar_title__recent_apps), HomeActivity._launcher.getResources().getString(R.string.minibar_summary__recent_apps), R.drawable.ic_desktop, 14),
-            new ActionDisplayItem(Action.Restart, "Restart Launcher", "Kills and restarts the launcher process", R.drawable.ic_android, 99)
-
+            new ActionDisplayItem(Action.SetWallpaper, R.string.action_title__set_wallpaper, R.string.action_summary__set_wallpaper, R.drawable.ic_photo, 36),
+            new ActionDisplayItem(Action.LockScreen, R.string.action_title__lock_screen, R.string.action_summary__lock_screen, R.drawable.ic_lock, 24),
+            new ActionDisplayItem(Action.LauncherSettings, R.string.action_title__launcher_settings, R.string.action_summary__launcher_settings, R.drawable.ic_settings, 50),
+            new ActionDisplayItem(Action.VolumeDialog, R.string.action_title__volume_dialog, R.string.action_summary__volume_dialog, R.drawable.ic_volume, 71),
+            new ActionDisplayItem(Action.DeviceSettings, R.string.action_title__device_settings, R.string.action_summary__device_settings, R.drawable.ic_android, 25),
+            new ActionDisplayItem(Action.AppDrawer, R.string.action_title__app_drawer, R.string.action_summary__app_drawer, R.drawable.ic_apps, 73),
+            new ActionDisplayItem(Action.SearchBar, R.string.action_title__search_bar, R.string.action_summary__search_bar, R.drawable.ic_search, 89),
+            new ActionDisplayItem(Action.MobileNetworkSettings, R.string.action_title__mobile_network, R.string.action_summary__mobile_network, R.drawable.ic_network, 46),
+            new ActionDisplayItem(Action.ShowNotifications, R.string.action_title__notification_bar, R.string.action_summary__notification_bar, R.drawable.ic_notifications, 46),
+            new ActionDisplayItem(Action.Camera, R.string.action_title__camera, R.string.action_summary__camera, R.drawable.ic_camera_, 13),
+            new ActionDisplayItem(Action.RecentApps, R.string.action_title__recent_apps, R.string.action_summary__recent_apps, R.drawable.ic_desktop, 14),
+            new ActionDisplayItem(Action.OpenQuickRecentDrawer, R.string.action_title__quick_recent_drawer, R.string.action_title__quick_recent_drawer, R.drawable.ic_apps, 15),
+            new ActionDisplayItem(Action.Restart, R.string.on, R.string.on, R.drawable.ic_android, 99)
     };
 
     public static List<Action> defaultArrangement = Arrays.asList(
-            Action.EditMinibar, Action.SetWallpaper,
+            Action.SetWallpaper,
             Action.LockScreen, Action.LauncherSettings,
             Action.VolumeDialog, Action.DeviceSettings,
             Action.Camera
     );
 
     public static void RunAction(Action action, final Context context) {
-        LauncherAction.RunAction(getActionItem(action), context);
+        LauncherAction.RunAction(getActionItem(action, context), context);
     }
 
     @SuppressWarnings("WrongConstant")
     public static void RunAction(ActionDisplayItem action, final Context context) {
+        if (action == null) return;
         switch (action._action) {
-            case EditMinibar:
-                context.startActivity(new Intent(context, MinibarEditActivity.class));
-                break;
             case SetWallpaper:
                 context.startActivity(Intent.createChooser(new Intent(Intent.ACTION_SET_WALLPAPER), context.getString(R.string.select_wallpaper)));
                 break;
@@ -148,6 +144,11 @@ public class LauncherAction {
                     e.printStackTrace();
                 }
                 break;
+            case OpenQuickRecentDrawer:
+                if (HomeActivity._launcher != null) {
+                    HomeActivity._launcher.openQuickRecentDrawer();
+                }
+                break;
             case Restart:
                 if (context instanceof android.app.Activity) {
                     ((android.app.Activity) context).recreate();
@@ -159,18 +160,19 @@ public class LauncherAction {
         }
     }
 
-    public static ActionDisplayItem getActionItem(int position) {
+    public static ActionDisplayItem getActionItem(int position, Context context) {
         // used for pick action dialog
-        return getActionItem(Action.values()[position]);
+        return getActionItem(Action.values()[position], context);
     }
 
-    public static ActionDisplayItem getActionItem(Action action) {
-        return getActionItem(action.toString());
+    public static ActionDisplayItem getActionItem(Action action, Context context) {
+        return getActionItem(action.toString(), context);
     }
 
-    public static ActionDisplayItem getActionItem(String action) {
+    public static ActionDisplayItem getActionItem(String action, Context context) {
         for (ActionDisplayItem item : actionDisplayItems) {
             if (item._action.toString().equals(action)) {
+                if (context != null) item.loadStrings(context);
                 return item;
             }
         }
@@ -181,15 +183,22 @@ public class LauncherAction {
         public Action _action;
         public String _label;
         public String _description;
+        public int _labelRes;
+        public int _descriptionRes;
         public int _icon;
         public int _id;
 
-        public ActionDisplayItem(Action action, String label, String description, int icon, int id) {
+        public ActionDisplayItem(Action action, int labelRes, int descriptionRes, int icon, int id) {
             _action = action;
-            _label = label;
-            _description = description;
+            _labelRes = labelRes;
+            _descriptionRes = descriptionRes;
             _icon = icon;
             _id = id;
+        }
+
+        public void loadStrings(Context context) {
+            _label = context.getString(_labelRes);
+            _description = context.getString(_descriptionRes);
         }
     }
 }

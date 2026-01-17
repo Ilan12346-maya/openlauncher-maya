@@ -14,8 +14,6 @@ import com.benny.openlauncher.widget.PagerIndicator;
 
 import net.gsantner.opoc.preference.SharedPreferencesPropertyBackend;
 
-import org.threeten.bp.format.DateTimeFormatter;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -74,6 +72,10 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
         return getBool(R.string.pref_key__desktop_show_label, true);
     }
 
+    public boolean getDesktopInfiniteScrolling() {
+        return getBool(R.string.pref_key__desktop_infinite_scrolling, false);
+    }
+
     public boolean getSearchBarEnable() {
         return getBool(R.string.pref_key__search_bar_enable, true);
     }
@@ -94,21 +96,6 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
         return getBool(R.string.pref_key__search_bar_show_hidden_apps, false);
     }
 
-    public DateTimeFormatter getUserDateFormat() {
-        String line1 = getString(R.string.pref_key__date_bar_date_format_custom_1, rstr(R.string.pref_default__date_bar_date_format_custom_1));
-        String line2 = getString(R.string.pref_key__date_bar_date_format_custom_2, rstr(R.string.pref_default__date_bar_date_format_custom_2));
-
-        return DateTimeFormatter.ofPattern(line1 +  "'\n'" + line2);
-    }
-
-    public int getDesktopDateMode() {
-        return getIntOfStringPref(R.string.pref_key__date_bar_date_format_type, 1);
-    }
-
-    public int getDesktopDateTextColor() {
-        return getInt(R.string.pref_key__date_bar_date_text_color, Color.WHITE);
-    }
-
     public int getDesktopBackgroundColor() {
         return getInt(R.string.pref_key__desktop_background_color, Color.TRANSPARENT);
     }
@@ -119,10 +106,6 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
 
     public int getDesktopFolderColor() {
         return getInt(R.string.pref_key__desktop_folder_color, Color.WHITE);
-    }
-
-    public int getMinibarBackgroundColor() {
-        return getInt(R.string.pref_key__minibar_background_color, ContextCompat.getColor(_context, R.color.colorPrimary));
     }
 
     public int getDesktopIconSize() {
@@ -145,8 +128,16 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
         return getBool(R.string.pref_key__dock_show_label, false);
     }
 
+    public boolean getDockIosStyle() {
+        return getBool(R.string.pref_key__dock_ios_style, false);
+    }
+
     public int getDockColor() {
         return getInt(R.string.pref_key__dock_background_color, Color.TRANSPARENT);
+    }
+
+    public int getDockAlpha() {
+        return getInt(R.string.pref_key__dock_background_alpha, 150);
     }
 
     public int getDockIconSize() {
@@ -236,7 +227,7 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
     public Object getGesture(int key) {
         // return either ActionItem or Intent
         String result = getString(key, "");
-        Object gesture = LauncherAction.getActionItem(result);
+        Object gesture = LauncherAction.getActionItem(result, _context);
         // no action was found so it must be an intent string
         if (gesture == null) {
             gesture = Tool.getIntentFromString(result);
@@ -283,38 +274,6 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
     }
 
     // internal preferences below here
-    public boolean getMinibarEnable() {
-        return getBool(R.string.pref_key__minibar_enable, true);
-    }
-
-    public void setMinibarEnable(boolean value) {
-        setBool(R.string.pref_key__minibar_enable, value);
-    }
-
-    public ArrayList<LauncherAction.ActionDisplayItem> getMinibarArrangement() {
-        ArrayList<String> minibarString = getStringList(R.string.pref_key__minibar_items);
-        ArrayList<LauncherAction.ActionDisplayItem> minibarObject = new ArrayList<>();
-        for (String action : minibarString) {
-            LauncherAction.ActionDisplayItem item = LauncherAction.getActionItem(action);
-            if (item != null) {
-                minibarObject.add(item);
-            }
-        }
-        if (minibarObject.isEmpty()) {
-            for (LauncherAction.ActionDisplayItem item : LauncherAction.actionDisplayItems) {
-                if (LauncherAction.defaultArrangement.contains(item._action)) {
-                    minibarObject.add(item);
-                }
-            }
-            setMinibarArrangement(minibarString);
-        }
-        return minibarObject;
-    }
-
-    public void setMinibarArrangement(ArrayList<String> value) {
-        setStringList(R.string.pref_key__minibar_items, value);
-    }
-
     public boolean getSearchUseGrid() {
         return getBool(R.string.pref_key__desktop_search_use_grid, false);
     }
@@ -396,5 +355,21 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
 
     public void setDesktopPage0Persistence(boolean value) {
         setBool("pref_key__desktop_page_0_persistence", value);
+    }
+
+    public ArrayList<String> getRecentApps() {
+        ArrayList<String> recentApps = getStringList("pref_key__recent_apps");
+        return recentApps != null ? recentApps : new ArrayList<String>();
+    }
+
+    public void addRecentApp(String packageName, String className) {
+        ArrayList<String> recentApps = getRecentApps();
+        String component = packageName + "/" + className;
+        recentApps.remove(component);
+        recentApps.add(0, component);
+        while (recentApps.size() > 10) {
+            recentApps.remove(recentApps.size() - 1);
+        }
+        setStringList("pref_key__recent_apps", recentApps);
     }
 }

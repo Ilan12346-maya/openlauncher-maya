@@ -42,6 +42,7 @@ public final class Dock extends CellContainer implements DesktopCallback {
     public Dock(Context context, AttributeSet attr) {
         super(context, attr);
         setWillNotDraw(false);
+        setAlpha(0f);
     }
 
     public final void initDock() {
@@ -57,6 +58,17 @@ public final class Dock extends CellContainer implements DesktopCallback {
                     if (item._y + item._spanY > rows) item._y = Math.max(0, rows - item._spanY);
                     addItemToPage(item, 0);
                 }
+                // Fade in after items are loaded and layout is ready
+                post(new Runnable() {
+                    @Override
+                    public void run() {
+                        animate().alpha(1f).setDuration(200).setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
+                        if (Setup.appSettings().getDockIosStyle() && _homeActivity != null) {
+                            View iosBg = _homeActivity.findViewById(com.benny.openlauncher.R.id.ios_dock_background);
+                            if (iosBg != null) iosBg.animate().alpha(1f).setDuration(200).start();
+                        }
+                    }
+                });
             }
         });
 
@@ -181,8 +193,8 @@ public final class Dock extends CellContainer implements DesktopCallback {
             if (Setup.appSettings().getDockShowLabel()) height += Tool.dp2px(20);
             
             if (Setup.appSettings().getDockIosStyle()) {
-                // Ensure dock is high enough for the 170% background
-                height = (int) (Tool.dp2px(Setup.appSettings().getIconSize()) * 1.7f);
+                // Ensure dock is high enough for the 170% background + 10dp
+                height = (int) (Tool.dp2px(Setup.appSettings().getIconSize()) * 1.7f) + Tool.dp2px(10);
             }
             
             getLayoutParams().height = height;

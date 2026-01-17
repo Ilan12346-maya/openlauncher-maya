@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <!-- Intro -->
+    
     <string name="intro1_text">An open source launcher with lots of useful features.</string>
     <string name="intro1_community">Large Community</string>
     <string name="intro1_features">Packed with Features</string>
@@ -61,7 +61,7 @@
     <string name="more_info_support">More information on donating or otherwise supporting this project.</string>
     <string name="android_contribution_guide">Android Development</string>
 
-    <!-- Settings -->
+    
     <string name="pref_title__settings">Settings</string>
     <string name="pref_title__desktop">Desktop</string>
     <string name="pref_title__dock">Dock</string>
@@ -83,7 +83,6 @@
     <string name="pref_title__gestures">Gestures</string>
     <string name="pref_title__others">Others</string>
     <string name="pref_title__animations">Animations</string>
-    <string name="pref_title__debug">Debug</string>
 
     <string name="pref_title__desktop_infinite_scrolling">Infinite Scrolling</string>
     <string name="pref_summary__desktop_infinite_scrolling">Loop back to the first page when reaching the end.</string>
@@ -179,7 +178,7 @@
     <string name="pref_title__crash_test">Crash Test</string>
     <string name="pref_summary__crash_test">Trigger a deliberate crash to test bug reporting.</string>
 
-    <!-- Arrays -->
+    
     <string name="vertical_scroll_drawer">Vertical</string>
     <string name="horizontal_paged_drawer">Paged</string>
 
@@ -201,7 +200,7 @@
     <string name="dark">Dark</string>
     <string name="black">Black</string>
 
-    <!-- Dialogs -->
+    
     <string name="please_wait">Searching for installed apps. Please wait.</string>
     <string name="are_you_sure">Are you sure? This action cannot be undone unless you have a backup.</string>
     <string name="device_admin_title">Device Administration</string>
@@ -216,7 +215,7 @@
     <string name="notification_title">Notification Access</string>
     <string name="notification_summary">OpenLauncher requires the notification permission to show icon badges.</string>
 
-    <!-- Other -->
+    
     <string name="columns">Columns</string>
     <string name="rows">Rows</string>
     <string name="on">On</string>
@@ -229,20 +228,20 @@
     <string name="default_folder">Unnamed</string>
     <string name="default_icons">Default</string>
 
-    <!-- Drag Option View -->
+    
     <string name="edit">Edit</string>
     <string name="info">Info</string>
     <string name="uninstall">Uninstall</string>
     <string name="remove">Remove</string>
     <string name="resize">Resize</string>
 
-    <!-- Desktop Option View -->
+    
     <string name="home">Home</string>
     <string name="action">Action</string>
     <string name="lock">Lock</string>
     <string name="widget">Widget</string>
 
-    <!-- Toasts -->
+    
     <string name="toast_not_enough_space">Not enough space.</string>
     <string name="toast_app_uninstalled">App uninstalled.</string>
     <string name="toast_device_admin_required">Please enable device administration.</string>
@@ -255,9 +254,25 @@
     <string name="toast_remove_from_group_first">Remove item from group first.</string>
     <string name="toast_update_group_due_to_missing_items">Uninstalled or hidden apps were removed from this group.</string>
     
-    <!-- Added Features -->
+    
     <string name="search_hint">Apps suchen…</string>
     <string name="add_to_desktop">App hinzufügen</string>
     <string name="force_stop">Sofort beenden</string>
     <string name="toast_no_free_space">Kein freier Platz auf dem Homescreen.</string>
+    <string name="pref_title__debug">Debug</string>
+    <string name="pref_title__logging">Logging</string>
+    <string name="pref_summary__logging">Enable detailed logging for 1 minute to catch bugs.</string>
+    <string name="pref_title__copy_logs">Logs kopieren</string>
+    <string name="pref_summary__copy_logs">Logs in die Zwischenablage kopieren.</string>
+    <string name="pref_title__clear_logs">Logs löschen</string>
+    <string name="pref_key__debug_mode">pref_key__debug_mode</string>
+    <string name="toast_logs_copied">Logs in Zwischenablage kopiert.</string>
+    <string name="toast_logs_cleared">Logs gelöscht.</string>
+    <string name="pref_title__date_bar">Date Bar</string>
+    <string name="pref_title__date_bar_text_color">Text Color</string>
+    <string name="pref_title__date_bar_date_format">Date Format</string>
+    <string name="pref_title__date_bar_date_format_custom_1">Custom Format: Line 1</string>
+    <string name="pref_title__date_bar_date_format_custom_2">Custom Format: Line 2</string>
+    <string name="pref_title__gesture_swipe_up">Swipe Up</string>
+    <string name="pref_title__gesture_swipe_down">Swipe Down</string>
 </resources>

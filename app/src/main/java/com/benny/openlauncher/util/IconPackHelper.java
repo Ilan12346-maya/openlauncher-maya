@@ -13,16 +13,41 @@ import android.graphics.drawable.BitmapDrawable;
 
 import com.benny.openlauncher.model.App;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class IconPackHelper {
     public static void applyIconPack(AppManager appManager, final int iconSize, String iconPackName, List<App> apps) {
         Resources iconPackResources = null;
+        Map<String, String> appFilterMap = new HashMap<>();
+        Map<String, String> configMap = new HashMap<>();
+
+        if (!iconPackName.equals("")) {
+            try {
+                iconPackResources = appManager.getPackageManager().getResourcesForApplication(iconPackName);
+                parseAppFilter(iconPackResources, iconPackName, appFilterMap, configMap);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+
         int intResourceIcon = 0;
         int intResourceBack = 0;
         int intResourceMask = 0;
         int intResourceUpon = 0;
         float scale = 1;
+
+        if (iconPackResources != null) {
+            if (configMap.get("iconback") != null)
+                intResourceBack = iconPackResources.getIdentifier(configMap.get("iconback"), "drawable", iconPackName);
+            if (configMap.get("iconmask") != null)
+                intResourceMask = iconPackResources.getIdentifier(configMap.get("iconmask"), "drawable", iconPackName);
+            if (configMap.get("iconupon") != null)
+                intResourceUpon = iconPackResources.getIdentifier(configMap.get("iconupon"), "drawable", iconPackName);
+            if (configMap.get("scale") != null)
+                scale = Float.parseFloat(configMap.get("scale"));
+        }
 
         Paint p = new Paint(Paint.FILTER_BITMAP_FLAG);
         p.setAntiAlias(true);
@@ -33,24 +58,6 @@ public class IconPackHelper {
         Paint maskP = new Paint(Paint.FILTER_BITMAP_FLAG);
         maskP.setAntiAlias(true);
         maskP.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
-
-        if (!iconPackName.equals("")) {
-            try {
-                iconPackResources = appManager.getPackageManager().getResourcesForApplication(iconPackName);
-            } catch (Exception e) {
-                System.out.println(e);
-            }
-            if (iconPackResources != null) {
-                if (getResource(iconPackResources, iconPackName, "iconback", null) != null)
-                    intResourceBack = iconPackResources.getIdentifier(getResource(iconPackResources, iconPackName, "iconback", null), "drawable", iconPackName);
-                if (getResource(iconPackResources, iconPackName, "iconmask", null) != null)
-                    intResourceMask = iconPackResources.getIdentifier(getResource(iconPackResources, iconPackName, "iconmask", null), "drawable", iconPackName);
-                if (getResource(iconPackResources, iconPackName, "iconupon", null) != null)
-                    intResourceUpon = iconPackResources.getIdentifier(getResource(iconPackResources, iconPackName, "iconupon", null), "drawable", iconPackName);
-                if (getResource(iconPackResources, iconPackName, "scale", null) != null)
-                    scale = Float.parseFloat(getResource(iconPackResources, iconPackName, "scale", null));
-            }
-        }
 
         BitmapFactory.Options uniformOptions = new BitmapFactory.Options();
         uniformOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
@@ -86,7 +93,7 @@ public class IconPackHelper {
 
         for (int i = 0; i < apps.size(); i++) {
             if (iconPackResources != null) {
-                String iconResource = getResource(iconPackResources, iconPackName, null, apps.get(i).getComponentName());
+                String iconResource = appFilterMap.get(apps.get(i).getComponentName());
                 if (iconResource != null) {
                     intResourceIcon = iconPackResources.getIdentifier(iconResource, "drawable", iconPackName);
                 } else {
@@ -130,35 +137,36 @@ public class IconPackHelper {
         }
     }
 
-    private static String getResource(Resources resources, String packageName, String resourceName, String componentName) {
-        XmlResourceParser xrp;
-        String resource = null;
+    private static void parseAppFilter(Resources resources, String packageName, Map<String, String> appFilterMap, Map<String, String> configMap) {
         try {
             int resourceValue = resources.getIdentifier("appfilter", "xml", packageName);
             if (resourceValue != 0) {
-                xrp = resources.getXml(resourceValue);
+                XmlResourceParser xrp = resources.getXml(resourceValue);
                 while (xrp.getEventType() != XmlResourceParser.END_DOCUMENT) {
-                    if (xrp.getEventType() == 2) {
-                        try {
-                            String string = xrp.getName();
-                            if (componentName != null) {
-                                if (xrp.getAttributeValue(0).compareTo(componentName) == 0) {
-                                    resource = xrp.getAttributeValue(1);
-                                }
-                            } else if (string.equals(resourceName)) {
-                                resource = xrp.getAttributeValue(0);
+                    if (xrp.getEventType() == XmlResourceParser.START_TAG) {
+                        String name = xrp.getName();
+                        if (name.equals("item")) {
+                            String component = xrp.getAttributeValue(null, "component");
+                            String drawable = xrp.getAttributeValue(null, "drawable");
+                            if (component != null && drawable != null) {
+                                appFilterMap.put(component, drawable);
                             }
-                        } catch (Exception e) {
-                            System.out.println(e);
+                        } else if (name.equals("iconback") || name.equals("iconmask") || name.equals("iconupon") || name.equals("scale")) {
+                            String img = xrp.getAttributeValue(null, "img");
+                            if (img != null) {
+                                configMap.put(name, img);
+                            } else if (name.equals("scale")) {
+                                String factor = xrp.getAttributeValue(null, "factor");
+                                if (factor != null) configMap.put(name, factor);
+                            }
                         }
                     }
                     xrp.next();
                 }
             }
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
-        return resource;
     }
 
     private static Bitmap getResizedBitmap(Bitmap bm, int newHeight, int newWidth) {

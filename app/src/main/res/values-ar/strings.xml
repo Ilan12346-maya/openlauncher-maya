@@ -1,40 +1,29 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
 
-    <!-- Titles -->
-    <string name="minibar">الشريط المصغر</string>
+    
     <string name="pref_title__about">حول</string>
 
-    <!-- Drag Option View -->
+    
 
-    <!-- Desktop Option View -->
+    
 
-    <!-- Toasts -->
+    
 
     <string name="toast_device_admin_required">من فضلك، قم بتفعيل صلاحية مدير الجهاز.</string>
 
-    <!-- Intro -->
+    
 
    <string name="intro2_text">المس الشاشة من اليسار لليمين في الصفحة الرئيسية لعرض الشريط المصغر. حيث تجد الإعدادات، يمكنك تغيير صورة الخلفية، وفعل الكثير من الأشياء.</string>
     <string name="intro3_text">تستطيع ضبط سطح المكتب، درج التطبيقات، وشريط التطبيقات. جرب الآن!</string>
 
-    <!-- Minibar -->
-
-    <string name="minibar_summary__edit_minibar">تغيير تخطيط الشريط المصغر</string>
-    <string name="minibar_summary__set_wallpaper">تعيين صورة الخلفية وإضافة تأثير الضبابية</string>
-    <string name="minibar_summary__lock_screen">إغلاق الشاشة فورا، صلاحية مدير الجهاز مطلوبة</string>
-    <string name="minibar_summary__device_settings">اختصار لإعدادات الجهاز</string>
-    <string name="minibar_summary__launcher_settings">اختصار لإعدادات أوبن لانشر</string>
-    <string name="minibar_summary__volume_dialog">عرض صندوق التحكم بالصوت</string>
-    <string name="minibar_summary__app_drawer">فتح درج التطبيقات</string>
-
-    <!-- About -->
+    
 
     <string name="about_libs">المكتبات مفتوحة المصدر</string>
     <string name="about_rate">تقييم</string>
     <string name="about_credit">المساهمون</string>
 
-    <!-- Settings -->
+    
 
     <string name="pref_title__desktop">سطح المكتب</string>
     <string name="pref_title__dock">شريط التطبيقات</string>
@@ -95,7 +84,7 @@
     <string name="pref_title__restart">إعادة التشغيل</string>
     <string name="pref_summary__restart">إعادة تشغيل اللانشر في حالة إظهار أخطاء</string>
 
-    <!-- Preference Keys -->
+    
     <string name="pref_title__interfaces">الواجهات</string>
     <string name="pref_title__inputs">المدخلات</string>
     <string name="pref_title__feels">الشعور</string>
@@ -104,12 +93,12 @@
     <string name="horizontal_paged_drawer">رأسي</string>
 
 
-    <!-- Internal Keys -->
+    
 
 
-    <!-- Item Labels -->
+    
 
-    <!-- Dialogs -->
+    
 
     <string name="placeholder">مرحبا بالعالم!</string>
     <string name="on">تشغيل</string>
@@ -123,45 +112,45 @@
     <string name="rows">صفوف</string>
 
 
-    <!-- Titles -->
+    
     <string name="pref_title__settings">الإعدادات</string>
 
-    <!-- Drag Option View -->
+    
 
     <string name="edit">تعديل</string>
     <string name="info">معلومات</string>
     <string name="uninstall">إلغاء التثبيت</string>
     <string name="remove">إزالة</string>
 
-    <!-- Desktop Option View -->
+    
     <string name="home">الرئيسية</string>
     <string name="action">عمل</string>
     <string name="lock">قفل</string>
     <string name="widget">أداة</string>
 
-    <!-- Toasts -->
+    
 
     <string name="toast_not_enough_space">المساحة غير كافية</string>
     <string name="toast_app_uninstalled">تم إلغاء تثبيت التطبيق</string>
 
-    <!-- Intro -->
+    
 
-    <!-- Minibar -->
+    
 
-    <!-- About -->
+    
 
-    <!-- Settings -->
+    
 
-    <!-- Preference Keys -->
-
-
-    <!-- Internal Keys -->
+    
 
 
-    <!-- Item Labels -->
+    
+
+
+    
 
     <string name="default_folder">غير مسمى</string>
 
-    <!-- Dialogs -->
+    
 
 </resources>

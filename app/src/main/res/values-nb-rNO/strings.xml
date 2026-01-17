@@ -1,41 +1,30 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
 
-    <!-- Titles -->
-    <string name="minibar">Sidepanel</string>
+    
     <string name="pref_title__about">Om</string>
 
-    <!-- Drag Option View -->
+    
 
-    <!-- Desktop Option View -->
+    
 
-    <!-- Toasts -->
+    
 
     <string name="toast_device_admin_required">Skru på enhetsadministrasjon</string>
 
-    <!-- Intro -->
+    
 
     <string name="intro2_text">Dra venstre skjermkant innover for å åpne sidepanelet, der finner du innstillingene,
         bakgrunnsbildemeny, og mye annet.</string>
     <string name="intro3_text">Du kan sette opp skrivebordet, programskuffen, og samlevinduet. Prøv det.</string>
 
-    <!-- Minibar -->
-
-    <string name="minibar_summary__edit_minibar">Endre utformingen på sidepanelet.</string>
-    <string name="minibar_summary__set_wallpaper">Velg og tilslør bakgrunnsbildet.</string>
-    <string name="minibar_summary__lock_screen">Lås skjermen umiddelbart. Krever enhetsadministrasjon.</string>
-    <string name="minibar_summary__device_settings">Snarvei til enhetsinnstillingene.</string>
-    <string name="minibar_summary__launcher_settings">Snarvei til OpenLauncher-innstillingene.</string>
-    <string name="minibar_summary__volume_dialog">Åpne lydstyrkejustering.</string>
-    <string name="minibar_summary__app_drawer">Åpne programskuffen.</string>
-
-    <!-- About -->
+    
 
     <string name="about_libs">Friprogbibliotek</string>
     <string name="about_rate">Gi omtale</string>
     <string name="about_credit">Bidragsytere</string>
 
-    <!-- Settings -->
+    
 
     <string name="pref_title__desktop">Skrivebord</string>
     <string name="pref_title__dock">Samlevindu</string>
@@ -97,16 +86,16 @@
     <string name="pref_title__restart">Omstart</string>
     <string name="pref_summary__restart">Start oppstarteren på nytt hvis den oppfører seg rart.</string>
 
-    <!-- Preference Keys -->
+    
 
     <string name="pref_title__interfaces">Grensesnitt</string>
     <string name="pref_title__inputs">Inndata</string>
     <string name="pref_title__feels">Føles</string>
     <string name="pref_title__others">Annet</string>
 
-    <!-- Item Labels -->
+    
 
-    <!-- Dialogs -->
+    
 
     <string name="placeholder">Hei verden!</string>
     <string name="please_wait">Søker etter installerte programmer. Vent.</string>
@@ -121,42 +110,42 @@
     <string name="rows">Rader</string>
 
 
-    <!-- Titles -->
+    
     <string name="pref_title__settings">Innstillinger</string>
 
-    <!-- Drag Option View -->
+    
 
     <string name="edit">Rediger</string>
     <string name="info">Info</string>
     <string name="uninstall">Avinstaller</string>
     <string name="remove">Fjern</string>
 
-    <!-- Desktop Option View -->
+    
 
     <string name="home">Hjem</string>
     <string name="action">Handling</string>
     <string name="lock">Lås</string>
     <string name="widget">Miniprogram</string>
 
-    <!-- Toasts -->
+    
 
     <string name="toast_not_enough_space">Ikke nok plass</string>
     <string name="toast_app_uninstalled">Program avinstallert.</string>
 
-    <!-- Intro -->
+    
 
-    <!-- Minibar -->
+    
 
-    <!-- About -->
+    
 
-    <!-- Settings -->
+    
 
-    <!-- Preference Keys -->
+    
 
-    <!-- Item Labels -->
+    
 
     <string name="default_folder">Uten navn</string>
 
-    <!-- Dialogs -->
+    
 
 </resources>

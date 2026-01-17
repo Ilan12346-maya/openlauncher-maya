@@ -1,40 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <!-- Intro -->
+    
     <string name="intro1_text">Un launcher open source con tante caratteristiche utili.</string>
     <string name="intro1_community">Ampia community</string>
     <string name="intro1_features">Ricco di funzioni</string>
     <string name="intro1_customizable">Personalizzabile</string>
-    <string name="intro2_text">Scorri verso l\'interno dal bordo sinistro della home per aprire la minibar e selezionare un\'azione.</string>
     <string name="intro3_text">Puoi scegliere uno stile per il drawer e nascondere le app inutilizzate dalle impostazioni.</string>
     <string name="intro4_text">Cerca qualcosa sul web o filtra le tue app dalla barra di ricerca.</string>
 
-    <!-- Minibar -->
-    <string name="minibar">Minibar</string>
-    <string name="minibar_title__edit_minibar">Modifica Minibar</string>
-    <string name="minibar_summary__edit_minibar">Cambia il layout della minibar.</string>
-    <string name="minibar_title__set_wallpaper">Imposta Sfondo</string>
-    <string name="minibar_summary__set_wallpaper">Imposta lo sfondo del desktop</string>
-    <string name="minibar_title__lock_screen">Blocca Schermo</string>
-    <string name="minibar_summary__lock_screen">Blocca immediatamente lo schermo, richiede amministrazione del dispositivo.</string>
-    <string name="minibar_title__device_settings">Impostazioni Dispositivo</string>
-    <string name="minibar_summary__device_settings">Scorciatoia alle impostazioni del dispositivo.</string>
-    <string name="minibar_title__launcher_settings">Impostazioni Launcher</string>
-    <string name="minibar_summary__launcher_settings">Scorciatoia alle impostazioni di OpenLauncher.</string>
-    <string name="minibar_title__volume_dialog">Pannello Volume</string>
-    <string name="minibar_summary__volume_dialog">Mostra tutti gli slider del volume disponibili.</string>
-    <string name="minibar_title__app_drawer">Apri App Drawer</string>
-    <string name="minibar_summary__app_drawer">Apre il drawer delle app.</string>
-    <string name="minibar_title__search_bar">Apri Barra di Ricerca</string>
-    <string name="minibar_summary__search_bar">Apre la barra di ricerca.</string>
-    <string name="minibar_title__mobile_network">Impostazioni Rete Mobile</string>
-    <string name="minibar_summary__mobile_network">Scorciatoia alle impostazioni della rete mobile.</string>
-    <string name="minibar_title__notification_bar">Mostra Barra Notifiche</string>
-    <string name="minibar_summary__notification_bar">Espande la barra delle notifiche nella parte alta dello schermo.</string>
-    <string name="minibar_title__camera">Fotocamera</string>
-    <string name="minibar_summary__camera">Scatta una foto con la tua app fotocamera.</string>
-
-    <!-- About -->
+    
     <string name="about_libs">Librerie open source</string>
     <string name="about_rate">Valuta l\'app</string>
     <string name="about_credit">Collaboratori</string>
@@ -63,7 +37,7 @@
     <string name="more_info_support">Ulteriori informazioni sulle donazioni o altri modi per supportare il progetto.</string>
     <string name="android_contribution_guide">Android Development</string>
 
-    <!-- Settings -->
+    
     <string name="pref_title__settings">Impostazioni</string>
     <string name="pref_title__desktop">Desktop</string>
     <string name="pref_title__dock">Dock</string>
@@ -177,7 +151,7 @@
     <string name="pref_title__restart">Riavvia</string>
     <string name="pref_summary__restart">Può essere usato per applicare manualmente alcune impostazioni.</string>
     
-    <!-- Arrays -->
+    
     <string name="vertical_scroll_drawer">Verticale</string>
     <string name="horizontal_paged_drawer">Orizzontale</string>
     
@@ -199,7 +173,7 @@
     <string name="dark">Scuro</string>
     <string name="black">Nero</string>
 
-    <!-- Dialogs -->
+    
     <string name="please_wait">Ricerca delle app installate. Attendere, prego.</string>
     <string name="are_you_sure">Sei sicuro? Questa azione non può essere annullata a meno che tu non abbia un backup.</string>
     <string name="device_admin_title">Amministrazione Dispositivo</string>
@@ -214,7 +188,7 @@
     <string name="notification_title">Accesso alle Notifiche</string>
     <string name="notification_summary">OpenLauncher richiede l\'accesso alle notifiche per mostrare i contatori sulle icone.</string>
 
-    <!-- Other -->
+    
     <string name="columns">Colonne</string>
     <string name="rows">Righe</string>
     <string name="on">On</string>
@@ -228,20 +202,20 @@
     <string name="default_folder">Senza nome</string>
     <string name="default_icons">Predefinito</string>
     
-    <!-- Drag Option View -->
+    
     <string name="edit">Modifica</string>
     <string name="info">Informazioni</string>
     <string name="uninstall">Disinstalla</string>
     <string name="remove">Rimuovi</string>
     <string name="resize">Ridimensiona</string>
 
-    <!-- Desktop Option View -->
+    
     <string name="home">Home</string>
     <string name="action">Azione</string>
     <string name="lock">Blocca</string>
     <string name="widget">Widget</string>
 
-    <!-- Toasts -->
+    
     <string name="toast_not_enough_space">Spazio insufficiente.</string>
     <string name="toast_app_uninstalled">App disinstallata.</string>
     <string name="toast_device_admin_required">Per favore abilita l\'amministrazione del dispositivo.</string>

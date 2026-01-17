@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <!-- Intro -->
+    
     <string name="intro1_text">Egy nyílt forráskódú indítóalkalmazás, sok hasznos funkcióval.</string>
     <string name="intro1_community">Nagy közösség</string>
     <string name="intro1_features">Funkciókkal teli</string>
@@ -9,32 +9,7 @@
     <string name="intro3_text">Kiválaszthatja az alkalmazásfiók stílusát, és el tudja rejteni a nem használt alkalmazásokat a beállításokból.</string>
     <string name="intro4_text">Keressen valamire a weben, vagy szűrje az alkalmazásait a keresővel.</string>
 
-    <!-- Minibar -->
-    <string name="minibar">Minisáv</string>
-    <string name="minibar_title__edit_minibar">Minisáv szerkesztése</string>
-    <string name="minibar_summary__edit_minibar">A minisáv elrendezésének módosítása.</string>
-    <string name="minibar_title__set_wallpaper">Háttérkép beállítása</string>
-    <string name="minibar_summary__set_wallpaper">A kezdőoldal háttérképének beállítása.</string>
-    <string name="minibar_title__lock_screen">Képernyő zárolása</string>
-    <string name="minibar_summary__lock_screen">A képernyő azonnali zárolása.</string>
-    <string name="minibar_title__device_settings">Eszközbeállítások</string>
-    <string name="minibar_summary__device_settings">Indítóikon az eszközbeállításokhoz.</string>
-    <string name="minibar_title__launcher_settings">Indítóbeállítások</string>
-    <string name="minibar_summary__launcher_settings">Indítóikon az OpenLauncher beállításaihoz.</string>
-    <string name="minibar_title__volume_dialog">Hangerő párbeszédablak</string>
-    <string name="minibar_summary__volume_dialog">Az összes elérhető hangcsúszka megjelenítése.</string>
-    <string name="minibar_title__app_drawer">Alkalmazásfiók megnyitása</string>
-    <string name="minibar_summary__app_drawer">Az alkalmazásfiók megnyitása.</string>
-    <string name="minibar_title__search_bar">Keresősáv megnyitása</string>
-    <string name="minibar_summary__search_bar">A keresősáv megnyitása.</string>
-    <string name="minibar_title__mobile_network">Mobilhálózati beállítások</string>
-    <string name="minibar_summary__mobile_network">Indítóikon a mobilhálózati beállításokhoz.</string>
-    <string name="minibar_title__notification_bar">Értesítési sáv megjelenítése</string>
-    <string name="minibar_summary__notification_bar">A képernyő tetején lévő értesítési nézet kibontása.</string>
-    <string name="minibar_title__camera">Kamera</string>
-    <string name="minibar_summary__camera">Fénykép készítése a kamera alkalmazásával</string>
-
-    <!-- About -->
+    
     <string name="about_libs">Nyílt forráskódú programkönyvtárak</string>
     <string name="about_rate">Értékelés</string>
     <string name="about_credit">Közreműködők</string>
@@ -63,7 +38,7 @@
     <string name="more_info_support">További információk az adományozásról és a projekt egyéb támogatásáról.</string>
     <string name="android_contribution_guide">Android fejlesztés</string>
 
-    <!-- Settings -->
+    
     <string name="pref_title__settings">Beállítások</string>
     <string name="pref_title__desktop">Asztal</string>
     <string name="pref_title__dock">Dokk</string>
@@ -177,7 +152,7 @@
     <string name="pref_title__restart">Újraindítás</string>
     <string name="pref_summary__restart">Ez egyes beállítások kézi alkalmazásához használaható.</string>
 
-    <!-- Arrays -->
+    
     <string name="vertical_scroll_drawer">Függőleges</string>
     <string name="horizontal_paged_drawer">Lapozott</string>
 
@@ -199,7 +174,7 @@
     <string name="dark">Sötét</string>
     <string name="black">Fekete</string>
 
-    <!-- Dialogs -->
+    
     <string name="please_wait">Telepített alkalmazások keresése. Kis türelmet.</string>
     <string name="are_you_sure">Biztos benne? Ez a művelet nem vonható vissza, hacsak nincs biztonsági mentése.</string>
     <string name="device_admin_title">Eszközkezelés</string>
@@ -214,7 +189,7 @@
     <string name="notification_title">Értesítési hozzáférés</string>
     <string name="notification_summary">Az OpenLaunchernek értesítési engedélyre van szüksége az ikonjelvények megjelenítéséhez.</string>
 
-    <!-- Other -->
+    
     <string name="columns">Oszlopok</string>
     <string name="rows">Sorok</string>
     <string name="on">Be</string>
@@ -228,20 +203,20 @@
     <string name="default_folder">Névtelen</string>
     <string name="default_icons">Alapértelmezett</string>
 
-    <!-- Drag Option View -->
+    
     <string name="edit">Szerkesztés</string>
     <string name="info">Információ</string>
     <string name="uninstall">Eltávolítás</string>
     <string name="remove">Törlés</string>
     <string name="resize">Átméretezés</string>
 
-    <!-- Desktop Option View -->
+    
     <string name="home">Kezdőképernyő</string>
     <string name="action">Művelet</string>
     <string name="lock">Zárolás</string>
     <string name="widget">Modul</string>
 
-    <!-- Toasts -->
+    
     <string name="toast_not_enough_space">Nincs elég hely.</string>
     <string name="toast_app_uninstalled">Alkalmazás eltávolítva.</string>
     <string name="toast_device_admin_required">Engedélyezze az eszközkezelést.</string>

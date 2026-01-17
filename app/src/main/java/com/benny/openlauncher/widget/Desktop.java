@@ -72,10 +72,52 @@ public final class Desktop extends ViewPager implements DesktopCallback {
 
     public Desktop(Context context) {
         super(context, null);
+        setClipChildren(false);
+        setClipToPadding(false);
+        initScroller();
     }
 
     public Desktop(Context context, AttributeSet attr) {
         super(context, attr);
+        setClipChildren(false);
+        setClipToPadding(false);
+        initScroller();
+    }
+
+    private void initScroller() {
+        try {
+            Class<?> viewPager = ViewPager.class;
+            java.lang.reflect.Field scroller = viewPager.getDeclaredField("mScroller");
+            scroller.setAccessible(true);
+            java.lang.reflect.Field interpolator = viewPager.getDeclaredField("sInterpolator");
+            interpolator.setAccessible(true);
+
+            scroller.set(this, new FixedSpeedScroller(getContext(), (android.view.animation.Interpolator) interpolator.get(null)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public class FixedSpeedScroller extends android.widget.Scroller {
+        private int mDuration = 350;
+
+        public FixedSpeedScroller(Context context) {
+            super(context);
+        }
+
+        public FixedSpeedScroller(Context context, android.view.animation.Interpolator interpolator) {
+            super(context, interpolator);
+        }
+
+        @Override
+        public void startScroll(int startX, int startY, int dx, int dy, int duration) {
+            super.startScroll(startX, startY, dx, dy, mDuration);
+        }
+
+        @Override
+        public void startScroll(int startX, int startY, int dx, int dy) {
+            super.startScroll(startX, startY, dx, dy, mDuration);
+        }
     }
 
     public static boolean handleOnDropOver(HomeActivity homeActivity, Item dropItem, Item item, View itemView, CellContainer parent, int page, ItemPosition itemPosition, DesktopCallback callback) {
@@ -193,15 +235,22 @@ public final class Desktop extends ViewPager implements DesktopCallback {
             layout.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    exitDesktopEditMode();
+                    // Do nothing on click to prevent accidental exit
                 }
             });
             layout.setOnLongClickListener(new OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    enterDesktopEditMode();
+                    if (HomeActivity.Companion.getLauncher() == null) {
+                        return false;
+                    }
+                    if (_desktop.getInEditMode()) {
+                        exitDesktopEditMode();
+                    } else {
+                        enterDesktopEditMode();
+                    }
                     if (Setup.appSettings().getGestureFeedback()) {
-                        Tool.vibrate(HomeActivity._launcher.getDesktop());
+                        Tool.vibrate(_desktop);
                     }
                     return true;
                 }
@@ -253,6 +302,9 @@ public final class Desktop extends ViewPager implements DesktopCallback {
 
         @Override
         public int getCount() {
+            if (_desktop.getInEditMode()) {
+                return _desktop.getPages().size();
+            }
             boolean page0Enabled = Setup.appSettings().getDesktopPage0Enabled();
             boolean infinite = Setup.appSettings().getDesktopInfiniteScrolling();
             int count = _desktop.getPages().size() + (page0Enabled ? 1 : 0);
@@ -291,6 +343,18 @@ public final class Desktop extends ViewPager implements DesktopCallback {
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             AppSettings appSettings = Setup.appSettings();
+            if (_desktop.getInEditMode()) {
+                CellContainer layout = _desktop.getPages().get(position);
+                int topPadding = Tool.dp2px(Setup.appSettings().getSearchBarEnable() ? 120 : 70);
+                int bottomPadding = Tool.dp2px(115);
+                layout.setPadding(0, topPadding, 0, bottomPadding);
+                if (layout.getParent() != null) {
+                    ((ViewGroup) layout.getParent()).removeView(layout);
+                }
+                container.addView(layout);
+                return layout;
+            }
+            
             boolean page0Enabled = appSettings.getDesktopPage0Enabled();
             boolean infinite = appSettings.getDesktopInfiniteScrolling() && _desktop.getPages().size() > 1;
             
@@ -305,7 +369,7 @@ public final class Desktop extends ViewPager implements DesktopCallback {
                 } else {
                     // D(PN) (0) | P1 (1) | P2 (2) | D(P1) (3)
                     if (position == 0) {
-                        return createDummyView(container, _desktop.getPages().size() - 1);
+                        return createDummyView(container, Math.max(0, _desktop.getPages().size() - 1));
                     } else if (position == getCount() - 1) {
                         return createDummyView(container, 0);
                     }
@@ -418,9 +482,13 @@ public final class Desktop extends ViewPager implements DesktopCallback {
                 pageIndex = page0Enabled ? position - 1 : position;
             }
             
+            if (pageIndex < 0 || pageIndex >= _desktop.getPages().size()) {
+                return new View(_desktop.getContext());
+            }
+            
             CellContainer layout = _desktop.getPages().get(pageIndex);
-            // Add padding to account for SearchBar at top and Dock at bottom
-            // Increased top padding to move grid lower
+            
+            // Maximize horizontal space for widgets
             int topPadding = Tool.dp2px(Setup.appSettings().getSearchBarEnable() ? 120 : 70);
             int bottomPadding = Tool.dp2px(115);
             layout.setPadding(0, topPadding, 0, bottomPadding);
@@ -444,7 +512,10 @@ public final class Desktop extends ViewPager implements DesktopCallback {
             List<List<Item>> desktopItems = HomeActivity._db.getDesktop();
             if (targetPageIndex < desktopItems.size()) {
                 List<Item> pageItems = desktopItems.get(targetPageIndex);
+                int columns = Setup.appSettings().getDesktopColumnCount();
+                int rows = Setup.appSettings().getDesktopRowCount();
                 for (Item item : pageItems) {
+                    if (item._x < 0 || item._y < 0 || item._x + item._spanX > columns || item._y + item._spanY > rows) continue;
                     View itemView = ItemViewFactory.getItemView(_desktop.getContext(), _desktop, Action.DESKTOP, item);
                     if (itemView != null) {
                         layout.addViewToGrid(itemView, item._x, item._y, item._spanX, item._spanY);
@@ -457,6 +528,11 @@ public final class Desktop extends ViewPager implements DesktopCallback {
         }
 
         private void enterDesktopEditMode() {
+            int currentPageIndex = _desktop.getCurrentPageIndex();
+            _desktop.setInEditMode(true);
+            notifyDataSetChanged();
+            _desktop.setCurrentItem(currentPageIndex, false);
+
             float scaleFactor = 0.8f;
             float translateFactor = (float) Tool.dp2px(Setup.appSettings().getSearchBarEnable() ? 20 : 40);
             for (CellContainer v : _desktop.getPages()) {
@@ -465,7 +541,6 @@ public final class Desktop extends ViewPager implements DesktopCallback {
                 ViewPropertyAnimator animation = v.animate().scaleX(scaleFactor).scaleY(scaleFactor).translationY(translateFactor);
                 animation.setInterpolator(new AccelerateDecelerateInterpolator());
             }
-            _desktop.setInEditMode(true);
             if (_desktop.getDesktopEditListener() != null) {
                 OnDesktopEditListener desktopEditListener = _desktop.getDesktopEditListener();
                 desktopEditListener.onStartDesktopEdit();
@@ -473,6 +548,12 @@ public final class Desktop extends ViewPager implements DesktopCallback {
         }
 
         private void exitDesktopEditMode() {
+            int currentPageIndex = _desktop.getCurrentPageIndex();
+            _desktop.setInEditMode(false);
+            notifyDataSetChanged();
+            boolean page0Enabled = Setup.appSettings().getDesktopPage0Enabled();
+            _desktop.setCurrentItem(currentPageIndex + (page0Enabled ? 1 : 0), false);
+
             float scaleFactor = 1.0f;
             float translateFactor = 0.0f;
             for (CellContainer v : _desktop.getPages()) {
@@ -481,7 +562,6 @@ public final class Desktop extends ViewPager implements DesktopCallback {
                 ViewPropertyAnimator animation = v.animate().scaleX(scaleFactor).scaleY(scaleFactor).translationY(translateFactor);
                 animation.setInterpolator(new AccelerateDecelerateInterpolator());
             }
-            _desktop.setInEditMode(false);
             if (_desktop.getDesktopEditListener() != null) {
                 OnDesktopEditListener desktopEditListener = _desktop.getDesktopEditListener();
                 desktopEditListener.onFinishDesktopEdit();
@@ -509,6 +589,12 @@ public final class Desktop extends ViewPager implements DesktopCallback {
         _inEditMode = v;
     }
 
+    public final void exitDesktopEditMode() {
+        if (_adapter != null) {
+            _adapter.exitDesktopEditMode();
+        }
+    }
+
     public final boolean isCurrentPageEmpty() {
         return getCurrentPage().getChildCount() == 0;
     }
@@ -521,6 +607,9 @@ public final class Desktop extends ViewPager implements DesktopCallback {
 
     public final int getCurrentPageIndex() {
         int index = getCurrentItem();
+        if (_inEditMode) {
+            return Math.max(0, Math.min(index, _pages.size() - 1));
+        }
         boolean page0Enabled = Setup.appSettings().getDesktopPage0Enabled();
         int pageIndex = page0Enabled ? index - 1 : index;
         return Math.max(0, Math.min(pageIndex, _pages.size() - 1));
@@ -664,6 +753,7 @@ public final class Desktop extends ViewPager implements DesktopCallback {
 
     @Override
     public void setLastItem(Item item, View view) {
+        com.benny.openlauncher.util.Logger.log(this, "setLastItem: " + item.getLabel());
         _previousPage = getCurrentPageIndex();
         _previousItemView = view;
         _previousItem = item;
@@ -672,6 +762,7 @@ public final class Desktop extends ViewPager implements DesktopCallback {
 
     @Override
     public void revertLastItem() {
+        com.benny.openlauncher.util.Logger.log(this, "revertLastItem, hasPreviousView: " + (_previousItemView != null));
         if (_previousItemView != null) {
             if (_previousPage > -1 && _previousPage < _pages.size()) {
                 CellContainer cellContainer = _pages.get(_previousPage);
@@ -685,12 +776,16 @@ public final class Desktop extends ViewPager implements DesktopCallback {
 
     @Override
     public void consumeLastItem() {
+        com.benny.openlauncher.util.Logger.log(this, "consumeLastItem");
         _previousItem = null;
         _previousItemView = null;
         _previousPage = -1;
     }
 
     public boolean addItemToPage(@NonNull Item item, int page) {
+        if (com.benny.openlauncher.util.Logger.isEnabled()) {
+            com.benny.openlauncher.util.Logger.log(this, "addItemToPage: " + item.getLabel() + " at page " + page + " (" + item._x + "," + item._y + ")");
+        }
         View itemView = ItemViewFactory.getItemView(getContext(), this, Action.DESKTOP, item);
         if (itemView == null) {
             // TODO see if this fixes SD card bug
@@ -705,8 +800,14 @@ public final class Desktop extends ViewPager implements DesktopCallback {
     }
 
     public boolean addItemToPoint(@NonNull Item item, int x, int y) {
+        if (com.benny.openlauncher.util.Logger.isEnabled()) {
+            com.benny.openlauncher.util.Logger.log(this, "addItemToPoint: " + item.getLabel() + " at point (" + x + "," + y + ")");
+        }
         CellContainer.LayoutParams positionToLayoutPrams = getCurrentPage().coordinateToLayoutParams(x, y, item._spanX, item._spanY);
         if (positionToLayoutPrams == null) {
+            if (com.benny.openlauncher.util.Logger.isEnabled()) {
+                com.benny.openlauncher.util.Logger.log(this, "addItemToPoint: no layout params found for point");
+            }
             return false;
         }
         item._location = ItemPosition.Desktop;
@@ -721,11 +822,17 @@ public final class Desktop extends ViewPager implements DesktopCallback {
     }
 
     public boolean addItemToCell(@NonNull Item item, int x, int y) {
+        if (com.benny.openlauncher.util.Logger.isEnabled()) {
+            com.benny.openlauncher.util.Logger.log(this, "addItemToCell: " + item.getLabel() + " at cell (" + x + "," + y + ")");
+        }
         item._location = ItemPosition.Desktop;
         item._x = x;
         item._y = y;
         View itemView = ItemViewFactory.getItemView(getContext(), this, Action.DESKTOP, item);
         if (itemView == null) {
+            if (com.benny.openlauncher.util.Logger.isEnabled()) {
+                com.benny.openlauncher.util.Logger.log(this, "addItemToCell: could not create view for item");
+            }
             return false;
         }
         getCurrentPage().addViewToGrid(itemView, item._x, item._y, item._spanX, item._spanY);

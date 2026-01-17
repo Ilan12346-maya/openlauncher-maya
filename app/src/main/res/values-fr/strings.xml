@@ -1,40 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <!-- Intro -->
+    
     <string name="intro1_text">Un lanceur d\'applications open source avec beaucoup de fonctionnalités utiles.</string>
     <string name="intro1_community">Le lanceur d\'applications créé par la communauté, pour la communauté</string>
     <string name="intro1_features">Remplis de fonctionnalités</string>
     <string name="intro1_customizable">Personnalisable</string>
-    <string name="intro2_text">Glissez votre doigt depuis le bord de gauche de votre écran pour ouvrir la Minibarre. Cette dernière vous permet d\'accéder aux paramètres, changer de fond d\'écran et beaucoup d\'autres choses.</string>
     <string name="intro3_text">Vous pouvez configurer votre bureau, le tiroir d\'applis, le dock... Essayez-la !</string>
     <string name="intro4_text">Rechercher quelque chose sur le Web ou filtrer vos applications depuis la barre de recherche.</string>
 
-    <!-- Minibar -->
-    <string name="minibar">Minibarre</string>
-    <string name="minibar_title__edit_minibar">Éditer la minibarre</string>
-    <string name="minibar_summary__edit_minibar">Modifier la disposition de la Minibarre.</string>
-    <string name="minibar_title__set_wallpaper">Définir le fond d\'écran</string>
-    <string name="minibar_summary__set_wallpaper">Définir et rendre le fond d\'écran flou.</string>
-    <string name="minibar_title__lock_screen">Verrouiller l\'écran</string>
-    <string name="minibar_summary__lock_screen">Verrouiller l\'écran immédiatement, requiert le droit d\'administration de l\'appareil.</string>
-    <string name="minibar_title__device_settings">Paramètres de l\'appareil</string>
-    <string name="minibar_summary__device_settings">Raccourci vers les paramètres de l\'appareil.</string>
-    <string name="minibar_title__launcher_settings">Paramètres du lanceur</string>
-    <string name="minibar_summary__launcher_settings">Raccourci vers les paramètres d\'OpenLauncher.</string>
-    <string name="minibar_title__volume_dialog">Barre de volume</string>
-    <string name="minibar_summary__volume_dialog">Ouvrir la pop-up du volume.</string>
-    <string name="minibar_title__app_drawer">Ouvrir le tiroir d\'application</string>
-    <string name="minibar_summary__app_drawer">Ouvrir le volet des applications.</string>
-    <string name="minibar_title__search_bar">Ouvrir la barre de recherche</string>
-    <string name="minibar_summary__search_bar">Ouvrir la barre de recherche.</string>
-    <string name="minibar_title__mobile_network">Paramètres du réseau mobile</string>
-    <string name="minibar_summary__mobile_network">Raccourci vers les paramètres de réseau mobile.</string>
-    <string name="minibar_title__notification_bar">Afficher les notifications</string>
-    <string name="minibar_summary__notification_bar">Étendre la zone de notification en haut de l\'écran.</string>
-    <string name="minibar_title__camera">Appareil photo</string>
-    <string name="minibar_summary__camera">Prendre une photo avec votre appareil photo</string>
-
-    <!-- About -->
+    
     <string name="about_libs">Bibliothèques Open Source</string>
     <string name="about_rate">Noter</string>
     <string name="about_credit">Contributeurs</string>
@@ -63,7 +37,7 @@
     <string name="more_info_support">Plus d\'informations sur les dons ou autre manière de supporter ce projet</string>
     <string name="android_contribution_guide">Guide de contribution Android</string>
 
-    <!-- Settings -->
+    
     <string name="pref_title__settings">Paramètres</string>
     <string name="pref_title__desktop">Bureau</string>
     <string name="pref_title__dock">Dock</string>
@@ -176,7 +150,7 @@
     <string name="pref_title__restart">Redémarrer</string>
     <string name="pref_summary__restart">Redémarrer le launcher en cas de comportement étrange.</string>
 
-    <!-- Arrays -->
+    
     <string name="vertical_scroll_drawer">Vertical</string>
     <string name="horizontal_paged_drawer">Paginé</string>
 
@@ -198,7 +172,7 @@
     <string name="dark">Foncé</string>
     <string name="black">Noir</string>
 
-    <!-- Dialogs -->
+    
     <string name="please_wait">Recherche des applications installées. Veuillez patienter.</string>
     <string name="are_you_sure">Êtes-vous sûr ? Cette action ne peut être annulée, sauf si vous avez une sauvegarde.</string>
     <string name="device_admin_title">Droit d\'administration de l\'appareil requis</string>
@@ -213,7 +187,7 @@
     <string name="notification_title">Notification d\'accès</string>
     <string name="notification_summary">Openlauncher nécessite la permission de notification pour afficher les badges icônes.</string>
 
-    <!-- Other -->
+    
     <string name="columns">Colonnes</string>
     <string name="rows">Lignes</string>
     <string name="on">Activé</string>
@@ -227,20 +201,20 @@
     <string name="default_folder">Aucun nom</string>
     <string name="default_icons">Défaut</string>
 
-    <!-- Drag Option View -->
+    
     <string name="edit">Modifier</string>
     <string name="info">Info</string>
     <string name="uninstall">Désinstaller</string>
     <string name="remove">Supprimer</string>
     <string name="resize">Redimensionner</string>
 
-    <!-- Desktop Option View -->
+    
     <string name="home">Accueil</string>
     <string name="action">Action</string>
     <string name="lock">Verrouiller</string>
     <string name="widget">Widget</string>
 
-    <!-- Toasts -->
+    
     <string name="toast_not_enough_space">Espace insuffisant.</string>
     <string name="toast_app_uninstalled">Cette application a été désinstallée.</string>
     <string name="toast_device_admin_required">Veuillez autoriser l\'administration de l\'appareil.</string>

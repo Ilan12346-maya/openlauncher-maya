@@ -1,29 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <!-- Toasts -->
+    
     <string name="toast_device_admin_required">Ma ulac aɣilif, rmed tadbelt n yibenk.</string>
 
-    <!-- Intro -->
+    
     <string name="intro2_text">Zuɣer aḍad-ik si tama tazelmaḍt n ugdil-ik akken ad teldiḍ afeggag amectuḥ. Din-a ad tafeḍ iɣewwaṛen,
         beddel tugna n ugilal, d ddeqs n tiɣawsiwin nniḍen.</string>
     <string name="intro3_text">Tzemreḍ ad tbeddleḍ tanarit-ik, agalis n yisnasen, dock, ɛreḍ-it tura!</string>
 
-    <!-- Minibar -->
-    <string name="minibar">Afeggag amectuḥ</string>
-    <string name="minibar_summary__edit_minibar">Beddel taneɣruft n ufeggag amectuḥ.</string>
-    <string name="minibar_summary__set_wallpaper">Sbadu neɣ sibrek agilal n ugdil.</string>
-    <string name="minibar_summary__lock_screen">Sekkeṛ agdil tura yakan, yesra tadbelt n yibenk.</string>
-    <string name="minibar_summary__device_settings">Anegzum ar iɣewwaṛen n yibenk.</string>
-    <string name="minibar_summary__launcher_settings">Anegzum ar iɣewwaṛen OpenLauncher.</string>
-    <string name="minibar_summary__volume_dialog">Sken asfaylu n ubleɣ.</string>
-    <string name="minibar_summary__app_drawer">Ldi agalis n yisnasen.</string>
-
-    <!-- About -->
+    
     <string name="about_libs">Tinedlisin n u qbalu yeldin</string>
     <string name="about_rate">Rnu tazmilt</string>
     <string name="about_credit">Iswiziwen</string>
 
-    <!-- Settings -->
+    
 
     <string name="pref_title__desktop">Tanarit</string>
     <string name="pref_title__dock">Dock</string>
@@ -114,10 +104,10 @@
     <string name="vertical_scroll_drawer">Ubdid</string>
     <string name="horizontal_paged_drawer">S isebtar</string>
 
-    <!-- Item Labels -->
+    
     <string name="default_icons">Amezwer</string>
 
-    <!-- Dialogs -->
+    
     <string name="placeholder">Azul i umaḍal!</string>
     <string name="please_wait">Anadi n yisnasen ibedden. Rǧu ma ulac aɣilif.</string>
     <string name="on">Irmed</string>

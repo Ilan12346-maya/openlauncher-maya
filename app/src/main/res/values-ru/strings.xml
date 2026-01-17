@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <!-- Intro -->
+    
     <string name="intro1_text">Лаунчер с открытым исходным кодом с огромным количеством настроек и функций</string>
     <string name="intro1_community">Рабочее окружение от сообщества и для сообщества</string>
     <string name="intro1_features">С различными функциями</string>
@@ -9,30 +9,7 @@
     <string name="intro3_text">Настройте стиль вашего меню приложений и скройте те, что не используете.</string>
     <string name="intro4_text">Ищите то, что вам нужно как среди ваших приложений, так и в интернете.</string>
 
-    <!-- Minibar -->
-    <string name="minibar">Мини-бар</string>
-    <string name="minibar_title__edit_minibar">Изменить мин-бара</string>
-    <string name="minibar_summary__edit_minibar">Изменить вид мини-бара.</string>
-    <string name="minibar_title__set_wallpaper">Установить обои</string>
-    <string name="minibar_summary__set_wallpaper">Установить обои рабочего стола</string>
-    <string name="minibar_title__lock_screen">Блокировка устройства</string>
-    <string name="minibar_summary__lock_screen">Заблокировать устройство.</string>
-    <string name="minibar_title__device_settings">Настройки устройства</string>
-    <string name="minibar_summary__device_settings">Быстрый доступ к настройкам устройства.</string>
-    <string name="minibar_title__launcher_settings">Настройки OpenLauncher</string>
-    <string name="minibar_summary__launcher_settings">Быстрый доступ к настройкам OpenLauncher.</string>
-    <string name="minibar_title__volume_dialog">Громкость</string>
-    <string name="minibar_summary__volume_dialog">Отобразить регуляторы громкости.</string>
-    <string name="minibar_title__app_drawer">Открыть меню приложений</string>
-    <string name="minibar_summary__app_drawer">Открыть меню приложений.</string>
-    <string name="minibar_title__search_bar">Показать строку поиска</string>
-    <string name="minibar_summary__search_bar">Показать строку для поиска</string>
-    <string name="minibar_title__mobile_network">Настройки мобильной сети</string>
-    <string name="minibar_summary__mobile_network">Быстрый доступ к настройкам мобильной сети</string>
-    <string name="minibar_title__notification_bar">Показать область уведомлений</string>
-    <string name="minibar_summary__notification_bar">Развернуть уведомление сверху экрана</string>
-
-    <!-- About -->
+    
     <string name="about_libs">Библиотеки с открытым исходным кодом</string>
     <string name="about_rate">Оценить</string>
     <string name="about_credit">Участники</string>
@@ -61,7 +38,7 @@
     <string name="more_info_support">Информация о финансовой поддержке и других видах сотрудничества по проекту</string>
     <string name="android_contribution_guide">Разработка под Android</string>
 
-    <!-- Settings -->
+    
     <string name="pref_title__settings">Настройки</string>
     <string name="pref_title__desktop">Рабочий стол</string>
     <string name="pref_title__dock">Док</string>
@@ -174,7 +151,7 @@
     <string name="pref_title__restart">Перезапустить</string>
     <string name="pref_summary__restart">Перезапустить лаунчер для ручного применения некоторых настроек.</string>
 
-    <!-- Arrays -->
+    
     <string name="vertical_scroll_drawer">Вертикальный</string>
     <string name="horizontal_paged_drawer">Постраничный</string>
 
@@ -196,7 +173,7 @@
     <string name="dark">Тёмная</string>
     <string name="black">Черный</string>
 
-    <!-- Dialogs -->
+    
     <string name="please_wait">Поиск установленных приложений. Пожалуйста, подождите.</string>
     <string name="are_you_sure">Вы уверены? Это действие нельзя будет отменить, только восстановиться с резервной копии.</string>
     <string name="device_admin_title">Администрирование устройства</string>
@@ -211,7 +188,7 @@
     <string name="notification_title">Доступ к уведомлениям</string>
     <string name="notification_summary">OpenLauncher требуется разрешение на показ уведомлений.</string>
 
-    <!-- Other -->
+    
     <string name="columns">Столбцы</string>
     <string name="rows">Строки</string>
     <string name="on">Вкл</string>
@@ -225,20 +202,20 @@
     <string name="default_folder">Без имени</string>
     <string name="default_icons">По умолчанию</string>
 
-    <!-- Drag Option View -->
+    
     <string name="edit">Изменить</string>
     <string name="info">Информация</string>
     <string name="uninstall">Удалить</string>
     <string name="remove">Убрать</string>
     <string name="resize">Изменить размер</string>
 
-    <!-- Desktop Option View -->
+    
     <string name="home">Главный экран</string>
     <string name="action">Действие</string>
     <string name="lock">Блокировка</string>
     <string name="widget">Виджет</string>
 
-    <!-- Toasts -->
+    
     <string name="toast_not_enough_space">Недостаточно места.</string>
     <string name="toast_app_uninstalled">Приложение удалено.</string>
     <string name="toast_device_admin_required">Пожалуйста, разрешите администрирование устройства.</string>

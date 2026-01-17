@@ -12,6 +12,12 @@ public class WidgetView extends AppWidgetHostView {
     public WidgetView(Context context) {
         super(context);
         setLongClickable(true);
+        setPadding(0, 0, 0, 0);
+    }
+
+    @Override
+    public void setPadding(int left, int top, int right, int bottom) {
+        super.setPadding(0, 0, 0, 0);
     }
 
     @Override

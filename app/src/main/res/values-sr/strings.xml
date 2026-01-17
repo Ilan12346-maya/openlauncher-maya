@@ -1,29 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <!-- This is the serbian latin variant. As it is only supported by Android 7 or above, latin is used for default serbian till there is a cyrillic translation available too -->
-    <!-- Toasts -->
+    
+    
     <string name="toast_device_admin_required">Molimo vas omogzućite administraciju uređaja.</string>
 
-    <!-- Intro -->
-    <string name="intro2_text">Prevucite sa levog ruba vaše početnog ekrana da otvorite minibar. Tu možete pronaći podešavanja,
-        promijeniti sliku ekrana, i dosta drugih stvari.</string>
+    
     <string name="intro3_text">Možeš podesiti tvoj desktop, aplikacioni panel, i pristanište, Pokušaj!</string>
 
-    <!-- Minibar -->
-    <string name="minibar">Minibar</string>
-    <string name="minibar_summary__edit_minibar">Promijeni izgled minibar.</string>
-    <string name="minibar_summary__set_wallpaper">Podesi blur na slici ekrana.</string>
-    <string name="minibar_summary__lock_screen">zaključaj ekran odmah, zahtjeva administraciju uređaja.</string>
-    <string name="minibar_summary__device_settings">Perčica do podešavanja uređaja.</string>
-    <string name="minibar_summary__launcher_settings">Shortcut to OpenLauncher podešavanja.</string>
-    <string name="minibar_summary__volume_dialog">Prikaži zvučne klizače.</string>
-    <string name="minibar_summary__app_drawer">Otvori aplikacioni panel.</string>
-
-    <!-- About -->
+    
     <string name="about_libs">Otvori Source Libraries</string>
     <string name="about_rate">Oceni</string>
     <string name="about_credit">Pomagači</string>
 
-    <!-- Settings -->
+    
 
     <string name="pref_title__desktop">Desktop</string>
     <string name="pref_title__dock">Prisanište</string>
@@ -114,10 +103,10 @@
     <string name="vertical_scroll_drawer">Vertikalno</string>
     <string name="horizontal_paged_drawer">Označeno</string>
 
-    <!-- Item Labels -->
+    
     <string name="default_icons">Podrazumevano</string>
 
-    <!-- Dialogs -->
+    
     <string name="placeholder">Zdravo Svijete!</string>
     <string name="please_wait">Pretraživanje instaliranih aplikacija. Molim vas sačekajte.</string>
     <string name="on">Uključeno</string>

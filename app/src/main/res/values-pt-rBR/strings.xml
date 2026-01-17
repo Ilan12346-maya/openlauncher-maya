@@ -1,32 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <!-- Toasts -->
+    
     <string name="toast_device_admin_required">Por favor, habilite a administração do dispositivo.</string>
 
-    <!-- Intro -->
-    <string name="intro2_text">Deslize o dedo para a direita a partir da borda esquerda da sua tela inicial para abrir a minibar. Nela você poderá mudar as configurações, mudar o papel de parede e fazer outras coisas.</string>
+    
     <string name="intro3_text">Você pode configurar a sua área de trabalho, a gaveta de aplicativos e a dock. Experimente!</string>
     <string name="intro1_community">Um launcher feito pela a comunidade, para a comunidade.</string>
     <string name="intro1_features">Cheio de recursos</string>
     <string name="intro1_customizable">Personalizável</string>
     <string name="custom">Personalizado</string>
 
-    <!-- Minibar -->
-    <string name="minibar">Minibar</string>
-    <string name="minibar_summary__edit_minibar">Mudar o layout da minibar</string>
-    <string name="minibar_summary__set_wallpaper">Definir ou borrar o papel de parede</string>
-    <string name="minibar_summary__lock_screen">Bloqueia a tela imediatamente (requer administrador do dispositivo)</string>
-    <string name="minibar_summary__device_settings">Atalho para as configurações do dispositivo</string>
-    <string name="minibar_summary__launcher_settings">Atalho para as configurações do launcher</string>
-    <string name="minibar_summary__volume_dialog">Exibir o painel de som</string>
-    <string name="minibar_summary__app_drawer">Abrir a gaveta de aplicativos.</string>
-
-    <!-- About -->
+    
     <string name="about_libs">Bibliotecas de código aberto</string>
     <string name="about_rate">Avaliar</string>
     <string name="about_credit">Contribuidores</string>
 
-    <!-- Settings -->
+    
 
     <string name="pref_title__desktop">Área de trabalho</string>
     <string name="pref_title__dock">Dock</string>
@@ -119,10 +108,10 @@
     <string name="vertical_scroll_drawer">Vertical</string>
     <string name="horizontal_paged_drawer">Paginada</string>
 
-    <!-- Item Labels -->
+    
     <string name="default_icons">Padrão</string>
 
-    <!-- Dialogs -->
+    
     <string name="placeholder">Olá, mundo!</string>
     <string name="please_wait">Procurando por aplicativos instalados. Por favor, aguarde.</string>
     <string name="on">Ligado</string>
@@ -149,29 +138,29 @@
     <string name="pref_title__date_bar_date_format_custom_1">Formato Personalizado: Linha 1</string>
     <string name="pref_title__date_bar_date_format_custom_2">Formato Personalizado: Linha 2</string>
 
-    <!-- Titles -->
+    
     <string name="pref_title__settings">Configurações</string>
 
-    <!-- Drag Option View -->
+    
     <string name="edit">Editar</string>
     <string name="info">Informação</string>
     <string name="uninstall">Desinstalar</string>
     <string name="remove">Remover</string>
 
-    <!-- Desktop Option View -->
+    
     <string name="home">Início</string>
     <string name="action">Ação</string>
     <string name="lock">Bloquear</string>
     <string name="widget">Widget</string>
 
-    <!-- Toasts -->
+    
     <string name="toast_not_enough_space">Sem espaço suficiente.</string>
     <string name="toast_app_uninstalled">Aplicativo desinstalado.</string>
 
-    <!-- Item Labels -->
+    
     <string name="default_folder">Sem nome</string>
 
-    <!-- Dialogs -->
+    
     <string name="search_hint">Pesquisar...</string>
     <string name="bad_format">Mal formatado</string>
 </resources>

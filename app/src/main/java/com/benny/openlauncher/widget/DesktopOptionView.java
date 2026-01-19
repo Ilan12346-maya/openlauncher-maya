@@ -17,6 +17,8 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowInsets;
 import android.widget.FrameLayout;
+import androidx.core.content.ContextCompat;
+import android.graphics.Insets;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.benny.openlauncher.R;
@@ -33,6 +35,7 @@ import java.util.List;
 public class DesktopOptionView extends FrameLayout {
 
     private RecyclerView[] _actionRecyclerViews = new RecyclerView[2];
+    @SuppressWarnings("unchecked")
     private FastItemAdapter<IconLabelItem>[] _actionAdapters = new FastItemAdapter[2];
     private DesktopOptionViewListener _desktopOptionViewListener;
 
@@ -60,9 +63,9 @@ public class DesktopOptionView extends FrameLayout {
             @Override
             public void run() {
                 if (home) {
-                    _actionAdapters[0].getAdapterItem(0)._icon = getContext().getResources().getDrawable(R.drawable.ic_home);
+                    _actionAdapters[0].getAdapterItem(0)._icon = ContextCompat.getDrawable(getContext(), R.drawable.ic_home);
                 } else {
-                    _actionAdapters[0].getAdapterItem(0)._icon = getContext().getResources().getDrawable(R.drawable.ic_home_border);
+                    _actionAdapters[0].getAdapterItem(0)._icon = ContextCompat.getDrawable(getContext(), R.drawable.ic_home_border);
                 }
                 _actionAdapters[0].notifyAdapterItemChanged(0);
             }
@@ -76,9 +79,9 @@ public class DesktopOptionView extends FrameLayout {
             @Override
             public void run() {
                 if (lock) {
-                    _actionAdapters[0].getAdapterItem(1)._icon = getContext().getResources().getDrawable(R.drawable.ic_lock);
+                    _actionAdapters[0].getAdapterItem(1)._icon = ContextCompat.getDrawable(getContext(), R.drawable.ic_lock);
                 } else {
-                    _actionAdapters[0].getAdapterItem(1)._icon = getContext().getResources().getDrawable(R.drawable.ic_lock_open);
+                    _actionAdapters[0].getAdapterItem(1)._icon = ContextCompat.getDrawable(getContext(), R.drawable.ic_lock_open);
                 }
                 _actionAdapters[0].notifyAdapterItemChanged(1);
             }
@@ -86,8 +89,13 @@ public class DesktopOptionView extends FrameLayout {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // API 30+
+            android.graphics.Insets systemBarInsets = insets.getInsets(WindowInsets.Type.systemBars());
+            setPadding(0, systemBarInsets.top, 0, systemBarInsets.bottom);
+            return insets;
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) { // API 19-29 (old behavior)
             setPadding(0, insets.getSystemWindowInsetTop(), 0, insets.getSystemWindowInsetBottom());
             return insets;
         }
@@ -262,7 +270,7 @@ public class DesktopOptionView extends FrameLayout {
     }
 
     private IconLabelItem createItem(int icon, String label, Typeface typeface, int width) {
-        return new IconLabelItem(getContext().getResources().getDrawable(icon), label)
+        return new IconLabelItem(ContextCompat.getDrawable(getContext(), icon), label)
                 .withIdentifier(icon)
                 .withOnClickListener(null)
                 .withTextColor(Color.WHITE)

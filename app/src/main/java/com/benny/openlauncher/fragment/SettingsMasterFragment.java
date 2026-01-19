@@ -43,8 +43,8 @@ public class SettingsMasterFragment extends SettingsBaseFragment {
         }
 
         if (preference.getKey().equals("pref_key__desktop_page_0_clear")) {
-            if (HomeActivity._launcher != null) {
-                Desktop desktop = HomeActivity._launcher.getDesktop();
+            if (HomeActivity.Companion.getLauncher() != null) {
+                Desktop desktop = HomeActivity.Companion.getLauncher().getDesktop();
                 if (desktop != null && desktop.getAdapter() instanceof Desktop.DesktopAdapter) {
                     ((Desktop.DesktopAdapter) desktop.getAdapter()).clearPage0();
                     Tool.toast(getContext(), "Seite 0 zurückgesetzt");

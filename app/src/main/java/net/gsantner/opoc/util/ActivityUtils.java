@@ -82,6 +82,7 @@ public class ActivityUtils extends net.gsantner.opoc.util.ContextUtils {
      * @param finishFromActivity true: Finish the current activity
      * @param requestCode        Request code for stating the activity, not waiting for result if null
      */
+    @SuppressWarnings("deprecation")
     public void animateToActivity(Intent intent, Boolean finishFromActivity, Integer requestCode) {
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         if (requestCode != null) {
@@ -111,6 +112,7 @@ public class ActivityUtils extends net.gsantner.opoc.util.ContextUtils {
                 .show();
     }
 
+    @SuppressWarnings("deprecation")
     public ActivityUtils setSoftKeyboardVisibile(boolean visible, View... editView) {
         final Activity activity = _activity;
         if (activity != null) {
@@ -155,6 +157,7 @@ public class ActivityUtils extends net.gsantner.opoc.util.ContextUtils {
     }
 
 
+    @SuppressWarnings("deprecation")
     public ActivityUtils showSoftKeyboard(View textInputView) {
         if (_activity != null) {
             InputMethodManager imm = (InputMethodManager) _activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
@@ -169,6 +172,7 @@ public class ActivityUtils extends net.gsantner.opoc.util.ContextUtils {
         showDialogWithHtmlTextView(resTitleId, html, true, null);
     }
 
+    @SuppressWarnings("deprecation")
     public void showDialogWithHtmlTextView(@StringRes int resTitleId, String text, boolean isHtml, DialogInterface.OnDismissListener dismissedListener) {
         ScrollView scroll = new ScrollView(_context);
         AppCompatTextView textView = new AppCompatTextView(_context);
@@ -177,7 +181,15 @@ public class ActivityUtils extends net.gsantner.opoc.util.ContextUtils {
         scroll.setPadding(padding, 0, padding, 0);
         scroll.addView(textView);
         textView.setMovementMethod(new LinkMovementMethod());
-        textView.setText(isHtml ? new SpannableString(Html.fromHtml(text)) : text);
+        if (isHtml) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                textView.setText(new SpannableString(Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY)));
+            } else {
+                textView.setText(new SpannableString(Html.fromHtml(text)));
+            }
+        } else {
+            textView.setText(text);
+        }
         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17);
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(_context)
@@ -199,6 +211,7 @@ public class ActivityUtils extends net.gsantner.opoc.util.ContextUtils {
         dialogFullWidth(dialog.show(), true, false);
     }
 
+    @SuppressWarnings("deprecation")
     // Toggle with no param, else set visibility according to first bool
     public ActivityUtils toggleStatusbarVisibility(boolean... optionalForceVisible) {
         WindowManager.LayoutParams attrs = _activity.getWindow().getAttributes();
@@ -214,6 +227,7 @@ public class ActivityUtils extends net.gsantner.opoc.util.ContextUtils {
         return this;
     }
 
+    @SuppressWarnings("deprecation")
     public ActivityUtils showGooglePlayEntryForThisApp() {
         String pkgId = "details?id=" + _activity.getPackageName();
         Intent goToMarket = new Intent(Intent.ACTION_VIEW, Uri.parse("market://" + pkgId));

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
@@ -35,7 +36,7 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     @SuppressLint("HandlerLeak")
-    private Handler mMonitorHandler = new Handler() {
+    private Handler mMonitorHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {

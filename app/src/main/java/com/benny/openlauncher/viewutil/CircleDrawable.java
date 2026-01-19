@@ -7,6 +7,7 @@ import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 
 import com.benny.openlauncher.util.Tool;
@@ -27,7 +28,7 @@ public class CircleDrawable extends Drawable {
     private boolean _hidingOldIcon;
 
     public CircleDrawable(Context context, Drawable icon, int colorIcon, int colorBackground, int alphaBackground) {
-        icon.setColorFilter(colorIcon, PorterDuff.Mode.SRC_ATOP);
+        icon.setColorFilter(new PorterDuffColorFilter(colorIcon, PorterDuff.Mode.SRC_ATOP));
         _icon = Tool.drawableToBitmap(icon);
 
         _iconPadding = Tool.dp2px(6);
@@ -50,7 +51,7 @@ public class CircleDrawable extends Drawable {
         _iconToFade = _icon;
         _hidingOldIcon = true;
 
-        icon.setColorFilter(_iconColor, PorterDuff.Mode.SRC_ATOP);
+        icon.setColorFilter(new PorterDuffColorFilter(_iconColor, PorterDuff.Mode.SRC_ATOP));
 
         _icon = Tool.drawableToBitmap(icon);
         invalidateSelf();
@@ -102,6 +103,7 @@ public class CircleDrawable extends Drawable {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public int getOpacity() {
         return PixelFormat.TRANSPARENT;
     }

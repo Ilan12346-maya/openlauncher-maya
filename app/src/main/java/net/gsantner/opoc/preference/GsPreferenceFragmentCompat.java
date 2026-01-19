@@ -480,6 +480,7 @@ public abstract class GsPreferenceFragmentCompat<AS extends SharedPreferencesPro
         return hasTitle() ? getTitle() : defaultTitle;
     }
 
+    @SuppressWarnings("deprecation")
     protected void restartActivity() {
         Activity activity;
         if (isAdded() && (activity = getActivity()) != null) {

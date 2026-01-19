@@ -2,6 +2,7 @@ package com.benny.openlauncher.fragment;
 
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import androidx.preference.Preference;
@@ -88,7 +89,7 @@ public abstract class SettingsBaseFragment extends PreferenceFragmentCompat impl
                             int colorInt = color.resourceId != 0
                                     ? ContextCompat.getColor(getContext(), color.resourceId)
                                     : color.data;
-                            drawable.mutate().setColorFilter(colorInt, PorterDuff.Mode.SRC_IN);
+                            drawable.mutate().setColorFilter(new PorterDuffColorFilter(colorInt, PorterDuff.Mode.SRC_IN));
                         }
                     }
 

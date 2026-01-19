@@ -1,5 +1,6 @@
 package com.benny.openlauncher.widget;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherApps;
@@ -29,6 +30,11 @@ import com.benny.openlauncher.viewutil.DesktopCallback;
 import com.benny.openlauncher.viewutil.GroupDrawable;
 
 import com.benny.openlauncher.util.iconloader.AsyncIconLoader;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
+import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
 public class AppItemView extends View implements Drawable.Callback, NotificationListener.NotificationCallback {
     private static final int MIN_ICON_TEXT_MARGIN = 8;
@@ -237,17 +243,23 @@ public class AppItemView extends View implements Drawable.Callback, Notification
             _view.setLabel(item.getLabel());
             final App app = AppManager.getInstance(_view.getContext()).findApp(item._intent);
             if (app != null) {
-                _view.setIcon(app.getIcon()); // Versucht erst aus Cache zu laden
-                if (app._icon == null) {
-                    // Icon ist noch nicht geladen, asynchron nachholen
-                    AsyncIconLoader.getInstance().loadIcon(app, new AsyncIconLoader.IconCallback() {
-                        @Override
-                        public void onIconLoaded(Drawable icon) {
-                            _view.setIcon(icon);
-                            _view.invalidate();
-                        }
-                    });
+                Context context = _view.getContext();
+                if (context instanceof Activity && ((Activity) context).isDestroyed()) {
+                    return this;
                 }
+                Glide.with(context)
+                     .load(app)
+                     .into(new CustomTarget<Drawable>() {
+                         @Override
+                         public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                             _view.setIcon(resource);
+                             _view.invalidate();
+                         }
+                         @Override
+                         public void onLoadCleared(@Nullable Drawable placeholder) {
+                             _view.setIcon(placeholder);
+                         }
+                     });
             } else {
                 _view.setIcon(item.getIcon());
             }

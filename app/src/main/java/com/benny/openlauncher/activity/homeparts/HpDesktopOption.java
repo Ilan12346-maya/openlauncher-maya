@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 
 import android.view.View;
+import androidx.core.content.ContextCompat;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.benny.openlauncher.R;
@@ -29,6 +30,7 @@ import java.util.List;
 import static com.benny.openlauncher.activity.HomeActivity.REQUEST_CREATE_APPWIDGET;
 import static com.benny.openlauncher.activity.HomeActivity.REQUEST_PICK_APPWIDGET;
 
+@SuppressWarnings("deprecation")
 public class HpDesktopOption implements DesktopOptionView.DesktopOptionViewListener, DialogListener.OnActionDialogListener {
     private HomeActivity _homeActivity;
 
@@ -66,7 +68,7 @@ public class HpDesktopOption implements DesktopOptionView.DesktopOptionViewListe
             if (icon == null) {
                 icon = widget.loadIcon(_homeActivity, 0);
             }
-            fastItemAdapter.add(new com.benny.openlauncher.viewutil.IconLabelItem(icon, widget.label)
+            fastItemAdapter.add(new com.benny.openlauncher.viewutil.IconLabelItem(icon, widget.loadLabel(_homeActivity.getPackageManager()))
                     .withIconSize(100)
                     .withIconGravity(android.view.Gravity.START)
                     .withIconPadding(8)
@@ -91,6 +93,7 @@ public class HpDesktopOption implements DesktopOptionView.DesktopOptionViewListe
                     data.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
                     configureWidget(data);
                 } else {
+                    com.benny.openlauncher.util.Logger.log(this, "bindAppWidgetIdIfAllowed failed for widget: " + widgetInfo.provider);
                     Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
                     intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
                     intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, widgetInfo.provider);
@@ -145,7 +148,15 @@ public class HpDesktopOption implements DesktopOptionView.DesktopOptionViewListe
     public void createWidget(Intent data) {
         Bundle extras = data.getExtras();
         int appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+        if (appWidgetId == -1) {
+            appWidgetId = extras.getInt("appWidgetId", -1);
+        }
+        com.benny.openlauncher.util.Logger.log(this, "createWidget: appWidgetId=" + appWidgetId);
         AppWidgetProviderInfo appWidgetInfo = _homeActivity._appWidgetManager.getAppWidgetInfo(appWidgetId);
+        if (appWidgetInfo == null) {
+            com.benny.openlauncher.util.Logger.log(this, "createWidget: appWidgetInfo is NULL");
+            return;
+        }
         Item item = Item.newWidgetItem(appWidgetInfo.provider, appWidgetId);
         Desktop desktop = _homeActivity.getDesktop();
         List<CellContainer> pages = desktop.getPages();
@@ -157,7 +168,7 @@ public class HpDesktopOption implements DesktopOptionView.DesktopOptionViewListe
             item._y = point.y;
 
             // add item to database
-            _homeActivity._db.saveItem(item, desktop.getCurrentPageIndex(), Definitions.ItemPosition.Desktop);
+            Setup.dataManager().saveItem(item, desktop.getCurrentPageIndex(), Definitions.ItemPosition.Desktop);
             desktop.addItemToPage(item, desktop.getCurrentPageIndex());
         } else {
             Tool.toast(_homeActivity, R.string.toast_not_enough_space);
@@ -180,13 +191,13 @@ public class HpDesktopOption implements DesktopOptionView.DesktopOptionViewListe
         final com.mikepenz.fastadapter.commons.adapters.FastItemAdapter<com.benny.openlauncher.viewutil.IconLabelItem> fastItemAdapter = new com.mikepenz.fastadapter.commons.adapters.FastItemAdapter<>();
         
         // Add special actions at the top
-        fastItemAdapter.add(new com.benny.openlauncher.viewutil.IconLabelItem(_homeActivity.getResources().getDrawable(R.drawable.ic_behavior), "Entwickler Optionen öffnen")
+        fastItemAdapter.add(new com.benny.openlauncher.viewutil.IconLabelItem(ContextCompat.getDrawable(_homeActivity, R.drawable.ic_behavior), "Entwickler Optionen öffnen")
                 .withIconSize(40).withIconColor(android.graphics.Color.WHITE).withIdentifier(10001).withTag("DEV_OPTIONS"));
-        fastItemAdapter.add(new com.benny.openlauncher.viewutil.IconLabelItem(_homeActivity.getResources().getDrawable(R.drawable.ic_settings), "Launcher settings")
+        fastItemAdapter.add(new com.benny.openlauncher.viewutil.IconLabelItem(ContextCompat.getDrawable(_homeActivity, R.drawable.ic_settings), "Launcher settings")
                 .withIconSize(40).withIconColor(android.graphics.Color.WHITE).withIdentifier(10002).withTag("LAUNCHER_SETTINGS"));
 
         for (com.benny.openlauncher.model.App app : apps) {
-            fastItemAdapter.add(new com.benny.openlauncher.viewutil.IconLabelItem(app._icon, app._label)
+            fastItemAdapter.add(new com.benny.openlauncher.viewutil.IconLabelItem(app.getIcon(), app._label)
                     .withIconSize(40)
                     .withIdentifier(app.hashCode())
                     .withTag(app));
@@ -215,15 +226,15 @@ public class HpDesktopOption implements DesktopOptionView.DesktopOptionViewListe
                     String action = (String) tag;
                     if (action.equals("DEV_OPTIONS")) {
                         Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS);
-                        desktopItem = Item.newShortcutItem(intent, _homeActivity.getResources().getDrawable(R.drawable.ic_behavior), "Entwickler Optionen");
+                        desktopItem = Item.newShortcutItem(intent, ContextCompat.getDrawable(_homeActivity, R.drawable.ic_behavior), "Entwickler Optionen");
                     } else if (action.equals("LAUNCHER_SETTINGS")) {
                         desktopItem = Item.newActionItem(LauncherAction.Action.LauncherSettings.ordinal());
                         desktopItem._label = "Launcher settings";
-                        desktopItem._icon = _homeActivity.getResources().getDrawable(R.drawable.ic_settings);
+                        desktopItem._icon = ContextCompat.getDrawable(_homeActivity, R.drawable.ic_settings);
                     } else if (action.equals("RESTART_LAUNCHER")) {
                         desktopItem = Item.newActionItem(LauncherAction.Action.Restart.ordinal());
                         desktopItem._label = "Restart launcher";
-                        desktopItem._icon = _homeActivity.getResources().getDrawable(R.drawable.ic_android);
+                        desktopItem._icon = ContextCompat.getDrawable(_homeActivity, R.drawable.ic_android);
                     }
                 } else if (tag instanceof com.benny.openlauncher.model.App) {
                     com.benny.openlauncher.model.App app = (com.benny.openlauncher.model.App) tag;
@@ -236,7 +247,7 @@ public class HpDesktopOption implements DesktopOptionView.DesktopOptionViewListe
                     if (point != null) {
                         desktopItem._x = point.x;
                         desktopItem._y = point.y;
-                        _homeActivity._db.saveItem(desktopItem, desktop.getCurrentPageIndex(), Definitions.ItemPosition.Desktop);
+                        Setup.dataManager().saveItem(desktopItem, desktop.getCurrentPageIndex(), Definitions.ItemPosition.Desktop);
                         desktop.addItemToPage(desktopItem, desktop.getCurrentPageIndex());
                         Tool.toast(_homeActivity, desktopItem._label + " added");
                     } else {
@@ -266,16 +277,16 @@ public class HpDesktopOption implements DesktopOptionView.DesktopOptionViewListe
                 if (item._type == Item.Type.APP || item._type == Item.Type.SHORTCUT) {
                     com.benny.openlauncher.model.App app = Setup.appLoader().findItemApp(item);
                     label = app != null ? app._label : "Unknown";
-                    icon = app != null ? app._icon : _homeActivity.getResources().getDrawable(R.drawable.ic_android);
+                    icon = app != null ? app.getIcon() : ContextCompat.getDrawable(_homeActivity, R.drawable.ic_android);
                 } else if (item._type == Item.Type.GROUP) {
                     label = item._label != null ? item._label : "Group";
-                    icon = _homeActivity.getResources().getDrawable(R.drawable.ic_group);
+                    icon = ContextCompat.getDrawable(_homeActivity, R.drawable.ic_group);
                 } else if (item._type == Item.Type.WIDGET) {
                     label = "Widget";
-                    icon = _homeActivity.getResources().getDrawable(R.drawable.ic_dashboard);
+                    icon = ContextCompat.getDrawable(_homeActivity, R.drawable.ic_dashboard);
                 } else {
                     label = "Action";
-                    icon = _homeActivity.getResources().getDrawable(R.drawable.ic_launch);
+                    icon = ContextCompat.getDrawable(_homeActivity, R.drawable.ic_launch);
                 }
                 
                 fastItemAdapter.add(new com.benny.openlauncher.viewutil.IconLabelItem(icon, label)
@@ -311,7 +322,7 @@ public class HpDesktopOption implements DesktopOptionView.DesktopOptionViewListe
                 Item itemToRemove = (Item) viewToRemove.getTag();
                 
                 currentPage.removeView(viewToRemove);
-                _homeActivity._db.deleteItem(itemToRemove, true);
+                Setup.dataManager().deleteItem(itemToRemove, true);
                 
                 fastItemAdapter.remove(position);
                 if (fastItemAdapter.getAdapterItemCount() == 0) {

@@ -62,32 +62,8 @@
             android:key="@string/pref_key__desktop_show_label"
             android:summary="@string/pref_summary__desktop_show_label"
             android:title="@string/pref_title__desktop_show_label" />
-    </com.benny.openlauncher.widget.ColorPreferenceCategory>
 
-    <com.benny.openlauncher.widget.ColorPreferenceCategory android:title="@string/pref_title__desktop_parallax">
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="@string/pref_key__desktop_parallax"
-            android:summary="@string/pref_summary__desktop_parallax"
-            android:title="@string/pref_title__desktop_parallax" />
-        <com.benny.openlauncher.widget.ValueSeekBarPreference
-            android:defaultValue="20"
-            android:dependency="@string/pref_key__desktop_parallax"
-            android:key="@string/pref_key__desktop_parallax_distance"
-            android:max="100"
-            android:title="@string/pref_title__desktop_parallax_distance"
-            app:min="0" />
-        <com.benny.openlauncher.widget.ValueSeekBarPreference
-            android:defaultValue="10"
-            android:dependency="@string/pref_key__desktop_parallax"
-            android:key="@string/pref_key__desktop_parallax_zoom"
-            android:max="100"
-            android:title="@string/pref_title__desktop_parallax_zoom"
-            app:min="0" />
-    </com.benny.openlauncher.widget.ColorPreferenceCategory>
-
-    <com.benny.openlauncher.widget.ColorPreferenceCategory android:title="@string/pref_title__color">
-        <com.flask.colorpicker.ColorPickerPreference
+    <com.flask.colorpicker.ColorPickerPreference
             android:defaultValue="@color/transparent"
             android:key="@string/pref_key__desktop_background_color"
             android:title="@string/pref_title__desktop_background_color"
@@ -105,40 +81,6 @@
             android:title="@string/pref_title__desktop_folder_color"
             app:lightnessSlider="true"
             app:alphaSlider="true" />
-    </com.benny.openlauncher.widget.ColorPreferenceCategory>
-
-    <com.benny.openlauncher.widget.ColorPreferenceCategory android:title="@string/pref_title__search_bar">
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="@string/pref_key__search_bar_enable"
-            android:summary="@string/pref_summary__search_bar_enable"
-            android:title="@string/pref_title__search_bar_enable" />
-        <EditTextPreference
-            android:defaultValue="@string/pref_default__search_bar_base_uri"
-            android:dependency="@string/pref_key__search_bar_enable"
-            android:dialogMessage="@string/pref_dialog__search_bar_base_uri"
-            android:hint="@string/pref_default__search_bar_base_uri"
-            android:inputType="textUri"
-            android:key="@string/pref_key__search_bar_base_uri"
-            android:summary="@string/pref_summary__search_bar_base_uri"
-            android:title="@string/pref_title__search_bar_base_uri" />
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="@string/pref_key__search_bar_starts_with"
-            android:summary="@string/pref_summary__search_bar_starts_with"
-            android:title="@string/pref_title__search_bar_starts_with" />
-        <SwitchPreference
-            android:defaultValue="false"
-            android:dependency="@string/pref_key__search_bar_enable"
-            android:key="@string/pref_key__search_bar_force_browser"
-            android:summary="@string/pref_summary__search_bar_force_browser"
-            android:title="@string/pref_title__search_bar_force_browser" />
-        <SwitchPreference
-            android:defaultValue="false"
-            android:dependency="@string/pref_key__search_bar_enable"
-            android:key="@string/pref_key__search_bar_show_hidden_apps"
-            android:summary="@string/pref_summary__search_bar_show_hidden_apps"
-            android:title="@string/pref_title__search_bar_show_hidden_apps" />
     </com.benny.openlauncher.widget.ColorPreferenceCategory>
 
 </PreferenceScreen>

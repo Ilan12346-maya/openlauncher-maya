@@ -3,6 +3,7 @@ package com.benny.openlauncher.viewutil;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import androidx.annotation.NonNull;
@@ -11,6 +12,7 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
+import androidx.core.content.ContextCompat;
 
 import com.benny.openlauncher.R;
 import com.benny.openlauncher.manager.Setup;
@@ -42,7 +44,7 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
 
     public IconLabelItem(Context context, int icon, int label) {
         _label = context.getString(label);
-        _icon = context.getResources().getDrawable(icon);
+        _icon = ContextCompat.getDrawable(context, icon);
     }
 
     public IconLabelItem(Drawable icon, String label) {
@@ -169,7 +171,7 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
         }
 
         if (_iconColor != Integer.MAX_VALUE) {
-            _icon.setColorFilter(_iconColor, PorterDuff.Mode.SRC_ATOP);
+            _icon.setColorFilter(new PorterDuffColorFilter(_iconColor, PorterDuff.Mode.SRC_ATOP));
         } else {
             _icon.clearColorFilter();
         }
@@ -218,7 +220,7 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
             holder.itemView.setBackgroundResource(Setup.appSettings().getDrawerStyle() == 1 ? 0 : R.drawable.new_page);
 
         if (_isAppLauncher && _isSelected) {
-            holder.textView.getCompoundDrawables()[1].setColorFilter(0xFF4CAF50, PorterDuff.Mode.SRC_ATOP);
+            holder.textView.getCompoundDrawables()[1].setColorFilter(new PorterDuffColorFilter(0xFF4CAF50, PorterDuff.Mode.SRC_ATOP));
         }
 
         if (_onClickListener != null)

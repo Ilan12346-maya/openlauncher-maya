@@ -39,6 +39,12 @@ def get_version_from_backup(b_name):
         return match[0]
     return b_name
 
+def get_folder_date(path):
+    if os.path.exists(path):
+        mtime = os.path.getmtime(path)
+        return datetime.datetime.fromtimestamp(mtime).strftime('%Y-%m-%d %H:%M')
+    return "UNKNOWN"
+
 def list_files_in_backup(backup_path):
     affected = []
     for root, _, filenames in os.walk(backup_path):
@@ -124,7 +130,23 @@ def main():
     if len(sys.argv) > 1:
         if sys.argv[1] in ["-a", "--auto"]:
             if not v_list: return
-            do_restore(versions[v_list[0]])
+            target_sequence = []
+            found = False
+            for v in v_list:
+                backups = versions[v]
+                for i in range(len(backups) - 1, -1, -1):
+                    if build_index.get(backups[i]) == "SUCCESS":
+                        target_sequence = backups[:i+1]
+                        found = True
+                        break
+                if found: break
+            
+            if target_sequence:
+                print(f"Automatically rolling back to last stable build: {target_sequence[-1]}")
+                do_restore(target_sequence)
+            else:
+                print("No stable build found. Rolling back to latest available version.")
+                do_restore(versions[v_list[0]])
             return
         if sys.argv[1] == "--list":
             for v in v_list:
@@ -132,9 +154,10 @@ def main():
                 for b_name in versions[v]:
                     color = NC
                     status = build_index.get(b_name, "UNKNOWN")
+                    date = get_folder_date(os.path.join(backup_root, b_name))
                     if status == "SUCCESS": color = GREEN
                     elif status == "FAIL": color = RED
-                    print(f"  {color}{b_name}{NC}")
+                    print(f"  {color}{b_name}{NC} ({status}) [{date}]")
             return
 
     print("--- OpenLauncher Rollback System ---")
@@ -159,9 +182,10 @@ def main():
         for b_name in reversed(backups):
             color = NC
             status = build_index.get(b_name, "UNKNOWN")
+            date = get_folder_date(os.path.join(backup_root, b_name))
             if status == "SUCCESS": color = GREEN
             elif status == "FAIL": color = RED
-            print(f"{color}[{get_inc_num(b_name)}] {b_name}{NC}")
+            print(f"{color}[{get_inc_num(b_name)}] {b_name}{NC} ({status}) [{date}]")
         
         try:
             target_inc = int(input("\nSelect increment number: "))

@@ -62,7 +62,7 @@ public class HpItemOption implements DialogListener.OnEditDialogListener {
             coordinateToChildView = dock.coordinateToChildView(new Point(item._x, item._y));
             dock.removeItem(coordinateToChildView, true);
         }
-        _homeActivity._db.deleteItem(item, true);
+        Setup.dataManager().deleteItem(item, true);
     }
 
     public final void onInfoItem(@NonNull Item item) {
@@ -116,7 +116,7 @@ public class HpItemOption implements DialogListener.OnEditDialogListener {
             desktopItem._y = position.y;
             desktopItem._location = ItemPosition.Desktop;
             // Use createItem to ensure it's added correctly to the current page
-            _homeActivity._db.createItem(desktopItem, _homeActivity.getDesktop().getCurrentPageIndex(), ItemPosition.Desktop);
+            Setup.dataManager().createItem(desktopItem, _homeActivity.getDesktop().getCurrentPageIndex(), ItemPosition.Desktop);
             _homeActivity.getDesktop().addItemToCell(desktopItem, desktopItem._x, desktopItem._y);
         } else {
             Tool.toast(_homeActivity, R.string.toast_no_free_space);

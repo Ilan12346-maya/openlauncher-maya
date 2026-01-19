@@ -27,6 +27,11 @@
     <color name="Dark.TextColorSecondary">#CAC4D0</color>
 
     <color name="Black.Background">#000000</color>
+    <color name="Black.TextColor">#E0E0E0</color>
+    <color name="Black.TextColorSecondary">#B0B0B0</color>
+    <color name="Black.Accent">#808080</color>
+
+    <color name="pill_default_color">#AA000000</color>
 
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>

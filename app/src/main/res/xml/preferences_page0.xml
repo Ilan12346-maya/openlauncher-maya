@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:title="Seite 0">
     <com.benny.openlauncher.widget.ColorPreferenceCategory android:title="Allgemein">
         <SwitchPreference
@@ -17,6 +18,30 @@
             android:key="pref_key__desktop_page_0_persistence"
             android:title="Persistenz"
             android:summary="Verhindert das Neuladen und Beenden des WebViews im Hintergrund." />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="pref_key__desktop_page_0_show_navigation"
+            android:title="Navigation anzeigen"
+            android:summary="Zeigt Home- und Zurück-Buttons unten auf Seite 0 an." />
+        <com.benny.openlauncher.widget.ValueSeekBarPreference
+            android:defaultValue="60"
+            android:key="pref_key__desktop_page_0_pill_size"
+            android:max="100"
+            android:title="Pillengröße (Höhe)"
+            app:min="40" />
+        <com.benny.openlauncher.widget.ValueSeekBarPreference
+            android:defaultValue="20"
+            android:key="pref_key__desktop_page_0_pill_margin"
+            android:max="300"
+            android:title="Pillen-Abstand unten"
+            android:summary="Abstand der Pille zum unteren Bildschirmrand"
+            app:min="0" />
+        <com.flask.colorpicker.ColorPickerPreference
+            android:defaultValue="@color/pill_default_color"
+            android:key="pref_key__desktop_page_0_pill_color"
+            android:title="Pillenfarbe"
+            app:alphaSlider="true"
+            app:lightnessSlider="true" />
         <Preference
             android:key="pref_key__desktop_page_0_clear"
             android:title="Seite 0 zurücksetzen"

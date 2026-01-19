@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,9 +19,11 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Process;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.os.VibratorManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.util.Log;
@@ -49,19 +52,27 @@ public class Tool {
     public static void showKeyboard(Context context, View view) {
         InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         if (inputMethodManager == null) return;
-        inputMethodManager.toggleSoftInputFromWindow(view.getWindowToken(), InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);
+        inputMethodManager.showSoftInput(view, 0);
     }
 
+    @SuppressWarnings("deprecation")
     public static void vibrate(View view) {
-        Vibrator vibrator = (Vibrator) view.getContext().getSystemService(Context.VIBRATOR_SERVICE);
-        if (vibrator == null) {
-            // some manufacturers do not vibrate on long press
-            // might as well make this a fallback method
-            view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator.vibrate(VibrationEffect.createOneShot(50, 160));
+        Vibrator vibrator;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            VibratorManager vibratorManager = (VibratorManager) view.getContext().getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
+            vibrator = vibratorManager != null ? vibratorManager.getDefaultVibrator() : null;
         } else {
-            vibrator.vibrate(50);
+            vibrator = (Vibrator) view.getContext().getSystemService(Context.VIBRATOR_SERVICE);
+        }
+
+        if (vibrator != null && vibrator.hasVibrator()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
+            } else {
+                vibrator.vibrate(50);
+            }
+        } else {
+            view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
         }
     }
 
@@ -108,12 +119,12 @@ public class Tool {
         final int animTime = Setup.appSettings().getAnimationSpeed() * 4;
         ViewPropertyAnimator animateScaleIn = view.animate().scaleX(0.85f).scaleY(0.85f).setDuration(animTime);
         animateScaleIn.setInterpolator(new AccelerateDecelerateInterpolator());
-        new Handler().postDelayed(new Runnable() {
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
                 ViewPropertyAnimator animateScaleOut = view.animate().scaleX(1.0f).scaleY(1.0f).setDuration(animTime);
                 animateScaleOut.setInterpolator(new AccelerateDecelerateInterpolator());
-                new Handler().postDelayed(new Runnable() {
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                     public final void run() {
                         action.run();
                     }
@@ -132,7 +143,11 @@ public class Tool {
 
     public static boolean isPackageInstalled(@NonNull String packageName, @NonNull PackageManager packageManager) {
         try {
-            packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(PackageManager.GET_ACTIVITIES));
+            } else {
+                packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
+            }
             return true;
         } catch (PackageManager.NameNotFoundException e) {
             return false;
@@ -147,7 +162,7 @@ public class Tool {
 
     public static int sp2px(float sp) {
         Resources resources = Resources.getSystem();
-        float px = sp * resources.getDisplayMetrics().scaledDensity;
+        float px = sp * resources.getDisplayMetrics().density * resources.getConfiguration().fontScale;
         return (int) Math.ceil(px);
     }
 
@@ -160,22 +175,9 @@ public class Tool {
     }
 
     public static void startApp(Context context, App app, View view) {
-        HomeActivity launcher = HomeActivity.Companion.getLauncher();
-        if (launcher == null && context instanceof HomeActivity) {
-            launcher = (HomeActivity) context;
-        }
-        if (launcher != null && app != null) {
+        if (app != null) {
             AppSettings.get().addRecentApp(app._packageName, app._className);
-            launcher.onStartApp(context, app, view);
-        } else if (app != null) {
-            // Fallback for starting app if launcher reference is lost
-            com.benny.openlauncher.util.Logger.log("Tool", "Launcher reference lost, using context fallback to start app");
-            try {
-                Intent intent = getIntentFromApp(app);
-                context.startActivity(intent);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            AppLauncher.startApp(context, app, view);
         }
     }
 
@@ -219,7 +221,12 @@ public class Tool {
     public static boolean isIntentActionAvailable(Context context, String action) {
         final PackageManager packageManager = context.getPackageManager();
         final Intent intent = new Intent(action);
-        List resolveInfo = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        List resolveInfo;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            resolveInfo = packageManager.queryIntentActivities(intent, PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_DEFAULT_ONLY));
+        } else {
+            resolveInfo = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        }
         return resolveInfo.size() > 0;
     }
 

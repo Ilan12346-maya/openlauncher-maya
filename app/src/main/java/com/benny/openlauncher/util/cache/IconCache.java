@@ -52,10 +52,6 @@ public class IconCache {
     public void addIcon(String key, Bitmap bitmap) {
         if (_cache.get(key) == null) {
             _cache.put(key, bitmap);
-            Context context = Setup.appContext();
-            if (context != null) {
-                Tool.saveIcon(context, bitmap, key.replaceAll("[^a-zA-Z0-9.-]", "_"));
-            }
         }
     }
 

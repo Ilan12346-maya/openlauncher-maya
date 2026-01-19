@@ -1,9 +1,19 @@
 package com.benny.openlauncher.util;
 
-import android.content.Context;
-import android.os.Build;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.benny.openlauncher.R;
+import com.benny.openlauncher.activity.BackupLogActivity;
+import com.benny.openlauncher.activity.HomeActivity;
 import com.benny.openlauncher.manager.Setup;
 import com.benny.openlauncher.model.Item;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+
 import java.io.*;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -16,6 +26,96 @@ public class BackupManager {
         void onLog(String message);
         void onProgress(int progress, int max);
         void onCompleted(boolean success);
+    }
+
+    public static void startBackupTask(final android.app.Activity activity, final Uri uri) {
+        final StringBuilder log = new StringBuilder();
+        final MaterialDialog progressDialog = new MaterialDialog.Builder(activity)
+                .title("Sichere Backup...")
+                .content("Bitte warten...")
+                .progress(true, 0)
+                .cancelable(false)
+                .show();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    android.os.ParcelFileDescriptor pfd = activity.getContentResolver().openFileDescriptor(uri, "w");
+                    java.io.FileOutputStream fileOutputStream = new java.io.FileOutputStream(pfd.getFileDescriptor());
+                    createBackup(activity, fileOutputStream, new BackupListener() {
+                        @Override
+                        public void onLog(final String message) {
+                            log.append(message).append("\n");
+                            activity.runOnUiThread(() -> progressDialog.setContent(message));
+                        }
+
+                        @Override
+                        public void onProgress(int progress, int max) {}
+
+                        @Override
+                        public void onCompleted(final boolean success) {
+                            activity.runOnUiThread(() -> {
+                                progressDialog.dismiss();
+                                Intent logIntent = new Intent(activity, BackupLogActivity.class);
+                                logIntent.putExtra(BackupLogActivity.EXTRA_LOG_TEXT, log.toString());
+                                activity.startActivity(logIntent);
+                            });
+                        }
+                    });
+                    pfd.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    activity.runOnUiThread(() -> progressDialog.dismiss());
+                }
+            }
+        }).start();
+    }
+
+    public static void startRestoreTask(final android.app.Activity activity, final Uri uri) {
+        final StringBuilder log = new StringBuilder();
+        final MaterialDialog progressDialog = new MaterialDialog.Builder(activity)
+                .title("Wiederherstellung...")
+                .content("Bitte warten...")
+                .progress(true, 0)
+                .cancelable(false)
+                .show();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    java.io.InputStream inputStream = activity.getContentResolver().openInputStream(uri);
+                    restoreBackup(activity, inputStream, new BackupListener() {
+                        @Override
+                        public void onLog(final String message) {
+                            log.append(message).append("\n");
+                            activity.runOnUiThread(() -> progressDialog.setContent(message));
+                        }
+
+                        @Override
+                        public void onProgress(int progress, int max) {}
+
+                        @Override
+                        public void onCompleted(final boolean success) {
+                            activity.runOnUiThread(() -> {
+                                progressDialog.dismiss();
+                                Intent logIntent = new Intent(activity, BackupLogActivity.class);
+                                logIntent.putExtra(BackupLogActivity.EXTRA_LOG_TEXT, log.toString());
+                                if (success) {
+                                    Tool.toast(activity, "Wiederherstellung erfolgreich. Launcher wird neu gestartet...");
+                                    logIntent.putExtra(BackupLogActivity.EXTRA_RESTART_AFTER, true);
+                                }
+                                activity.startActivity(logIntent);
+                            });
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    activity.runOnUiThread(() -> progressDialog.dismiss());
+                }
+            }
+        }).start();
     }
 
     private static File getDataDir(Context context) {

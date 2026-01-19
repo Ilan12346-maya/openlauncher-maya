@@ -39,10 +39,6 @@ Version 2.0, January 2004
 ~° Copyright (c) Mike Penz  
 ~° https://github.com/mikepenz/FastAdapter
 
-* **Butterknife**
-~° Copyright (c) 2013 Jake Wharton  
-~° https://github.com/JakeWharton/butterknife
-
 * **MaterialScrollBar**
 ~° Copyright (c) Turing Technologies  
 ~° https://github.com/turing-tech/MaterialScrollBar

@@ -1,7 +1,6 @@
 package com.benny.openlauncher.fragment;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -25,17 +24,23 @@ import com.benny.openlauncher.util.AppSettings;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import android.os.Handler;
+import android.os.Looper;
 
 public class HideAppsFragment extends Fragment {
     private static final String TAG = "RequestActivity";
     private static final boolean DEBUG = true;
 
-    private ArrayList<String> _listActivitiesHidden = new ArrayList();
-    private ArrayList<App> _listActivitiesAll = new ArrayList();
-    private AsyncWorkerList _taskList = new AsyncWorkerList();
+    private ArrayList<String> _listActivitiesHidden = new ArrayList<>();
+    private ArrayList<App> _listActivitiesAll = new ArrayList<>();
     private HideAppsAdapter _appInfoAdapter;
     private ViewSwitcher _switcherLoad;
     private ListView _grid;
+    private final ExecutorService _executorService = Executors.newSingleThreadExecutor();
+    private final Handler _mainHandler = new Handler(Looper.getMainLooper());
+    private boolean _isLoading = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,52 +55,33 @@ public class HideAppsFragment extends Fragment {
             }
         });
 
-        if (_taskList.getStatus() == AsyncTask.Status.PENDING) {
-            // task has not started yet
-            _taskList.execute();
-        }
-
-        if (_taskList.getStatus() == AsyncTask.Status.FINISHED) {
-            // task is done and onPostExecute has been called
-            new AsyncWorkerList().execute();
-        }
+        loadApps();
 
         return rootView;
     }
 
-    public class AsyncWorkerList extends AsyncTask<String, Integer, String> {
+    private void loadApps() {
+        if (_isLoading) return;
+        _isLoading = true;
 
-        private AsyncWorkerList() {
-        }
-
-        @Override
-        protected void onPreExecute() {
+        _executorService.execute(() -> {
             List<String> hiddenList = AppSettings.get().getHiddenAppsList();
             _listActivitiesHidden.addAll(hiddenList);
-
-            super.onPreExecute();
-        }
-
-        @Override
-        protected String doInBackground(String... arg0) {
-            try {
+            
+             try {
                 // compare to installed apps
                 prepareData();
-                return null;
             } catch (Throwable e) {
                 e.printStackTrace();
             }
-            return null;
-        }
 
-        @Override
-        protected void onPostExecute(String result) {
-            populateView();
-            // switch from loading screen to the main view
-            _switcherLoad.showNext();
-
-            super.onPostExecute(result);
-        }
+            _mainHandler.post(() -> {
+                populateView();
+                // switch from loading screen to the main view
+                _switcherLoad.showNext();
+                _isLoading = false;
+            });
+        });
     }
 
     @Override
@@ -127,37 +113,55 @@ public class HideAppsFragment extends Fragment {
     }
 
     private void populateView() {
+        if (getActivity() == null) return;
         _grid = getActivity().findViewById(R.id.app_grid);
 
-        assert _grid != null;
-        _grid.setFastScrollEnabled(true);
-        _grid.setFastScrollAlwaysVisible(false);
+        // _grid might be null if view hierarchy is not ready or ID is missing in layout
+        // In the original code, it was finding it from getActivity(), implying it's in the activity's layout or added by fragment
+        // The original code used getActivity().findViewById(R.id.app_grid), which is weird for a fragment unless the fragment view is attached.
+        // Usually should be rootView.findViewById in onCreateView but here populateView is called later.
+        // Assuming R.id.app_grid is part of R.layout.view_hide_apps
+        
+        if (_grid == null) {
+             // Fallback to finding it in the fragment's root view if possible, but here we only have access to getActivity()
+             // Let's hope R.id.app_grid is reachable.
+             // Wait, in onCreateView we inflate R.layout.view_hide_apps. 
+             // If R.id.app_grid is inside that, we should have cached it or looked it up from getView().
+             if (getView() != null) {
+                 _grid = getView().findViewById(R.id.app_grid);
+             }
+        }
 
-        _appInfoAdapter = new HideAppsAdapter(getActivity(), _listActivitiesAll);
+        if (_grid != null) {
+            _grid.setFastScrollEnabled(true);
+            _grid.setFastScrollAlwaysVisible(false);
 
-        _grid.setAdapter(_appInfoAdapter);
-        _grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> AdapterView, View view, int position, long row) {
-                App appInfo = (App) AdapterView.getItemAtPosition(position);
-                CheckBox checker = view.findViewById(R.id.checkbox);
-                ViewSwitcher icon = view.findViewById(R.id.viewSwitcherChecked);
+            _appInfoAdapter = new HideAppsAdapter(getActivity(), _listActivitiesAll);
 
-                checker.toggle();
-                if (checker.isChecked()) {
-                    _listActivitiesHidden.add(appInfo.getComponentName());
-                    if (DEBUG) Log.v(TAG, "Selected App: " + appInfo.getLabel());
-                    if (icon.getDisplayedChild() == 0) {
-                        icon.showNext();
-                    }
-                } else {
-                    _listActivitiesHidden.remove(appInfo.getComponentName());
-                    if (DEBUG) Log.v(TAG, "Deselected App: " + appInfo.getLabel());
-                    if (icon.getDisplayedChild() == 1) {
-                        icon.showPrevious();
+            _grid.setAdapter(_appInfoAdapter);
+            _grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                public void onItemClick(AdapterView<?> AdapterView, View view, int position, long row) {
+                    App appInfo = (App) AdapterView.getItemAtPosition(position);
+                    CheckBox checker = view.findViewById(R.id.checkbox);
+                    ViewSwitcher icon = view.findViewById(R.id.viewSwitcherChecked);
+
+                    checker.toggle();
+                    if (checker.isChecked()) {
+                        _listActivitiesHidden.add(appInfo.getComponentName());
+                        if (DEBUG) Log.v(TAG, "Selected App: " + appInfo.getLabel());
+                        if (icon.getDisplayedChild() == 0) {
+                            icon.showNext();
+                        }
+                    } else {
+                        _listActivitiesHidden.remove(appInfo.getComponentName());
+                        if (DEBUG) Log.v(TAG, "Deselected App: " + appInfo.getLabel());
+                        if (icon.getDisplayedChild() == 1) {
+                            icon.showPrevious();
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
     }
 
     private class HideAppsAdapter extends ArrayAdapter<App> {

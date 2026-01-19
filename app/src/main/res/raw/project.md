@@ -1,6 +1,6 @@
 BennyKok
 Started OpenLauncher
-https://github.com/openlauncherteam/openlauncher
+https://github.com/BennyKok
 
 Gregor Santner
 Austrian Software Developer
@@ -9,4 +9,3 @@ https://github.com/gsantner
 dkanada
 Android Development
 https://github.com/dkanada
-

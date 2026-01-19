@@ -52,6 +52,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import androidx.core.content.ContextCompat;
+import android.graphics.Insets;
 
 public class SearchBar extends FrameLayout {
     private static Logger LOG = LoggerFactory.getLogger("SearchBar");
@@ -122,9 +124,10 @@ public class SearchBar extends FrameLayout {
 
         if (isInEditMode()) return;
 
-        _icon = new CircleDrawable(getContext(), getResources().getDrawable(R.drawable.ic_search), Color.WHITE, Color.BLACK, 100);
+        _icon = new CircleDrawable(getContext(), ContextCompat.getDrawable(getContext(), R.drawable.ic_search), Color.WHITE, Color.BLACK, 100);
         _searchButton = new AppCompatImageView(getContext());
         _searchButton.setImageDrawable(_icon);
+        _searchButton.setVisibility(View.GONE);
         _searchButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -275,7 +278,7 @@ public class SearchBar extends FrameLayout {
             _callback.onCollapse();
         }
 
-        _icon.setIcon(getResources().getDrawable(R.drawable.ic_search));
+        _icon.setIcon(ContextCompat.getDrawable(getContext(), R.drawable.ic_search));
 
         Tool.goneViews(ANIM_TIME, _searchCardContainer, _searchRecycler, _switchButton);
 
@@ -287,7 +290,7 @@ public class SearchBar extends FrameLayout {
             _callback.onExpand();
         }
 
-        _icon.setIcon(getResources().getDrawable(R.drawable.ic_clear));
+        _icon.setIcon(ContextCompat.getDrawable(getContext(), R.drawable.ic_clear));
 
         Tool.visibleViews(ANIM_TIME, _searchCardContainer, _searchRecycler, _switchButton);
     }
@@ -305,7 +308,7 @@ public class SearchBar extends FrameLayout {
             _searchRecycler.setLayoutManager(new GridLayoutManager(getContext(), gridSize, GridLayoutManager.VERTICAL, false));
             updateList(Gravity.TOP, Gravity.CENTER);
         }
-        _searchRecycler.getLayoutManager().setAutoMeasureEnabled(false);
+        // _searchRecycler.getLayoutManager().setAutoMeasureEnabled(false);
     }
 
     private void updateList(int iconGravity, int textGravity) {
@@ -331,8 +334,14 @@ public class SearchBar extends FrameLayout {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // API 30+
+            android.graphics.Insets systemBarInsets = insets.getInsets(WindowInsets.Type.systemBars());
+            bottomInset = systemBarInsets.bottom;
+            setPadding(0, systemBarInsets.top, 0, 0);
+            return insets;
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) { // API 19-29 (old behavior)
             bottomInset = insets.getSystemWindowInsetBottom();
             setPadding(0, insets.getSystemWindowInsetTop(), 0, 0);
             return insets;

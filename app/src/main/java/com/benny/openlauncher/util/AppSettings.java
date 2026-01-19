@@ -77,18 +77,6 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
         return getBool(R.string.pref_key__desktop_show_label, true);
     }
 
-    public boolean getDesktopParallax() {
-        return getBool(R.string.pref_key__desktop_parallax, false);
-    }
-
-    public float getDesktopParallaxDistance() {
-        return getInt(R.string.pref_key__desktop_parallax_distance, 20) / 100f;
-    }
-
-    public float getDesktopParallaxZoom() {
-        return getInt(R.string.pref_key__desktop_parallax_zoom, 10) / 100f;
-    }
-
     public boolean getDesktopInfiniteScrolling() {
         return getBool(R.string.pref_key__desktop_infinite_scrolling, false);
     }
@@ -262,7 +250,7 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
     }
 
     public int getPrimaryColor() {
-        return getInt(R.string.pref_key__primary_color, _context.getResources().getColor(R.color.colorPrimary));
+        return getInt(R.string.pref_key__primary_color, ContextCompat.getColor(_context, R.color.colorPrimary));
     }
 
     public int getIconSize() {
@@ -372,6 +360,38 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
 
     public void setDesktopPage0Persistence(boolean value) {
         setBool("pref_key__desktop_page_0_persistence", value);
+    }
+
+    public boolean getDesktopPage0ShowNavigation() {
+        return getBool("pref_key__desktop_page_0_show_navigation", true);
+    }
+
+    public void setDesktopPage0ShowNavigation(boolean value) {
+        setBool("pref_key__desktop_page_0_show_navigation", value);
+    }
+
+    public int getDesktopPage0PillSize() {
+        return getInt("pref_key__desktop_page_0_pill_size", 60);
+    }
+
+    public void setDesktopPage0PillSize(int value) {
+        setInt("pref_key__desktop_page_0_pill_size", value);
+    }
+
+    public int getDesktopPage0PillMargin() {
+        return getInt("pref_key__desktop_page_0_pill_margin", 20);
+    }
+
+    public void setDesktopPage0PillMargin(int value) {
+        setInt("pref_key__desktop_page_0_pill_margin", value);
+    }
+
+    public float getDesktopPage0PillAspectRatio() {
+        return (float) getInt("pref_key__desktop_page_0_pill_aspect_ratio", 25) / 10f;
+    }
+
+    public void setDesktopPage0PillAspectRatio(float value) {
+        setInt("pref_key__desktop_page_0_pill_aspect_ratio", (int) (value * 10f));
     }
 
     public ArrayList<String> getRecentApps() {

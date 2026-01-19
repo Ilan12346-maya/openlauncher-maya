@@ -36,20 +36,22 @@ public final class Dock extends CellContainer implements DesktopCallback {
     private float _startPosX;
     private float _startPosY;
 
+    // We keep track of whether a swipe up gesture has been intercepted
+    private boolean _interceptedSwipeUp = false;
+
     private Paint _paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private RectF _bgRect = new RectF();
 
     public Dock(Context context, AttributeSet attr) {
         super(context, attr);
         setWillNotDraw(false);
-        setAlpha(0f);
     }
 
     public final void initDock() {
         final int columns = Setup.appSettings().getDockColumnCount();
         final int rows = Setup.appSettings().getDockRowCount();
         setGridSize(columns, rows);
-        HomeActivity._db.getDockAsync(new DatabaseHelper.DataCallback<List<Item>>() {
+        Setup.dataManager().getDockAsync(new DatabaseHelper.DataCallback<List<Item>>() {
             @Override
             public void onDataLoaded(List<Item> dockItems) {
                 removeAllViews();
@@ -77,11 +79,76 @@ public final class Dock extends CellContainer implements DesktopCallback {
     }
 
     public boolean dispatchTouchEvent(@NonNull MotionEvent ev) {
-        detectSwipe(ev);
         super.dispatchTouchEvent(ev);
         return true;
     }
 
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (!Setup.appSettings().getGestureDockSwipeUp()) {
+            return super.onInterceptTouchEvent(ev);
+        }
+
+        switch (ev.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                _startPosX = ev.getX();
+                _startPosY = ev.getY();
+                _interceptedSwipeUp = false; // Reset interception state
+                break;
+            case MotionEvent.ACTION_MOVE:
+                // Check for upward swipe. If significant, intercept.
+                if (!_interceptedSwipeUp && _startPosY - ev.getY() > Tool.dp2px(20)) { // Small threshold for interception
+                    _interceptedSwipeUp = true;
+                    // Returning true here means this ViewGroup intercepts the touch event
+                    // and subsequent events for this gesture will be sent to onTouchEvent.
+                    return true;
+                }
+                break;
+            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_UP:
+                _interceptedSwipeUp = false; // Reset on completion or cancellation
+                break;
+        }
+        return super.onInterceptTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (!Setup.appSettings().getGestureDockSwipeUp()) {
+            return super.onTouchEvent(event);
+        }
+
+        switch (event.getActionMasked()) {
+            case MotionEvent.ACTION_MOVE:
+                // If we've already intercepted, continue to consume move events
+                if (_interceptedSwipeUp) {
+                    return true;
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                if (_interceptedSwipeUp) { // Only handle if a swipe was intercepted
+                    if (_startPosY - event.getY() > Tool.dp2px(150)) { // Original threshold for triggering action
+                        Point point = new Point((int) event.getX(), (int) event.getY());
+                        point = Tool.convertPoint(point, this, _homeActivity.getAppDrawerController());
+                        if (Setup.appSettings().getGestureFeedback()) {
+                            Tool.vibrate(this);
+                        }
+                        _homeActivity.openAppDrawer(this, point.x, point.y);
+                        _interceptedSwipeUp = false; // Reset
+                        return true; // Consume the event
+                    }
+                    _interceptedSwipeUp = false; // Reset if swipe wasn't strong enough
+                }
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                _interceptedSwipeUp = false; // Reset on cancellation
+                break;
+        }
+        return super.onTouchEvent(event); // Let super handle other events
+    }
+
+    /*
+    // Original detectSwipe method - commented out
     private void detectSwipe(MotionEvent ev) {
         switch (ev.getAction()) {
             case 0:
@@ -102,6 +169,7 @@ public final class Dock extends CellContainer implements DesktopCallback {
                 break;
         }
     }
+    */
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -222,7 +290,7 @@ public final class Dock extends CellContainer implements DesktopCallback {
         View itemView = ItemViewFactory.getItemView(getContext(), this, Action.DESKTOP, item, isDockShowLabel());
         if (itemView == null) {
             // TODO see if this fixes SD card bug
-            //HomeActivity._db.deleteItem(item, true);
+            //Setup.dataManager().deleteItem(item, true);
             return false;
         }
         item._location = ItemPosition.Dock;
@@ -231,26 +299,39 @@ public final class Dock extends CellContainer implements DesktopCallback {
     }
 
     public boolean addItemToPoint(@NonNull Item item, int x, int y) {
-        LayoutParams positionToLayoutPrams = coordinateToLayoutParams(x, y, item._spanX, item._spanY);
-        if (positionToLayoutPrams == null) {
-            Point pos = new Point();
-            touchPosToCoordinate(pos, x, y, item._spanX, item._spanY, false);
-            if (pos.x != -1 && pos.y != -1) {
-                positionToLayoutPrams = new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT, pos.x, pos.y, item._spanX, item._spanY);
-            }
-        }
-        if (positionToLayoutPrams == null) {
+        Point pos = new Point();
+        touchPosToCoordinate(pos, x, y, item._spanX, item._spanY, false, false);
+        
+        if (pos.x == -1 || pos.y == -1) {
             return false;
         }
+
+        // Check if occupied and if so, find next free slot
+        if (checkOccupied(pos, item._spanX, item._spanY)) {
+            // Find any free horizontal slot
+            boolean found = false;
+            Point testPoint = new Point(0, 0);
+            for (int i = 0; i < getCellSpanH(); i++) {
+                testPoint.set(i, 0);
+                if (!checkOccupied(testPoint, item._spanX, item._spanY)) {
+                    pos.set(i, 0);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) return false;
+        }
+
         item._location = ItemPosition.Dock;
-        item._x = positionToLayoutPrams.getX();
-        item._y = positionToLayoutPrams.getY();
+        item._x = pos.x;
+        item._y = pos.y;
+        
         View itemView = ItemViewFactory.getItemView(getContext(), this, Action.DESKTOP, item, isDockShowLabel());
         if (itemView != null) {
-            itemView.setLayoutParams(positionToLayoutPrams);
-            addView(itemView);
+            addViewToGrid(itemView, item._x, item._y, item._spanX, item._spanY);
+            return true;
         }
-        return true;
+        return false;
     }
 
     public boolean addItemToCell(@NonNull Item item, int x, int y) {
@@ -280,13 +361,37 @@ public final class Dock extends CellContainer implements DesktopCallback {
         }
     }
 
+    @Override
+    public void touchPosToCoordinate(@NonNull Point coordinate, int mX, int mY, int xSpan, int ySpan, boolean checkAvailability, boolean checkBoundary) {
+        if (Setup.appSettings().getDockIosStyle()) {
+            int width = (getWidth() - getPaddingLeft()) - getPaddingRight();
+            int columns = getCellSpanH();
+            if (columns == 0) columns = 1;
+
+            int settingsIconSize = Tool.dp2px(Setup.appSettings().getIconSize());
+            int dockIconSize = (int) (settingsIconSize * 1.1f);
+            float gap = settingsIconSize * 0.30f;
+            float bgWidth = columns * dockIconSize + (columns + 1) * gap;
+            float bgLeft = (width - bgWidth) / 2f;
+            float startX = getPaddingLeft() + bgLeft + gap;
+
+            // Calculate which column we are over
+            float relativeX = mX - startX;
+            int col = Math.round(relativeX / (dockIconSize + gap));
+            
+            coordinate.set(Math.max(0, Math.min(col, columns - 1)), 0);
+        } else {
+            super.touchPosToCoordinate(coordinate, mX, mY, xSpan, ySpan, checkAvailability, checkBoundary);
+        }
+    }
+
     public void setHome(HomeActivity homeActivity) {
         _homeActivity = homeActivity;
     }
 
     private Boolean isDockShowLabel() {
         boolean b = Setup.appSettings().getDockShowLabel();
-        Boolean ret = new Boolean(b);
+        Boolean ret = Boolean.valueOf(b);
         return ret;
     }
 }

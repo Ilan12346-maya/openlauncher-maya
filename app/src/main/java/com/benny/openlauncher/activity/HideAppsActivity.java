@@ -4,17 +4,21 @@ import android.os.Build;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
+import androidx.lifecycle.Lifecycle;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.WindowManager;
+import androidx.core.content.ContextCompat;
+import androidx.annotation.NonNull;
 
 import com.benny.openlauncher.R;
 import com.benny.openlauncher.fragment.HideAppsFragment;
 import com.benny.openlauncher.util.AppManager;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class HideAppsActivity extends ColorActivity {
 
@@ -25,10 +29,10 @@ public class HideAppsActivity extends ColorActivity {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
         }
 
-        ViewPager viewPager = findViewById(R.id.viewpager);
+        ViewPager2 viewPager = findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -46,9 +50,9 @@ public class HideAppsActivity extends ColorActivity {
         super.onDestroy();
     }
 
-    private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new HideAppsFragment(), "Skip");
+    private void setupViewPager(ViewPager2 viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle());
+        adapter.addFragment(new HideAppsFragment()); // No title needed for FragmentStateAdapter's createFragment
         viewPager.setAdapter(adapter);
     }
 
@@ -56,39 +60,33 @@ public class HideAppsActivity extends ColorActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home: {
-                onBackPressed();
+                getOnBackPressedDispatcher().onBackPressed();
                 break;
             }
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private static class ViewPagerAdapter extends FragmentPagerAdapter {
-        private ArrayList<Fragment> mFragmentList = new ArrayList<>();
-        private ArrayList<String> mFragmentTitleList = new ArrayList<>();
+    private static class ViewPagerAdapter extends FragmentStateAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
 
-        ViewPagerAdapter(FragmentManager fm) {
-            super(fm);
+        ViewPagerAdapter(FragmentManager fm, Lifecycle lifecycle) {
+            super(fm, lifecycle);
         }
 
+        @NonNull
         @Override
-        public Fragment getItem(int position) {
+        public Fragment createFragment(int position) {
             return mFragmentList.get(position);
         }
 
         @Override
-        public int getCount() {
-            return mFragmentTitleList.size();
+        public int getItemCount() {
+            return mFragmentList.size();
         }
 
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
-
-        public void addFragment(Fragment fragment, String title) {
+        public void addFragment(Fragment fragment) {
             mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
         }
     }
 }

@@ -1,4 +1,5 @@
 package com.benny.openlauncher.widget;
+import com.benny.openlauncher.manager.Setup;
 
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
@@ -119,7 +120,7 @@ public class WidgetContainer extends FrameLayout {
             updateWidgetOption(item);
 
             // update the widget size in the database
-            HomeActivity._db.saveItem(item);
+            Setup.dataManager().saveItem(item);
         } else {
             Toast.makeText(HomeActivity.Companion.getLauncher().getDesktop().getContext(), R.string.toast_not_enough_space, Toast.LENGTH_SHORT).show();
 

@@ -18,9 +18,15 @@ public class StatusView extends View {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            int inset = insets.getSystemWindowInsetTop();
+            int inset;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                inset = insets.getInsets(WindowInsets.Type.systemBars()).top;
+            } else {
+                inset = insets.getSystemWindowInsetTop();
+            }
             if (inset != 0) {
                 ViewGroup.LayoutParams layoutParams = getLayoutParams();
                 layoutParams.height = inset;

@@ -2,6 +2,7 @@ package com.benny.openlauncher.viewutil;
 
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
+import androidx.annotation.NonNull;
 
 import com.benny.openlauncher.R;
 import com.benny.openlauncher.manager.Setup;
@@ -41,7 +42,7 @@ public class DrawerAppItem extends AbstractItem<DrawerAppItem, DrawerAppItem.Vie
     }
 
     @Override
-    public void bindView(DrawerAppItem.ViewHolder holder, List payloads) {
+    public void bindView(DrawerAppItem.ViewHolder holder, @NonNull List<Object> payloads) {
         Item item = Item.newAppItem(_app);
         holder.builder
                 .setAppItem(item)

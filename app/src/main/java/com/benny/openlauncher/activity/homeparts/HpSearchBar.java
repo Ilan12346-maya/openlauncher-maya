@@ -24,6 +24,7 @@ public class HpSearchBar implements SearchBar.CallBack {
 
     public void initSearchBar() {
         _searchBar.setCallback(this);
+        _searchBar._searchButton.setVisibility(Setup.appSettings().getSearchBarEnable() ? View.VISIBLE : View.GONE);
     }
 
     @Override

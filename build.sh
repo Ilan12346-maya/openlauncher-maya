@@ -65,7 +65,7 @@ fi
 # [3/5] Compilation
 header "[3/5] Compiling with Gradle"
 info "Building debug APK..."
-if ./gradlew assembleDebug -q -Pandroid.aapt2FromMavenOverride=/data/data/com.termux/files/usr/bin/aapt2; then
+if ./gradlew assembleDebug -Pandroid.aapt2FromMavenOverride=/data/data/com.termux/files/usr/bin/aapt2; then
     cp "$APK_PATH" "$FINAL_APK" || error_exit "Could not copy APK to destination"
     success "Build successful: ${BOLD}$FINAL_APK${NC}"
     # Log status for the specific backup name (crucial for rollback colors)

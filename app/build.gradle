@@ -7,6 +7,7 @@ android {
 
     buildFeatures {
         buildConfig true
+        viewBinding true
     }
 
     defaultConfig {
@@ -28,13 +29,16 @@ android {
         resValue 'string', 'app_name', "OpenLauncher"
 
         applicationId "com.benny.openlauncher"
-        versionCode 440
-        versionName "v0.9.6-cv440"
+        versionCode 629
+        versionName "0.9.9"
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    tasks.withType(JavaCompile) {
+        options.compilerArgs += ["-Xlint:deprecation", "-Xlint:unchecked"]
     }
 
     buildTypes {
@@ -83,6 +87,6 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
-    implementation "com.jakewharton:butterknife:${version_library_butterknife}"
-    annotationProcessor "com.jakewharton:butterknife-compiler:${version_library_butterknife}"
+    implementation "com.github.bumptech.glide:glide:${version_library_glide}"
+    annotationProcessor "com.github.bumptech.glide:compiler:${version_library_glide}"
 }

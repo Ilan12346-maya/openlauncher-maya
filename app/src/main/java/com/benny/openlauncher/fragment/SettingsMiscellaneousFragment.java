@@ -1,4 +1,5 @@
 package com.benny.openlauncher.fragment;
+import com.benny.openlauncher.manager.Setup;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,7 +27,7 @@ public class SettingsMiscellaneousFragment extends SettingsBaseFragment {
 
     @Override
     public boolean onPreferenceTreeClick(Preference preference) {
-        HomeActivity homeActivity = HomeActivity._launcher;
+        HomeActivity homeActivity = HomeActivity.Companion.getLauncher();
         int key = new ContextUtils(getActivity()).getResId(ContextUtils.ResType.STRING, preference.getKey());
         switch (key) {
             case R.string.pref_key__backup:
@@ -49,11 +50,37 @@ public class SettingsMiscellaneousFragment extends SettingsBaseFragment {
                 DialogHelper.alertDialog(getActivity(), getString(R.string.pref_title__reset_database), getString(R.string.are_you_sure), new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        DatabaseHelper db = HomeActivity._db;
+                        DatabaseHelper db = Setup.dataManager();
                         db.onUpgrade(db.getWritableDatabase(), 1, 1);
                         AppSettings.get().setAppFirstLaunch(true);
                         if (homeActivity != null) homeActivity.recreate();
                         Toast.makeText(getActivity(), R.string.toast_database_deleted, Toast.LENGTH_SHORT).show();
+                    }
+                });
+                return true;
+            case R.string.pref_key__clear_cache:
+                DialogHelper.alertDialog(getActivity(), getString(R.string.pref_title__clear_cache), getString(R.string.are_you_sure), new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        // Clear Glide memory cache (must be on main thread)
+                        com.bumptech.glide.Glide.get(getActivity()).clearMemory();
+                        
+                        // Clear Glide disk cache and manual icons (must be on background thread)
+                        new Thread(() -> {
+                            com.bumptech.glide.Glide.get(getActivity()).clearDiskCache();
+                            
+                            java.io.File directory = new java.io.File(getActivity().getFilesDir() + "/icons/");
+                            if (directory.exists()) {
+                                for (java.io.File file : directory.listFiles()) {
+                                    file.delete();
+                                }
+                            }
+                            
+                            getActivity().runOnUiThread(() -> {
+                                Toast.makeText(getActivity(), "Cache gelöscht", Toast.LENGTH_SHORT).show();
+                                if (homeActivity != null) homeActivity.recreate();
+                            });
+                        }).start();
                     }
                 });
                 return true;

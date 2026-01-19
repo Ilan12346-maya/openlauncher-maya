@@ -88,35 +88,42 @@ public class ItemViewFactory {
     }
 
     public static View getWidgetView(final Context context, final DesktopCallback callback, final DragAction.Action type, final Item item) {
-        if (HomeActivity._appWidgetHost == null) return null;
+        if (HomeActivity._appWidgetHost == null) {
+            com.benny.openlauncher.util.Logger.log("ItemViewFactory", "getWidgetView: _appWidgetHost is NULL");
+            return null;
+        }
 
+        com.benny.openlauncher.util.Logger.log("ItemViewFactory", "getWidgetView: appWidgetId=" + item.getWidgetValue());
         AppWidgetProviderInfo appWidgetInfo = HomeActivity._appWidgetManager.getAppWidgetInfo(item.getWidgetValue());
 
         // If we can't find the Widget, we don't want to proceed or we'll end up with a phantom on the home screen.
         if (appWidgetInfo == null) {
+            com.benny.openlauncher.util.Logger.log("ItemViewFactory", "getWidgetView: appWidgetInfo is NULL for id " + item.getWidgetValue());
             if (item._label.contains(Definitions.DELIMITER)) {
                 String[] cnSplit = item._label.split(Definitions.DELIMITER);
                 ComponentName cn = new ComponentName(cnSplit[0], cnSplit[1]);
 
                 int appWidgetId = HomeActivity._appWidgetHost.allocateAppWidgetId();
+                com.benny.openlauncher.util.Logger.log("ItemViewFactory", "getWidgetView: trying to rebind cn=" + cn + " to new id " + appWidgetId);
                 if (HomeActivity._appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId, cn)) {
                     appWidgetInfo = HomeActivity._appWidgetManager.getAppWidgetInfo(appWidgetId);
                     item.setWidgetValue(appWidgetId);
-                    HomeActivity._db.updateItem(item);
+                    Setup.dataManager().updateItem(item);
                 } else {
                     LOG.error("Unable to bind app widget id: {}; removing from database", cn);
                     HomeActivity._appWidgetHost.deleteAppWidgetId(appWidgetId);
-                    HomeActivity._db.deleteItem(item, false);
+                    Setup.dataManager().deleteItem(item, false);
                     return null;
                 }
             } else {
                 // Delete the Widget if we don't have enough information to rehydrate it.
                 LOG.debug("Unable to identify Widget for rehydration; removing from database");
-                HomeActivity._db.deleteItem(item, false);
+                Setup.dataManager().deleteItem(item, false);
                 return null;
             }
         }
 
+        com.benny.openlauncher.util.Logger.log("ItemViewFactory", "getWidgetView: creating view for " + appWidgetInfo.provider);
         final WidgetView widgetView = (WidgetView) HomeActivity._appWidgetHost.createView(context, item.getWidgetValue(), appWidgetInfo);
         widgetView.setAppWidget(item.getWidgetValue(), appWidgetInfo);
 

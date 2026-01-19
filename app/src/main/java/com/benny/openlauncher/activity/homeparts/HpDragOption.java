@@ -3,6 +3,7 @@ package com.benny.openlauncher.activity.homeparts;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.os.Handler;
+import android.os.Looper;
 import androidx.annotation.NonNull;
 import android.view.View;
 
@@ -21,7 +22,7 @@ import com.benny.openlauncher.widget.ItemOptionView;
 
 public class HpDragOption {
     public void initDragNDrop(@NonNull final HomeActivity _homeActivity, @NonNull final View leftDragHandle, @NonNull final View rightDragHandle, @NonNull final ItemOptionView dragNDropView) {
-        final Handler dragHandler = new Handler();
+        final Handler dragHandler = new Handler(Looper.getMainLooper());
 
         dragNDropView.registerDropTarget(new DropTargetListener() {
             Runnable runnable = new Runnable() {
@@ -31,22 +32,24 @@ public class HpDragOption {
                     boolean page0Enabled = Setup.appSettings().getDesktopPage0Enabled();
                     boolean infinite = Setup.appSettings().getDesktopInfiniteScrolling();
                     
+                    com.benny.openlauncher.util.Logger.log("HpDragOption", "LeftHandle: Runnable triggered. Current page: " + i);
+                    
                     if (page0Enabled) {
                         if (i > 1) {
                             _homeActivity.getDesktop().setCurrentItem(i - 1);
-                        } else if (i == 1 && infinite) {
-                            _homeActivity.getDesktop().setCurrentItem(_homeActivity.getDesktop().getAdapter().getCount() - 2);
+                        } else if (i == 1) {
+                            com.benny.openlauncher.util.Logger.log("HpDragOption", "LeftHandle: Adding page left (drag mode)");
+                            _homeActivity.getDesktop().addPageLeft(true);
                         }
                     } else {
                         if (i > 0) {
                             _homeActivity.getDesktop().setCurrentItem(i - 1);
-                        } else if (infinite) {
-                            _homeActivity.getDesktop().setCurrentItem(_homeActivity.getDesktop().getAdapter().getCount() - 2);
                         } else if (i == 0) {
+                            com.benny.openlauncher.util.Logger.log("HpDragOption", "LeftHandle: Adding page left (drag mode)");
                             _homeActivity.getDesktop().addPageLeft(true);
                         }
                     }
-                    dragHandler.postDelayed(this, 1000);
+                    dragHandler.postDelayed(this, 750);
                 }
             };
 
@@ -62,33 +65,35 @@ public class HpDragOption {
 
             @Override
             public void onStartDrag(Action action, PointF location) {
+                com.benny.openlauncher.util.Logger.log("HpDragOption", "LeftHandle: onStartDrag");
                 leftDragHandle.animate().alpha(0.5f);
             }
 
             @Override
             public void onEnter(Action action, PointF location) {
+                com.benny.openlauncher.util.Logger.log("HpDragOption", "LeftHandle: onEnter");
                 dragHandler.post(runnable);
                 leftDragHandle.animate().alpha(0.9f);
             }
 
             @Override
             public void onMove(Action action, PointF location) {
-                // do nothing
             }
 
             @Override
             public void onDrop(Action action, PointF location, Item item) {
-                // do nothing
             }
 
             @Override
             public void onExit(Action action, PointF location) {
+                com.benny.openlauncher.util.Logger.log("HpDragOption", "LeftHandle: onExit");
                 dragHandler.removeCallbacksAndMessages(null);
                 leftDragHandle.animate().alpha(0.5f);
             }
 
             @Override
             public void onEnd() {
+                com.benny.openlauncher.util.Logger.log("HpDragOption", "LeftHandle: onEnd");
                 dragHandler.removeCallbacksAndMessages(null);
                 leftDragHandle.animate().alpha(0f);
             }
@@ -103,14 +108,15 @@ public class HpDragOption {
                     boolean page0Enabled = Setup.appSettings().getDesktopPage0Enabled();
                     boolean infinite = Setup.appSettings().getDesktopInfiniteScrolling();
 
+                    com.benny.openlauncher.util.Logger.log("HpDragOption", "RightHandle: Runnable triggered. Current page: " + i + "/" + totalPagesIncludingWebview);
+
                     if (i < totalPagesIncludingWebview - 1) {
                         _homeActivity.getDesktop().setCurrentItem(i + 1);
-                    } else if (infinite) {
-                        _homeActivity.getDesktop().setCurrentItem(page0Enabled ? 1 : 0);
                     } else {
+                        com.benny.openlauncher.util.Logger.log("HpDragOption", "RightHandle: Adding page right (drag mode)");
                         _homeActivity.getDesktop().addPageRight(true);
                     }
-                    dragHandler.postDelayed(this, 1000);
+                    dragHandler.postDelayed(this, 750);
                 }
             };
 
@@ -126,35 +132,114 @@ public class HpDragOption {
 
             @Override
             public void onStartDrag(Action action, PointF location) {
+                com.benny.openlauncher.util.Logger.log("HpDragOption", "RightHandle: onStartDrag");
                 rightDragHandle.animate().alpha(0.5f);
             }
 
             @Override
             public void onEnter(Action action, PointF location) {
+                com.benny.openlauncher.util.Logger.log("HpDragOption", "RightHandle: onEnter");
                 dragHandler.post(runnable);
                 rightDragHandle.animate().alpha(0.9f);
             }
 
             @Override
             public void onMove(Action action, PointF location) {
-                // do nothing
             }
 
             @Override
             public void onDrop(Action action, PointF location, Item item) {
-                // do nothing
             }
 
             @Override
             public void onExit(Action action, PointF location) {
+                com.benny.openlauncher.util.Logger.log("HpDragOption", "RightHandle: onExit");
                 dragHandler.removeCallbacksAndMessages(null);
                 rightDragHandle.animate().alpha(0.5f);
             }
 
             @Override
             public void onEnd() {
+                com.benny.openlauncher.util.Logger.log("HpDragOption", "RightHandle: onEnd");
                 dragHandler.removeCallbacksAndMessages(null);
                 rightDragHandle.animate().alpha(0f);
+            }
+        });
+
+        // dock drag event
+        dragNDropView.registerDropTarget(new DropTargetListener() {
+            @Override
+            public View getView() {
+                return _homeActivity.getDock();
+            }
+
+            @Override
+            public boolean onStart(Action action, PointF location, boolean isInside) {
+                return true;
+            }
+
+            @Override
+            public void onStartDrag(Action action, PointF location) {
+                // do nothing
+            }
+
+            @Override
+            public void onDrop(Action action, PointF location, Item item) {
+                if (DragAction.Action.DRAWER.equals(action)) {
+                    if (_homeActivity.getAppDrawerController()._isOpen) {
+                        return;
+                    }
+                    item.reset();
+                }
+
+                int x = (int) location.x;
+                int y = (int) location.y;
+                if (_homeActivity.getDock().addItemToPoint(item, x, y)) {
+                    _homeActivity.getDesktop().consumeLastItem();
+                    _homeActivity.getDock().consumeLastItem();
+
+                    // add the item to the database
+                    Setup.dataManager().saveItem(item, 0, Definitions.ItemPosition.Dock);
+                } else {
+                    Point pos = new Point();
+                    _homeActivity.getDock().touchPosToCoordinate(pos, x, y, item._spanX, item._spanY, false);
+                    View itemView = _homeActivity.getDock().coordinateToChildView(pos);
+                    if (itemView != null) {
+                        if (Desktop.handleOnDropOver(_homeActivity, item, (Item) itemView.getTag(), itemView, _homeActivity.getDock(), 0, Definitions.ItemPosition.Dock, _homeActivity.getDock())) {
+                            _homeActivity.getDesktop().consumeLastItem();
+                            _homeActivity.getDock().consumeLastItem();
+                        } else {
+                            Tool.toast(_homeActivity, R.string.toast_not_enough_space);
+                            _homeActivity.getDesktop().revertLastItem();
+                            _homeActivity.getDock().revertLastItem();
+                        }
+                    } else {
+                        Tool.toast(_homeActivity, R.string.toast_not_enough_space);
+                        _homeActivity.getDesktop().revertLastItem();
+                        _homeActivity.getDock().revertLastItem();
+                    }
+                }
+            }
+
+            @Override
+            public void onMove(Action action, PointF location) {
+                _homeActivity.getDock().updateIconProjection((int) location.x, (int) location.y);
+            }
+
+            @Override
+            public void onEnter(Action action, PointF location) {
+                // do nothing
+            }
+
+            @Override
+            public void onExit(Action action, PointF location) {
+                _homeActivity.getDock().clearCachedOutlineBitmap();
+                dragNDropView.cancelFolderPreview();
+            }
+
+            @Override
+            public void onEnd() {
+                _homeActivity.getDock().clearCachedOutlineBitmap();
             }
         });
 
@@ -202,11 +287,12 @@ public class HpDragOption {
 
                 int x = (int) location.x;
                 int y = (int) location.y;
+
                 if (_homeActivity.getDesktop().addItemToPoint(item, x, y)) {
                     _homeActivity.getDesktop().consumeLastItem();
                     _homeActivity.getDock().consumeLastItem();
                     // add the item to the database
-                    HomeActivity._db.saveItem(item, _homeActivity.getDesktop().getCurrentPageIndex(), Definitions.ItemPosition.Desktop);
+                    Setup.dataManager().saveItem(item, _homeActivity.getDesktop().getCurrentPageIndex(), Definitions.ItemPosition.Desktop);
                     _homeActivity.getDesktop().updateDesktop();
 
                 } else {
@@ -248,83 +334,6 @@ public class HpDragOption {
                         cellContainer.setHideGrid(true);
                     }
                 }
-            }
-        });
-
-        // dock drag event
-        dragNDropView.registerDropTarget(new DropTargetListener() {
-            @Override
-            public View getView() {
-                return _homeActivity.getDock();
-            }
-
-            @Override
-            public boolean onStart(Action action, PointF location, boolean isInside) {
-                return true;
-            }
-
-            @Override
-            public void onStartDrag(Action action, PointF location) {
-                // do nothing
-            }
-
-            @Override
-            public void onDrop(Action action, PointF location, Item item) {
-                if (DragAction.Action.DRAWER.equals(action)) {
-                    if (_homeActivity.getAppDrawerController()._isOpen) {
-                        return;
-                    }
-                    item.reset();
-                }
-
-                int x = (int) location.x;
-                int y = (int) location.y;
-                if (_homeActivity.getDock().addItemToPoint(item, x, y)) {
-                    _homeActivity.getDesktop().consumeLastItem();
-                    _homeActivity.getDock().consumeLastItem();
-
-                    // add the item to the database
-                    HomeActivity._db.saveItem(item, 0, Definitions.ItemPosition.Dock);
-                } else {
-                    Point pos = new Point();
-                    _homeActivity.getDock().touchPosToCoordinate(pos, x, y, item._spanX, item._spanY, false);
-                    View itemView = _homeActivity.getDock().coordinateToChildView(pos);
-                    if (itemView != null) {
-                        if (Desktop.handleOnDropOver(_homeActivity, item, (Item) itemView.getTag(), itemView, _homeActivity.getDock(), 0, Definitions.ItemPosition.Dock, _homeActivity.getDock())) {
-                            _homeActivity.getDesktop().consumeLastItem();
-                            _homeActivity.getDock().consumeLastItem();
-                        } else {
-                            Tool.toast(_homeActivity, R.string.toast_not_enough_space);
-                            _homeActivity.getDesktop().revertLastItem();
-                            _homeActivity.getDock().revertLastItem();
-                        }
-                    } else {
-                        Tool.toast(_homeActivity, R.string.toast_not_enough_space);
-                        _homeActivity.getDesktop().revertLastItem();
-                        _homeActivity.getDock().revertLastItem();
-                    }
-                }
-            }
-
-            @Override
-            public void onMove(Action action, PointF location) {
-                _homeActivity.getDock().updateIconProjection((int) location.x, (int) location.y);
-            }
-
-            @Override
-            public void onEnter(Action action, PointF location) {
-                // do nothing
-            }
-
-            @Override
-            public void onExit(Action action, PointF location) {
-                _homeActivity.getDock().clearCachedOutlineBitmap();
-                dragNDropView.cancelFolderPreview();
-            }
-
-            @Override
-            public void onEnd() {
-                _homeActivity.getDock().clearCachedOutlineBitmap();
             }
         });
     }

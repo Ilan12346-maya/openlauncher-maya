@@ -513,6 +513,12 @@ public final class ItemOptionView extends FrameLayout {
         if (!_dragExceedThreshold && (Math.abs(_dragLocationStart.x - _dragLocation.x) > this.DRAG_THRESHOLD || Math.abs(_dragLocationStart.y - _dragLocation.y) > this.DRAG_THRESHOLD)) {
             _dragExceedThreshold = true;
             com.benny.openlauncher.util.Logger.log(this, "handleMovement: drag threshold exceeded");
+            
+            HomeActivity launcher = HomeActivity.Companion.getLauncher();
+            if (launcher != null) {
+                ((Desktop.DesktopAdapter) launcher.getDesktop().getAdapter()).setDragging(true);
+            }
+
             for (Entry<DropTargetListener, DragFlag> dropTarget : _registeredDropTargetEntries.entrySet()) {
                 if (!dropTarget.getValue().getShouldIgnore()) {
                     convertPoint(dropTarget.getKey().getView());
@@ -527,8 +533,18 @@ public final class ItemOptionView extends FrameLayout {
         DropTargetListener topTarget = null;
         for (Entry<DropTargetListener, DragFlag> dropTarget2 : _registeredDropTargetEntries.entrySet()) {
             if (!dropTarget2.getValue().getShouldIgnore()) {
-                if (isViewContains(dropTarget2.getKey().getView(), (int) _dragLocation.x, (int) _dragLocation.y)) {
-                    topTarget = dropTarget2.getKey();
+                View targetView = dropTarget2.getKey().getView();
+                if (isViewContains(targetView, (int) _dragLocation.x, (int) _dragLocation.y)) {
+                    // Priority: If we already have a target, but this one is "smaller" or is a handle, prefer it.
+                    // Handles should always win over the Desktop.
+                    if (topTarget == null) {
+                        topTarget = dropTarget2.getKey();
+                    } else {
+                        int id = targetView.getId();
+                        if (id == R.id.leftDragHandle || id == R.id.rightDragHandle) {
+                            topTarget = dropTarget2.getKey();
+                        }
+                    }
                 }
             }
         }
@@ -563,8 +579,16 @@ public final class ItemOptionView extends FrameLayout {
         DropTargetListener topTarget = null;
         for (Entry<DropTargetListener, DragFlag> dropTarget : _registeredDropTargetEntries.entrySet()) {
             if (!dropTarget.getValue().getShouldIgnore()) {
-                if (isViewContains(dropTarget.getKey().getView(), (int) _dragLocation.x, (int) _dragLocation.y)) {
-                    topTarget = dropTarget.getKey();
+                View targetView = dropTarget.getKey().getView();
+                if (isViewContains(targetView, (int) _dragLocation.x, (int) _dragLocation.y)) {
+                    if (topTarget == null) {
+                        topTarget = dropTarget.getKey();
+                    } else {
+                        int id = targetView.getId();
+                        if (id == R.id.leftDragHandle || id == R.id.rightDragHandle) {
+                            topTarget = dropTarget.getKey();
+                        }
+                    }
                 }
             }
         }
@@ -586,6 +610,12 @@ public final class ItemOptionView extends FrameLayout {
         for (Entry<DropTargetListener, DragFlag> dropTarget2 : _registeredDropTargetEntries.entrySet()) {
             dropTarget2.getKey().onEnd();
         }
+        
+        HomeActivity launcher2 = HomeActivity.Companion.getLauncher();
+        if (launcher2 != null) {
+            ((Desktop.DesktopAdapter) launcher2.getDesktop().getAdapter()).setDragging(false);
+        }
+
         cancelFolderPreview();
     }
 
@@ -601,8 +631,19 @@ public final class ItemOptionView extends FrameLayout {
         view.getLocationOnScreen(_tempArrayOfInt2);
         int x = _tempArrayOfInt2[0];
         int y = _tempArrayOfInt2[1];
+        
+        int[] thisLocation = new int[2];
+        getLocationOnScreen(thisLocation);
+        
+        x -= thisLocation[0];
+        y -= thisLocation[1];
+        
         int w = view.getWidth();
         int h = view.getHeight();
+
+        if (_dragging) {
+             com.benny.openlauncher.util.Logger.log(this, "Check: touch(" + rx + "," + ry + ") view(" + view.getClass().getSimpleName() + ", id:" + view.getId() + ") rect(" + x + "," + y + "," + (x+w) + "," + (y+h) + ")");
+        }
 
         if (rx < x || rx > x + w || ry < y || ry > y + h) {
             return false;

@@ -10,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
 import android.util.Log;
+import androidx.core.content.ContextCompat;
 
 import com.benny.openlauncher.R;
 import com.benny.openlauncher.activity.HomeActivity;
@@ -26,6 +27,7 @@ public class ShortcutReceiver extends BroadcastReceiver {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void onReceive(Context context, Intent intent) {
         if (intent.getExtras() == null) return;
 
@@ -42,7 +44,7 @@ public class ShortcutReceiver extends BroadcastReceiver {
                 Resources resources = context.getPackageManager().getResourcesForApplication(iconResource.packageName);
                 if (resources != null) {
                     int id = resources.getIdentifier(iconResource.resourceName, null, null);
-                    shortcutIcon = resources.getDrawable(id);
+                    shortcutIcon = ContextCompat.getDrawable(context, id);
                 }
             }
         } catch (Exception e) {
@@ -69,7 +71,7 @@ public class ShortcutReceiver extends BroadcastReceiver {
         } else {
             item.setX(preferredPos.x);
             item.setY(preferredPos.y);
-            HomeActivity._db.saveItem(item, HomeActivity.Companion.getLauncher().getDesktop().getCurrentPageIndex(), Definitions.ItemPosition.Desktop);
+            Setup.dataManager().saveItem(item, HomeActivity.Companion.getLauncher().getDesktop().getCurrentPageIndex(), Definitions.ItemPosition.Desktop);
             HomeActivity.Companion.getLauncher().getDesktop().addItemToPage(item, HomeActivity.Companion.getLauncher().getDesktop().getCurrentPageIndex());
             Log.d(this.getClass().toString(), "shortcut installed");
         }

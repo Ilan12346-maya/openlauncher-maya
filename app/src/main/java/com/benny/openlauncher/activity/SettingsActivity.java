@@ -10,26 +10,16 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.appcompat.widget.Toolbar;
 
 import com.benny.openlauncher.R;
+import com.benny.openlauncher.databinding.ActivitySettingsBinding;
 import com.benny.openlauncher.fragment.SettingsBaseFragment;
 import com.benny.openlauncher.fragment.SettingsMasterFragment;
 import com.benny.openlauncher.manager.Setup;
-import com.benny.openlauncher.util.BackupHelper;
 import com.benny.openlauncher.util.Definitions;
-import com.nononsenseapps.filepicker.Utils;
 
 import net.gsantner.opoc.util.ContextUtils;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class SettingsActivity extends ColorActivity implements SettingsBaseFragment.OnPreferenceStartFragmentCallback {
-    @BindView(R.id.toolbar)
-    protected Toolbar toolbar;
+    private ActivitySettingsBinding binding;
 
     public void onCreate(Bundle b) {
         // must be applied before setContentView
@@ -37,13 +27,13 @@ public class SettingsActivity extends ColorActivity implements SettingsBaseFragm
         ContextUtils contextUtils = new ContextUtils(this);
         contextUtils.setAppLanguage(_appSettings.getLanguage());
 
-        setContentView(R.layout.activity_settings);
-        ButterKnife.bind(this);
+        binding = ActivitySettingsBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        toolbar.setTitle(R.string.pref_title__settings);
-        setSupportActionBar(toolbar);
+        binding.toolbar.setTitle(R.string.pref_title__settings);
+        setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener(v -> onBackPressed());
+        binding.toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_holder, new SettingsMasterFragment()).commit();
@@ -57,7 +47,8 @@ public class SettingsActivity extends ColorActivity implements SettingsBaseFragm
 
     @Override
     public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference preference) {
-        Fragment fragment = Fragment.instantiate(this, preference.getFragment(), preference.getExtras());
+        Fragment fragment = getSupportFragmentManager().getFragmentFactory().instantiate(getClassLoader(), preference.getFragment());
+        fragment.setArguments(preference.getExtras());
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_holder, fragment).addToBackStack(fragment.getTag()).commit();
         return true;
@@ -66,17 +57,15 @@ public class SettingsActivity extends ColorActivity implements SettingsBaseFragm
     @Override
     protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK && data != null) {
             Setup.dataManager().close();
-            List<Uri> files = Utils.getSelectedFilesFromResult(data);
             switch (requestCode) {
                 case Definitions.INTENT_BACKUP:
-                    BackupHelper.backupConfig(this, new File(Utils.getFileForUri(files.get(0)).getAbsolutePath() + "/openlauncher_" + new SimpleDateFormat("yyyyMMdd'T'HHmmss").format(new Date()) + ".zip").toString());
+                    com.benny.openlauncher.util.BackupManager.startBackupTask(this, data.getData());
                     Setup.dataManager().open();
                     break;
                 case Definitions.INTENT_RESTORE:
-                    BackupHelper.restoreConfig(this, Utils.getFileForUri(files.get(0)).toString());
-                    System.exit(0);
+                    com.benny.openlauncher.util.BackupManager.startRestoreTask(this, data.getData());
                     break;
             }
         }

@@ -36,7 +36,7 @@ public final class DragHandler {
                         if (Setup.appSettings().getGestureFeedback()) {
                             Tool.vibrate(view);
                         }
-                        HomeActivity._launcher.getItemOptionView().showItemPopupForLockedDesktop(item, HomeActivity.Companion.getLauncher());
+                        HomeActivity.Companion.getLauncher().getItemOptionView().showItemPopupForLockedDesktop(item, HomeActivity.Companion.getLauncher());
                         return true;
                     }
                     return false;

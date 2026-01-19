@@ -111,9 +111,9 @@ public class ColorPickerPreference extends Preference {
 		}
 	}
 
-	@Override
-	protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
-		setValue(restoreValue ? getPersistedInt(0) : (Integer) defaultValue);
+	        @Override
+	        @SuppressWarnings("deprecation")
+	        protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {		setValue(restoreValue ? getPersistedInt(0) : (Integer) defaultValue);
 	}
 
 	@Override

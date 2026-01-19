@@ -12,11 +12,6 @@
         tools:summary="Version v0.5" />
 
     <Preference
-        android:icon="@drawable/ic_thumb_up"
-        android:key="@string/pref_key__more_info__rate_app"
-        android:title="@string/rate_the_app" />
-
-    <Preference
         android:icon="@drawable/ic_settings"
         android:key="@string/pref_key__more_info__settings"
         android:title="@string/pref_title__settings" />
@@ -35,17 +30,30 @@
             android:title="@string/bug_reports" />
 
         <Preference
-            android:icon="@drawable/ic_translate"
-            android:key="@string/pref_key__more_info__translate"
-            android:summary="@string/help_translating_this_app"
-            android:title="@string/translate" />
-
-        <Preference
             android:icon="@drawable/ic_info"
             android:key="@string/pref_key__more_info__project_contribution_info"
             android:summary="@string/more_info_on_how_to_contribute_to_this_project"
             android:title="@string/project_contribution_info" />
 
+    </com.benny.openlauncher.widget.ColorPreferenceCategory>
+
+    <com.benny.openlauncher.widget.ColorPreferenceCategory android:title="@string/current_developers">
+        <Preference
+            android:icon="@drawable/ic_person"
+            android:summary="Current Developer &amp; Maintainer"
+            android:title="ILAN12346">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/Ilan12346-maya/openlauncher-maya" />
+        </Preference>
+        <Preference
+            android:icon="@drawable/ic_android"
+            android:summary="AI assisted development"
+            android:title="Gemini-CLI">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/Ilan12346-maya/openlauncher-maya" />
+        </Preference>
     </com.benny.openlauncher.widget.ColorPreferenceCategory>
 
     <com.benny.openlauncher.widget.ColorPreferenceCategory
@@ -55,19 +63,8 @@
     </com.benny.openlauncher.widget.ColorPreferenceCategory>
 
     <com.benny.openlauncher.widget.ColorPreferenceCategory
-        android:key="@string/pref_key__more_info__project_community"
-        android:title="@string/community">
-
-        <Preference
-            android:icon="@drawable/ic_group"
-            android:key="@string/pref_key__more_info__join_community"
-            android:title="@string/join_community" />
-
-        <Preference
-            android:icon="@drawable/ic_info"
-            android:key="@string/pref_key__more_info__contributors_public_info"
-            android:summary="@string/contributors_public_info"
-            android:title="@string/contributors" />
+        android:key="@string/pref_key__more_info__contributors_list"
+        android:title="@string/contributors">
 
     </com.benny.openlauncher.widget.ColorPreferenceCategory>
 

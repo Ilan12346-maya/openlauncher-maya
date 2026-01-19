@@ -16,6 +16,8 @@ Also, to all those people who have helped this project, thank you.
 
 ## LIST OF CONTRIBUTORS
 -->
+* **[ILAN12346](https://github.com/Ilan12346-maya/openlauncher-maya)**<br/>~° Current Developer
+* **[Gemini-CLI](https://github.com/Ilan12346-maya/openlauncher-maya)**<br/>~° AI assisted development
 * **[Aabaker](https://github.com/aabaker)**<br/>~° Code contributions
 * **[TeamBrainStorm](https://github.com/TeamBrainStorm)**<br/>~° Very supportive when the project started
 * **[GauklerFaun](https://github.com/scoute-dich)**<br/>~° German translation

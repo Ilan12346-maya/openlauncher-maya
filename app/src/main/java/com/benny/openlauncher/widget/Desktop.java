@@ -62,9 +62,6 @@ public final class Desktop extends ViewPager implements DesktopCallback {
     private View _previousItemView;
     private int _previousPage;
 
-    private float _parallaxX;
-    private float _parallaxY;
-
     public float getLastDownY() {
         return _lastDownY;
     }
@@ -140,10 +137,10 @@ public final class Desktop extends ViewPager implements DesktopCallback {
                                 group.getGroupItems().add(dropItem);
                                 group._x = item._x;
                                 group._y = item._y;
-                                HomeActivity._db.saveItem(dropItem, page, ItemPosition.Group);
-                                HomeActivity._db.saveItem(item, ItemState.Hidden);
-                                HomeActivity._db.saveItem(dropItem, ItemState.Hidden);
-                                HomeActivity._db.saveItem(group, page, itemPosition);
+                                Setup.dataManager().saveItem(dropItem, page, ItemPosition.Group);
+                                Setup.dataManager().saveItem(item, ItemState.Hidden);
+                                Setup.dataManager().saveItem(dropItem, ItemState.Hidden);
+                                Setup.dataManager().saveItem(group, page, itemPosition);
                                 callback.addItemToPage(group, page);
                                 HomeActivity launcher = HomeActivity.Companion.getLauncher();
                                 if (launcher != null) {
@@ -160,9 +157,9 @@ public final class Desktop extends ViewPager implements DesktopCallback {
                                 group.getGroupItems().addAll(dropItem.getGroupItems());
                                 group._x = item._x;
                                 group._y = item._y;
-                                HomeActivity._db.deleteItem(dropItem, false);
-                                HomeActivity._db.saveItem(item, ItemState.Hidden);
-                                HomeActivity._db.saveItem(group, page, itemPosition);
+                                Setup.dataManager().deleteItem(dropItem, false);
+                                Setup.dataManager().saveItem(item, ItemState.Hidden);
+                                Setup.dataManager().saveItem(group, page, itemPosition);
                                 callback.addItemToPage(group, page);
                                 HomeActivity launcher = HomeActivity.Companion.getLauncher();
                                 if (launcher != null) {
@@ -177,9 +174,9 @@ public final class Desktop extends ViewPager implements DesktopCallback {
                                 parent.removeView(itemView);
                                 dropItem._location = ItemPosition.Group;
                                 item.getGroupItems().add(dropItem);
-                                HomeActivity._db.saveItem(dropItem, page, ItemPosition.Group);
-                                HomeActivity._db.saveItem(dropItem, ItemState.Hidden);
-                                HomeActivity._db.saveItem(item, page, itemPosition);
+                                Setup.dataManager().saveItem(dropItem, page, ItemPosition.Group);
+                                Setup.dataManager().saveItem(dropItem, ItemState.Hidden);
+                                Setup.dataManager().saveItem(item, page, itemPosition);
                                 callback.addItemToPage(item, page);
                                 HomeActivity launcher = HomeActivity.Companion.getLauncher();
                                 if (launcher != null) {
@@ -190,8 +187,8 @@ public final class Desktop extends ViewPager implements DesktopCallback {
                             } else if (Type.GROUP.equals(dropItem._type) && item.getGroupItems().size() < GroupPopupView.GroupDef._maxItem && dropItem.getGroupItems().size() < GroupPopupView.GroupDef._maxItem) {
                                 parent.removeView(itemView);
                                 item.getGroupItems().addAll(dropItem.getGroupItems());
-                                HomeActivity._db.saveItem(item, page, itemPosition);
-                                HomeActivity._db.deleteItem(dropItem, false);
+                                Setup.dataManager().saveItem(item, page, itemPosition);
+                                Setup.dataManager().deleteItem(dropItem, false);
                                 callback.addItemToPage(item, page);
                                 HomeActivity launcher = HomeActivity.Companion.getLauncher();
                                 if (launcher != null) {
@@ -214,6 +211,16 @@ public final class Desktop extends ViewPager implements DesktopCallback {
     public final class DesktopAdapter extends PagerAdapter {
         private final Desktop _desktop;
         private WebView _webView;
+        private boolean _isDragging;
+
+        public void setDragging(boolean dragging) {
+            _isDragging = dragging;
+            notifyDataSetChanged();
+        }
+
+        public boolean isDragging() {
+            return _isDragging;
+        }
 
         public DesktopAdapter(Desktop desktop, int pageCount) {
             _desktop = desktop;
@@ -263,7 +270,7 @@ public final class Desktop extends ViewPager implements DesktopCallback {
 
         public void addPageLeft() {
             // Shift pages to the right (including home page)
-            HomeActivity._db.addPage(0);
+            Setup.dataManager().addPage(0);
             Setup.appSettings().setDesktopPageCurrent(Setup.appSettings().getDesktopPageCurrent()+1);
 
             _desktop.getPages().add(0, getItemLayout());
@@ -271,6 +278,7 @@ public final class Desktop extends ViewPager implements DesktopCallback {
         }
 
         public void addPageRight() {
+            Setup.dataManager().addPage(_desktop.getPages().size());
             _desktop.getPages().add(getItemLayout());
             notifyDataSetChanged();
         }
@@ -283,13 +291,13 @@ public final class Desktop extends ViewPager implements DesktopCallback {
                 for (View view : _desktop.getPages().get(pageIndex).getAllCells()) {
                     Object item = view.getTag();
                     if (item instanceof Item) {
-                        HomeActivity._db.deleteItem((Item) item, true);
+                        Setup.dataManager().deleteItem((Item) item, true);
                     }
                 }
             }
 
             // Shift pages to the left (including home page)
-            HomeActivity._db.removePage(pageIndex);
+            Setup.dataManager().removePage(pageIndex);
             if (Setup.appSettings().getDesktopPageCurrent() > pageIndex) {
                 Setup.appSettings().setDesktopPageCurrent(Setup.appSettings().getDesktopPageCurrent() - 1);
             }
@@ -305,22 +313,25 @@ public final class Desktop extends ViewPager implements DesktopCallback {
 
         @Override
         public int getCount() {
-            if (_desktop.getInEditMode()) {
-                return _desktop.getPages().size();
-            }
             boolean page0Enabled = Setup.appSettings().getDesktopPage0Enabled();
             boolean infinite = Setup.appSettings().getDesktopInfiniteScrolling();
+
+            if (_desktop.getInEditMode() || _isDragging) {
+                return _desktop.getPages().size() + (page0Enabled ? 1 : 0);
+            }
+            
             int count = _desktop.getPages().size() + (page0Enabled ? 1 : 0);
             
             if (infinite && _desktop.getPages().size() > 1) {
                 if (page0Enabled) {
                     count++; // Dummy at the end (Page 1)
                 } else {
-                    count += 2; // Dummy at both ends (Page N and Page 1)
+                    count += 2; // Dummy at both ends (Page N and Page 1);
                 }
             }
             return count;
         }
+
 
         @Override
         public boolean isViewFromObject(View p1, Object p2) {
@@ -346,47 +357,26 @@ public final class Desktop extends ViewPager implements DesktopCallback {
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             AppSettings appSettings = Setup.appSettings();
-            if (_desktop.getInEditMode()) {
-                CellContainer layout = _desktop.getPages().get(position);
-                int topPadding = Tool.dp2px(Setup.appSettings().getSearchBarEnable() ? 120 : 70);
-                int bottomPadding = Tool.dp2px(115);
-                layout.setPadding(0, topPadding, 0, bottomPadding);
-                if (layout.getParent() != null) {
-                    ((ViewGroup) layout.getParent()).removeView(layout);
-                }
-                container.addView(layout);
-                return layout;
-            }
-            
             boolean page0Enabled = appSettings.getDesktopPage0Enabled();
             boolean infinite = appSettings.getDesktopInfiniteScrolling() && _desktop.getPages().size() > 1;
-            
-            int realPosition = position;
-            if (infinite) {
+            boolean isSpecialMode = _isDragging || _desktop.getInEditMode();
+
+            // 1. Check for Dummy Pages (only in normal mode)
+            if (!isSpecialMode && infinite) {
                 if (page0Enabled) {
-                    // WV (0) | P1 (1) | P2 (2) | D(P1) (3)
-                    if (position == getCount() - 1) {
-                        // Dummy at end
-                        return createDummyView(container, 0);
-                    }
+                    if (position == getCount() - 1) return createDummyView(container, 0);
                 } else {
-                    // D(PN) (0) | P1 (1) | P2 (2) | D(P1) (3)
-                    if (position == 0) {
-                        return createDummyView(container, Math.max(0, _desktop.getPages().size() - 1));
-                    } else if (position == getCount() - 1) {
-                        return createDummyView(container, 0);
-                    }
-                    realPosition = position - 1;
+                    if (position == 0) return createDummyView(container, Math.max(0, _desktop.getPages().size() - 1));
+                    if (position == getCount() - 1) return createDummyView(container, 0);
                 }
             }
 
-            if (page0Enabled && realPosition == 0) {
-                // WebView logic
+            // 2. Check for WebView (Page 0)
+            if (page0Enabled && position == 0) {
                 if (_webView == null) {
                     _webView = new WebView(_desktop.getContext());
                     _webView.setFitsSystemWindows(false);
                     WebSettings settings = _webView.getSettings();
-                    
                     settings.setJavaScriptEnabled(true);
                     settings.setDomStorageEnabled(true);
                     settings.setDatabaseEnabled(true);
@@ -394,13 +384,11 @@ public final class Desktop extends ViewPager implements DesktopCallback {
                     settings.setCacheMode(WebSettings.LOAD_DEFAULT);
                     settings.setUseWideViewPort(true);
                     settings.setLoadWithOverviewMode(true);
-                    
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
                         android.webkit.CookieManager.getInstance().setAcceptThirdPartyCookies(_webView, true);
                     }
                     android.webkit.CookieManager.getInstance().setAcceptCookie(true);
-
                     _webView.setBackgroundColor(android.graphics.Color.TRANSPARENT);
                     _webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
                     _webView.setVerticalScrollBarEnabled(false);
@@ -410,8 +398,6 @@ public final class Desktop extends ViewPager implements DesktopCallback {
                 }
 
                 android.widget.RelativeLayout layout = new android.widget.RelativeLayout(_desktop.getContext());
-                
-                // WebView fills the whole layout
                 android.widget.RelativeLayout.LayoutParams webViewParams = new android.widget.RelativeLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 if (_webView.getParent() != null) {
@@ -419,79 +405,89 @@ public final class Desktop extends ViewPager implements DesktopCallback {
                 }
                 layout.addView(_webView, webViewParams);
 
-                // Floating Pill Container
-                android.widget.LinearLayout buttonContainer = new android.widget.LinearLayout(_desktop.getContext());
+                android.widget.LinearLayout buttonContainer = new android.widget.LinearLayout(_desktop.getContext()) {
+                    private float startY;
+
+                    @Override
+                    public boolean onInterceptTouchEvent(android.view.MotionEvent ev) {
+                        switch (ev.getAction()) {
+                            case android.view.MotionEvent.ACTION_DOWN:
+                                startY = ev.getRawY();
+                                break;
+                            case android.view.MotionEvent.ACTION_MOVE:
+                                if (startY - ev.getRawY() > Tool.dp2px(25)) {
+                                    return true;
+                                }
+                                break;
+                        }
+                        return super.onInterceptTouchEvent(ev);
+                    }
+
+                    @Override
+                    public boolean onTouchEvent(android.view.MotionEvent event) {
+                        if (event.getAction() == android.view.MotionEvent.ACTION_MOVE || event.getAction() == android.view.MotionEvent.ACTION_UP) {
+                            if (startY - event.getRawY() > Tool.dp2px(25)) {
+                                HomeActivity launcher = HomeActivity.Companion.getLauncher();
+                                if (launcher != null) {
+                                    AppSettings appSettings = Setup.appSettings();
+                                    int homePage = appSettings.getDesktopPageCurrent() + (appSettings.getDesktopPage0Enabled() ? 1 : 0);
+                                    _desktop.setCurrentItem(homePage, true);
+                                }
+                                return true;
+                            }
+                        }
+                        return super.onTouchEvent(event);
+                    }
+                };
                 buttonContainer.setOrientation(android.widget.LinearLayout.HORIZONTAL);
-                
-                // Pill Shape
                 android.graphics.drawable.GradientDrawable pill = new android.graphics.drawable.GradientDrawable();
                 pill.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
-                pill.setCornerRadius(Tool.dp2px(24));
+                pill.setCornerRadius(Tool.dp2px(30));
                 pill.setColor(android.graphics.Color.parseColor("#AA000000"));
                 buttonContainer.setBackground(pill);
-                
                 buttonContainer.setGravity(android.view.Gravity.CENTER);
-                buttonContainer.setPadding(Tool.dp2px(8), 0, Tool.dp2px(8), 0);
+                buttonContainer.setPadding(Tool.dp2px(12), 0, Tool.dp2px(12), 0);
                 
+                int pillHeight = Tool.dp2px(appSettings.getDesktopPage0PillSize());
+                int pillWidth = (int) (pillHeight * 2.5f);
                 android.widget.RelativeLayout.LayoutParams containerParams = new android.widget.RelativeLayout.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT, Tool.dp2px(48));
+                        pillWidth, pillHeight);
                 containerParams.addRule(android.widget.RelativeLayout.ALIGN_PARENT_BOTTOM);
                 containerParams.addRule(android.widget.RelativeLayout.CENTER_HORIZONTAL);
-                containerParams.bottomMargin = Tool.dp2px(20);
+                containerParams.bottomMargin = Tool.dp2px(appSettings.getDesktopPage0PillMargin());
                 layout.addView(buttonContainer, containerParams);
 
-                // Home Button
                 android.widget.ImageButton homeBtn = new android.widget.ImageButton(_desktop.getContext());
                 homeBtn.setImageResource(com.benny.openlauncher.R.drawable.ic_home);
                 homeBtn.setBackground(null);
-                homeBtn.setPadding(Tool.dp2px(12), 0, Tool.dp2px(12), 0);
+                homeBtn.setPadding(Tool.dp2px(16), 0, Tool.dp2px(16), 0);
                 homeBtn.setColorFilter(android.graphics.Color.WHITE);
-                homeBtn.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        _webView.loadUrl(Setup.appSettings().getDesktopPage0Url());
-                    }
-                });
+                homeBtn.setOnClickListener(v -> _webView.loadUrl(Setup.appSettings().getDesktopPage0Url()));
                 buttonContainer.addView(homeBtn);
 
-                // Back Button
                 android.widget.ImageButton backBtn = new android.widget.ImageButton(_desktop.getContext());
                 backBtn.setImageResource(com.benny.openlauncher.R.drawable.ic_arrow_back_white);
                 backBtn.setBackground(null);
-                backBtn.setPadding(Tool.dp2px(12), 0, Tool.dp2px(12), 0);
+                backBtn.setPadding(Tool.dp2px(16), 0, Tool.dp2px(16), 0);
                 backBtn.setColorFilter(android.graphics.Color.WHITE);
-                backBtn.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (_webView.canGoBack()) {
-                            _webView.goBack();
-                        }
-                    }
-                });
+                backBtn.setOnClickListener(v -> { if (_webView.canGoBack()) _webView.goBack(); });
                 buttonContainer.addView(backBtn);
 
                 container.addView(layout);
                 return layout;
             }
-            
-            int pageIndex;
-            if (infinite) {
-                if (page0Enabled) {
-                    pageIndex = realPosition - 1;
-                } else {
-                    pageIndex = realPosition;
-                }
-            } else {
-                pageIndex = page0Enabled ? position - 1 : position;
+
+            // 3. Normal Desktop Page
+            int pageIndex = position;
+            if (page0Enabled) {
+                pageIndex = position - 1;
+            } else if (!isSpecialMode && infinite) {
+                pageIndex = position - 1;
             }
             
-            if (pageIndex < 0 || pageIndex >= _desktop.getPages().size()) {
-                return new View(_desktop.getContext());
-            }
-            
+            pageIndex = Math.max(0, Math.min(pageIndex, _desktop.getPages().size() - 1));
             CellContainer layout = _desktop.getPages().get(pageIndex);
             
-            // Maximize horizontal space for widgets
             int topPadding = Tool.dp2px(Setup.appSettings().getSearchBarEnable() ? 120 : 70);
             int bottomPadding = Tool.dp2px(115);
             layout.setPadding(0, topPadding, 0, bottomPadding);
@@ -512,7 +508,7 @@ public final class Desktop extends ViewPager implements DesktopCallback {
             layout.setPadding(0, topPadding, 0, bottomPadding);
 
             // Get items for the target page from the database (cached)
-            List<List<Item>> desktopItems = HomeActivity._db.getDesktop();
+            List<List<Item>> desktopItems = Setup.dataManager().getDesktop();
             if (targetPageIndex < desktopItems.size()) {
                 List<Item> pageItems = desktopItems.get(targetPageIndex);
                 int columns = Setup.appSettings().getDesktopColumnCount();
@@ -534,7 +530,8 @@ public final class Desktop extends ViewPager implements DesktopCallback {
             int currentPageIndex = _desktop.getCurrentPageIndex();
             _desktop.setInEditMode(true);
             notifyDataSetChanged();
-            _desktop.setCurrentItem(currentPageIndex, false);
+            boolean page0Enabled = Setup.appSettings().getDesktopPage0Enabled();
+            _desktop.setCurrentItem(currentPageIndex + (page0Enabled ? 1 : 0), false);
 
             float scaleFactor = 0.8f;
             float translateFactor = (float) Tool.dp2px(Setup.appSettings().getSearchBarEnable() ? 20 : 40);
@@ -610,8 +607,12 @@ public final class Desktop extends ViewPager implements DesktopCallback {
 
     public final int getCurrentPageIndex() {
         int index = getCurrentItem();
-        if (_inEditMode) {
-            return Math.max(0, Math.min(index, _pages.size() - 1));
+        DesktopAdapter adapter = (DesktopAdapter) getAdapter();
+        boolean isDragging = adapter != null && adapter.isDragging();
+        if (_inEditMode || isDragging) {
+            boolean page0Enabled = Setup.appSettings().getDesktopPage0Enabled();
+            int pageIndex = page0Enabled ? index - 1 : index;
+            return Math.max(0, Math.min(pageIndex, _pages.size() - 1));
         }
         boolean page0Enabled = Setup.appSettings().getDesktopPage0Enabled();
         int pageIndex = page0Enabled ? index - 1 : index;
@@ -628,7 +629,7 @@ public final class Desktop extends ViewPager implements DesktopCallback {
     }
 
     public final void initDesktop(final Runnable onFinished) {
-        HomeActivity._db.getDesktopAsync(new DatabaseHelper.DataCallback<List<List<Item>>>() {
+        Setup.dataManager().getDesktopAsync(new DatabaseHelper.DataCallback<List<List<Item>>>() {
             @Override
             public void onDataLoaded(List<List<Item>> desktopItems) {
                 _adapter = new DesktopAdapter(Desktop.this, desktopItems.size());
@@ -681,7 +682,7 @@ public final class Desktop extends ViewPager implements DesktopCallback {
     }
 
     public final void updateDesktop() {
-        HomeActivity._db.getDesktopAsync(new DatabaseHelper.DataCallback<List<List<Item>>>() {
+        Setup.dataManager().getDesktopAsync(new DatabaseHelper.DataCallback<List<List<Item>>>() {
             @Override
             public void onDataLoaded(List<List<Item>> desktopItems) {
                 addItemsToPage(desktopItems);
@@ -794,7 +795,7 @@ public final class Desktop extends ViewPager implements DesktopCallback {
             // TODO see if this fixes SD card bug
             // apps that are located on SD card disappear on reboot
             // might be from this line of code so comment out for now
-            //HomeActivity._db.deleteItem(item, true);
+            //Setup.dataManager().deleteItem(item, true);
             return false;
         }
         item._location = ItemPosition.Desktop;
@@ -859,24 +860,6 @@ public final class Desktop extends ViewPager implements DesktopCallback {
 
     @Override
     protected void onPageScrolled(int position, float offset, int offsetPixels) {
-        updateWallpaperOffset(position, offset);
-        super.onPageScrolled(position, offset, offsetPixels);
-    }
-
-    private float _currentPosition;
-    private float _currentOffset;
-
-    public void updateWallpaperOffset() {
-        updateWallpaperOffset(_currentPosition, _currentOffset);
-    }
-
-    private void updateWallpaperOffset(int position, float offset) {
-        _currentPosition = position;
-        _currentOffset = offset;
-        updateWallpaperOffset((float) position, offset);
-    }
-
-    private void updateWallpaperOffset(float position, float offset) {
         Definitions.WallpaperScroll scroll = Setup.appSettings().getDesktopWallpaperScroll();
         float xOffset = (position + offset) / (getAdapter().getCount() - 1);
         if (scroll.equals(Inverse)) {
@@ -884,28 +867,12 @@ public final class Desktop extends ViewPager implements DesktopCallback {
         } else if (scroll.equals(Off)) {
             xOffset = 0.5f;
         }
-
+        
         xOffset = Math.max(0, Math.min(1, xOffset));
 
-        // Add parallax
-        float finalXOffset = xOffset + _parallaxX;
-        float finalYOffset = 0.5f + _parallaxY;
-
-        finalXOffset = Math.max(0, Math.min(1, finalXOffset));
-        finalYOffset = Math.max(0, Math.min(1, finalYOffset));
-
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(getContext());
-        try {
-            wallpaperManager.setWallpaperOffsets(getWindowToken(), finalXOffset, finalYOffset);
-        } catch (Exception e) {
-            // Ignore
-        }
-    }
-
-    public void setParallaxOffsets(float x, float y) {
-        _parallaxX = x;
-        _parallaxY = y;
-        updateWallpaperOffset();
+        wallpaperManager.setWallpaperOffsets(getWindowToken(), xOffset, 0.0f);
+        super.onPageScrolled(position, offset, offsetPixels);
     }
 
     public interface OnDesktopEditListener {

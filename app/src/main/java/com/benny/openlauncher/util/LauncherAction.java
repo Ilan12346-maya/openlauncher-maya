@@ -25,7 +25,7 @@ import java.util.List;
 public class LauncherAction {
 
     public enum Action {
-        SetWallpaper, LockScreen, LauncherSettings, VolumeDialog, DeviceSettings, AppDrawer, SearchBar, MobileNetworkSettings, ShowNotifications, TurnOffScreen, Camera, Restart, RecentApps, OpenQuickRecentDrawer
+        SetWallpaper, LockScreen, LauncherSettings, VolumeDialog, DeviceSettings, AppDrawer, SearchBar, MobileNetworkSettings, ShowNotifications, TurnOffScreen, Camera, Restart, RecentApps
     }
 
     public static ActionDisplayItem[] actionDisplayItems = new ActionDisplayItem[]{
@@ -40,7 +40,6 @@ public class LauncherAction {
             new ActionDisplayItem(Action.ShowNotifications, R.string.action_title__notification_bar, R.string.action_summary__notification_bar, R.drawable.ic_notifications, 46),
             new ActionDisplayItem(Action.Camera, R.string.action_title__camera, R.string.action_summary__camera, R.drawable.ic_camera_, 13),
             new ActionDisplayItem(Action.RecentApps, R.string.action_title__recent_apps, R.string.action_summary__recent_apps, R.drawable.ic_desktop, 14),
-            new ActionDisplayItem(Action.OpenQuickRecentDrawer, R.string.action_title__quick_recent_drawer, R.string.action_title__quick_recent_drawer, R.drawable.ic_apps, 15),
             new ActionDisplayItem(Action.Restart, R.string.on, R.string.on, R.drawable.ic_android, 99)
     };
 
@@ -101,10 +100,22 @@ public class LauncherAction {
                 }
                 break;
             case AppDrawer:
-                HomeActivity._launcher.openAppDrawer();
+                if (context instanceof HomeActivity) {
+                    ((HomeActivity) context).openAppDrawer();
+                } else if (HomeActivity.Companion.getLauncher() != null) {
+                    HomeActivity.Companion.getLauncher().openAppDrawer();
+                }
                 break;
             case SearchBar:
-                HomeActivity._launcher.getSearchBar().getSearchButton().performClick();
+                HomeActivity homeActivity = null;
+                if (context instanceof HomeActivity) {
+                    homeActivity = (HomeActivity) context;
+                } else if (HomeActivity.Companion.getLauncher() != null) {
+                    homeActivity = HomeActivity.Companion.getLauncher();
+                }
+                if (homeActivity != null) {
+                    homeActivity.getSearchBar().getSearchButton().performClick();
+                }
                 break;
             case MobileNetworkSettings:
                 context.startActivity(new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS));
@@ -142,11 +153,6 @@ public class LauncherAction {
                     statusBarExpand.invoke(statusBarService);
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
-                break;
-            case OpenQuickRecentDrawer:
-                if (HomeActivity._launcher != null) {
-                    HomeActivity._launcher.openQuickRecentDrawer();
                 }
                 break;
             case Restart:

@@ -28,6 +28,10 @@
             android:summary="@string/pref_summary__reset_database"
             android:title="@string/pref_title__reset_database" />
         <Preference
+            android:key="@string/pref_key__clear_cache"
+            android:summary="@string/pref_summary__clear_cache"
+            android:title="@string/pref_title__clear_cache" />
+        <Preference
             android:key="@string/pref_key__restart"
             android:summary="@string/pref_summary__restart"
             android:title="@string/pref_title__restart" />

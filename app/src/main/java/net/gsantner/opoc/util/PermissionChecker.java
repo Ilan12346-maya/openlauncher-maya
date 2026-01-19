@@ -28,6 +28,7 @@ public class PermissionChecker {
         _activity = activity;
     }
 
+    @SuppressWarnings("deprecation")
     public boolean doIfExtStoragePermissionGranted(String... optionalToastMessageForKnowingWhyNeeded) {
         if (ContextCompat.checkSelfPermission(_activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 

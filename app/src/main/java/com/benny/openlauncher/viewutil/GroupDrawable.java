@@ -131,7 +131,7 @@ public class GroupDrawable extends Drawable {
         Path clip = new Path();
         clip.addCircle(_iconSize / 2, _iconSize / 2, _iconSize / 2 - _outline, Path.Direction.CW);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-            canvas.clipPath(clip, Region.Op.REPLACE);
+            canvas.clipPath(clip);
         } else {
             canvas.clipPath(clip);
         }
@@ -170,7 +170,7 @@ public class GroupDrawable extends Drawable {
             }
         }
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-            canvas.clipRect(0, 0, _iconSize, _iconSize, Region.Op.REPLACE);
+            canvas.clipRect(0, 0, _iconSize, _iconSize);
         }
 
         canvas.drawCircle(_iconSize / 2, _iconSize / 2, _iconSize / 2 - _outline, _paintOuterCircle);
@@ -201,6 +201,7 @@ public class GroupDrawable extends Drawable {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public int getOpacity() {
         return PixelFormat.TRANSPARENT;
     }

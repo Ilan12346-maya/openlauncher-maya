@@ -144,7 +144,7 @@ public class CellContainer extends ViewGroup {
 
     @NonNull
     public final List<View> getAllCells() {
-        ArrayList views = new ArrayList();
+        ArrayList<View> views = new ArrayList<>();
         int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
             views.add(getChildAt(i));
@@ -476,37 +476,28 @@ public class CellContainer extends ViewGroup {
         touchPosToCoordinate(coordinate, mX, mY, xSpan, ySpan, checkAvailability, false);
     }
 
-    public final void touchPosToCoordinate(Point coordinate, int mX, int mY, int xSpan, int ySpan, boolean checkAvailability, boolean checkBoundary) {
-        if (_cells == null) {
-            coordinate.set(-1, -1);
-            return;
-        }
-
-        mX -= (xSpan - 1) * _cellWidth / 2f;
-        mY -= (ySpan - 1) * _cellHeight / 2f;
-
-        int x = 0;
-        while (x < _cellSpanH) {
-            int y = 0;
-            while (y < _cellSpanV) {
-                Rect cell = _cells[x][y];
+    public void touchPosToCoordinate(Point coordinate, int mX, int mY, int xSpan, int ySpan, boolean checkAvailability, boolean checkBoundary) {
+        for (int i = 0; i < _cells.length; i++) {
+            for (int j = 0; j < _cells[i].length; j++) {
+                Rect cell = _cells[i][j];
                 if (mY >= cell.top && mY <= cell.bottom && mX >= cell.left && mX <= cell.right) {
-                    if (checkAvailability) {
-                        if (_occupied[x][y]) {
-                            coordinate.set(-1, -1);
-                            return;
-                        }
+                    int x = i;
+                    int y = j;
 
+                    if (checkAvailability) {
                         int dx = x + xSpan - 1;
                         int dy = y + ySpan - 1;
 
-                        if (dx >= _cellSpanH - 1) {
-                            dx = _cellSpanH - 1;
-                            x = dx + 1 - xSpan;
+                        if (dx >= _cellSpanH) {
+                            x = _cellSpanH - xSpan;
                         }
-                        if (dy >= _cellSpanV - 1) {
-                            dy = _cellSpanV - 1;
-                            y = dy + 1 - ySpan;
+                        if (dy >= _cellSpanV) {
+                            y = _cellSpanV - ySpan;
+                        }
+                        
+                        if (x < 0 || y < 0) {
+                            coordinate.set(-1, -1);
+                            return;
                         }
 
                         for (int x2 = x; x2 < x + xSpan; x2++) {
@@ -530,9 +521,7 @@ public class CellContainer extends ViewGroup {
                     coordinate.set(x, y);
                     return;
                 }
-                y++;
             }
-            x++;
         }
     }
 
@@ -582,29 +571,17 @@ public class CellContainer extends ViewGroup {
     private void initCellInfo(int l, int t, int r, int b) {
         _cells = new Rect[_cellSpanH][_cellSpanV];
 
-        int curLeft = l;
-        int curTop = t;
-        int curRight = l + _cellWidth;
-        int curBottom = t + _cellHeight;
-
         for (int i = 0; i < _cellSpanH; i++) {
-            if (i != 0) {
-                curLeft += _cellWidth;
-                curRight += _cellWidth;
-            }
+            int curLeft = l + (i * _cellWidth);
+            int curRight = curLeft + _cellWidth;
 
             for (int j = 0; j < _cellSpanV; j++) {
-                if (j != 0) {
-                    curTop += _cellHeight;
-                    curBottom += _cellHeight;
-                }
+                int curTop = t + (j * _cellHeight);
+                int curBottom = curTop + _cellHeight;
 
                 Rect rect = new Rect(curLeft, curTop, curRight, curBottom);
                 _cells[i][j] = rect;
             }
-
-            curTop = t;
-            curBottom = t + _cellHeight;
         }
     }
 }

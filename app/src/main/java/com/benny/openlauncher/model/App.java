@@ -14,7 +14,6 @@ import com.benny.openlauncher.util.cache.IconCache;
 import java.util.List;
 
 public class App {
-    public Drawable _icon;
     public String _label;
     public String _packageName;
     public String _className;
@@ -58,32 +57,30 @@ public class App {
     }
 
     public void setIcon(Drawable icon) {
-        _icon = icon;
         if (icon != null) {
             IconCache.getInstance().addIcon(getComponentName(), icon);
         }
     }
 
     public Drawable getIcon() {
-        if (_icon != null) return _icon;
-
         android.graphics.Bitmap cachedBitmap = IconCache.getInstance().getIcon(getComponentName());
         if (cachedBitmap != null) {
-            _icon = new android.graphics.drawable.BitmapDrawable(null, cachedBitmap);
-            return _icon;
+            return new android.graphics.drawable.BitmapDrawable(null, cachedBitmap);
         }
 
         if (_pm != null) {
+            Drawable icon = null;
             if (_info != null) {
-                _icon = _info.loadIcon(_pm);
+                icon = _info.loadIcon(_pm);
             } else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O && _launcherInfo != null) {
-                _icon = _launcherInfo.getIcon(0);
+                icon = _launcherInfo.getIcon(0);
             }
-            if (_icon != null) {
-                IconCache.getInstance().addIcon(getComponentName(), _icon);
+            if (icon != null) {
+                IconCache.getInstance().addIcon(getComponentName(), icon);
+                return icon;
             }
         }
-        return _icon;
+        return null;
     }
 
     public String getLabel() {

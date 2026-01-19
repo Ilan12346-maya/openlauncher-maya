@@ -1,5 +1,6 @@
 package com.benny.openlauncher.util;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.graphics.Bitmap;
@@ -10,6 +11,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 
 import com.benny.openlauncher.model.App;
 
@@ -18,123 +20,124 @@ import java.util.List;
 import java.util.Map;
 
 public class IconPackHelper {
-    public static void applyIconPack(AppManager appManager, final int iconSize, String iconPackName, List<App> apps) {
-        Resources iconPackResources = null;
-        Map<String, String> appFilterMap = new HashMap<>();
-        Map<String, String> configMap = new HashMap<>();
+    private static IconPackHelper _instance;
+    private Resources _iconPackResources;
+    private String _iconPackName = "";
+    private Map<String, String> _appFilterMap = new HashMap<>();
+    private Map<String, String> _configMap = new HashMap<>();
+    
+    private Bitmap _back, _mask, _upon;
+    private float _scale = 1f;
+    private Paint _p, _origP, _maskP;
+    private BitmapFactory.Options _uniformOptions;
 
-        if (!iconPackName.equals("")) {
-            try {
-                iconPackResources = appManager.getPackageManager().getResourcesForApplication(iconPackName);
-                parseAppFilter(iconPackResources, iconPackName, appFilterMap, configMap);
-            } catch (Exception e) {
-                System.out.println(e);
+    public static IconPackHelper getInstance(Context context) {
+        if (_instance == null) {
+            _instance = new IconPackHelper();
+        }
+        String currentPack = AppSettings.get().getIconPack();
+        if (!currentPack.equals(_instance._iconPackName)) {
+            _instance.loadIconPack(context, currentPack);
+        }
+        return _instance;
+    }
+
+    private IconPackHelper() {
+        _p = new Paint(Paint.FILTER_BITMAP_FLAG);
+        _p.setAntiAlias(true);
+
+        _origP = new Paint(Paint.FILTER_BITMAP_FLAG);
+        _origP.setAntiAlias(true);
+
+        _maskP = new Paint(Paint.FILTER_BITMAP_FLAG);
+        _maskP.setAntiAlias(true);
+        _maskP.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
+
+        _uniformOptions = new BitmapFactory.Options();
+        _uniformOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        _uniformOptions.inScaled = false;
+    }
+
+    private void loadIconPack(Context context, String packageName) {
+        _iconPackName = packageName;
+        _iconPackResources = null;
+        _appFilterMap.clear();
+        _configMap.clear();
+        _back = _mask = _upon = null;
+        _scale = 1f;
+
+        if (packageName.isEmpty()) return;
+
+        try {
+            _iconPackResources = context.getPackageManager().getResourcesForApplication(packageName);
+            parseAppFilter(_iconPackResources, packageName, _appFilterMap, _configMap);
+            
+            if (_configMap.get("iconback") != null) {
+                int id = _iconPackResources.getIdentifier(_configMap.get("iconback"), "drawable", packageName);
+                if (id != 0) _back = BitmapFactory.decodeResource(_iconPackResources, id, _uniformOptions);
+            }
+            if (_configMap.get("iconmask") != null) {
+                int id = _iconPackResources.getIdentifier(_configMap.get("iconmask"), "drawable", packageName);
+                if (id != 0) _mask = BitmapFactory.decodeResource(_iconPackResources, id, _uniformOptions);
+            }
+            if (_configMap.get("iconupon") != null) {
+                int id = _iconPackResources.getIdentifier(_configMap.get("iconupon"), "drawable", packageName);
+                if (id != 0) _upon = BitmapFactory.decodeResource(_iconPackResources, id, _uniformOptions);
+            }
+            if (_configMap.get("scale") != null) {
+                _scale = Float.parseFloat(_configMap.get("scale"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Drawable getIcon(App app, int iconSize) {
+        if (_iconPackResources == null) return null;
+
+        String iconResource = _appFilterMap.get(app.getComponentName());
+        if (iconResource != null) {
+            int id = _iconPackResources.getIdentifier(iconResource, "drawable", _iconPackName);
+            if (id != 0) {
+                return new BitmapDrawable(_iconPackResources, BitmapFactory.decodeResource(_iconPackResources, id, _uniformOptions));
             }
         }
 
-        int intResourceIcon = 0;
-        int intResourceBack = 0;
-        int intResourceMask = 0;
-        int intResourceUpon = 0;
-        float scale = 1;
-
-        if (iconPackResources != null) {
-            if (configMap.get("iconback") != null)
-                intResourceBack = iconPackResources.getIdentifier(configMap.get("iconback"), "drawable", iconPackName);
-            if (configMap.get("iconmask") != null)
-                intResourceMask = iconPackResources.getIdentifier(configMap.get("iconmask"), "drawable", iconPackName);
-            if (configMap.get("iconupon") != null)
-                intResourceUpon = iconPackResources.getIdentifier(configMap.get("iconupon"), "drawable", iconPackName);
-            if (configMap.get("scale") != null)
-                scale = Float.parseFloat(configMap.get("scale"));
+        // Apply masking if enabled in icon pack
+        if (_back != null || _mask != null || _upon != null) {
+            return applyIconPackEffects(app.getIcon(), iconSize);
         }
 
-        Paint p = new Paint(Paint.FILTER_BITMAP_FLAG);
-        p.setAntiAlias(true);
+        return null;
+    }
 
-        Paint origP = new Paint(Paint.FILTER_BITMAP_FLAG);
-        origP.setAntiAlias(true);
+    private Drawable applyIconPackEffects(Drawable originalIcon, int iconSize) {
+        if (originalIcon == null) return null;
 
-        Paint maskP = new Paint(Paint.FILTER_BITMAP_FLAG);
-        maskP.setAntiAlias(true);
-        maskP.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
+        Bitmap orig = Bitmap.createBitmap(originalIcon.getIntrinsicWidth(), originalIcon.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        originalIcon.setBounds(0, 0, originalIcon.getIntrinsicWidth(), originalIcon.getIntrinsicHeight());
+        originalIcon.draw(new Canvas(orig));
 
-        BitmapFactory.Options uniformOptions = new BitmapFactory.Options();
-        uniformOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        uniformOptions.inScaled = false;
-        uniformOptions.inDither = false;
+        Bitmap scaledOrig = Bitmap.createBitmap(iconSize, iconSize, Bitmap.Config.ARGB_8888);
+        Bitmap scaledBitmap = Bitmap.createBitmap(iconSize, iconSize, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(scaledBitmap);
 
-        Bitmap back = null;
-        Bitmap mask = null;
-        Bitmap upon = null;
-        Canvas canvasOrig;
-        Canvas canvas;
-        Bitmap scaledBitmap;
-        Bitmap scaledOrig;
-        Bitmap orig;
+        if (_back != null)
+            canvas.drawBitmap(_back, getResizedMatrix(_back, iconSize, iconSize), _p);
 
-        if (iconPackName.compareTo("") != 0 && iconPackResources != null) {
-            try {
-                if (intResourceBack != 0)
-                    back = BitmapFactory.decodeResource(iconPackResources, intResourceBack, uniformOptions);
-                if (intResourceMask != 0)
-                    mask = BitmapFactory.decodeResource(iconPackResources, intResourceMask, uniformOptions);
-                if (intResourceUpon != 0)
-                    upon = BitmapFactory.decodeResource(iconPackResources, intResourceUpon, uniformOptions);
-            } catch (Exception e) {
-                System.out.println(e);
-            }
-        }
+        Canvas canvasOrig = new Canvas(scaledOrig);
+        Bitmap resizedOrig = getResizedBitmap(orig, (int) (iconSize * _scale), (int) (iconSize * _scale));
+        canvasOrig.drawBitmap(resizedOrig, (scaledOrig.getWidth() - resizedOrig.getWidth()) / 2f, (scaledOrig.getHeight() - resizedOrig.getHeight()) / 2f, _origP);
 
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = false;
-        options.inPreferredConfig = Bitmap.Config.RGB_565;
-        options.inDither = true;
+        if (_mask != null)
+            canvasOrig.drawBitmap(_mask, getResizedMatrix(_mask, iconSize, iconSize), _maskP);
 
-        for (int i = 0; i < apps.size(); i++) {
-            if (iconPackResources != null) {
-                String iconResource = appFilterMap.get(apps.get(i).getComponentName());
-                if (iconResource != null) {
-                    intResourceIcon = iconPackResources.getIdentifier(iconResource, "drawable", iconPackName);
-                } else {
-                    intResourceIcon = 0;
-                }
+        canvas.drawBitmap(scaledOrig, 0, 0, _p);
 
-                if (intResourceIcon != 0) {
-                    // has single drawable for app
-                    apps.get(i).setIcon(new BitmapDrawable(BitmapFactory.decodeResource(iconPackResources, intResourceIcon, uniformOptions)));
-                } else {
-                    try {
-                        orig = Bitmap.createBitmap(apps.get(i).getIcon().getIntrinsicWidth(), apps.get(i).getIcon().getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-                    } catch (Exception e) {
-                        continue;
-                    }
-                    apps.get(i).getIcon().setBounds(0, 0, apps.get(i).getIcon().getIntrinsicWidth(), apps.get(i).getIcon().getIntrinsicHeight());
-                    apps.get(i).getIcon().draw(new Canvas(orig));
+        if (_upon != null)
+            canvas.drawBitmap(_upon, getResizedMatrix(_upon, iconSize, iconSize), _p);
 
-                    scaledOrig = Bitmap.createBitmap(iconSize, iconSize, Bitmap.Config.ARGB_8888);
-                    scaledBitmap = Bitmap.createBitmap(iconSize, iconSize, Bitmap.Config.ARGB_8888);
-                    canvas = new Canvas(scaledBitmap);
-
-                    if (back != null)
-                        canvas.drawBitmap(back, getResizedMatrix(back, iconSize, iconSize), p);
-
-                    canvasOrig = new Canvas(scaledOrig);
-                    orig = getResizedBitmap(orig, (int) (iconSize * scale), (int) (iconSize * scale));
-                    canvasOrig.drawBitmap(orig, scaledOrig.getWidth() - (orig.getWidth() / 2) - scaledOrig.getWidth() / 2, scaledOrig.getWidth() - (orig.getWidth() / 2) - scaledOrig.getWidth() / 2, origP);
-
-                    if (mask != null)
-                        canvasOrig.drawBitmap(mask, getResizedMatrix(mask, iconSize, iconSize), maskP);
-
-                    canvas.drawBitmap(getResizedBitmap(scaledOrig, iconSize, iconSize), 0, 0, p);
-
-                    if (upon != null)
-                        canvas.drawBitmap(upon, getResizedMatrix(upon, iconSize, iconSize), p);
-
-                    apps.get(i).setIcon(new BitmapDrawable(appManager.getContext().getResources(), scaledBitmap));
-                }
-            }
-        }
+        return new BitmapDrawable(null, scaledBitmap);
     }
 
     private static void parseAppFilter(Resources resources, String packageName, Map<String, String> appFilterMap, Map<String, String> configMap) {
@@ -187,5 +190,10 @@ public class IconPackHelper {
         Matrix matrix = new Matrix();
         matrix.postScale(scaleWidth, scaleHeight);
         return matrix;
+    }
+
+    // Keep legacy method for compatibility if needed, but empty it out
+    public static void applyIconPack(AppManager appManager, final int iconSize, String iconPackName, List<App> apps) {
+        // Now handled by Glide/on-demand loading
     }
 }

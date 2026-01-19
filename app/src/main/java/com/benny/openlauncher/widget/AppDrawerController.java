@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.graphics.Insets;
 
 import com.benny.openlauncher.R;
 import com.benny.openlauncher.manager.Setup;
@@ -165,8 +166,13 @@ public class AppDrawerController extends RevealFrameLayout {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // API 30+
+            android.graphics.Insets systemBarInsets = insets.getInsets(WindowInsets.Type.systemBars());
+            setPadding(0, systemBarInsets.top, 0, systemBarInsets.bottom);
+            return insets;
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) { // API 19-29 (old behavior)
             setPadding(0, insets.getSystemWindowInsetTop(), 0, insets.getSystemWindowInsetBottom());
             return insets;
         }

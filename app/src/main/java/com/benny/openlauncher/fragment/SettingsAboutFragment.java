@@ -67,20 +67,8 @@ public class SettingsAboutFragment extends GsPreferenceFragmentCompat<AppSetting
                     au.animateToActivity(SettingsActivity.class, false, 124);
                     return true;
                 }
-                case R.string.pref_key__more_info__rate_app: {
-                    au.showGooglePlayEntryForThisApp();
-                    return true;
-                }
-                case R.string.pref_key__more_info__join_community: {
-                    _cu.openWebpageInExternalBrowser(getString(R.string.app_community_url));
-                    return true;
-                }
                 case R.string.pref_key__more_info__bug_reports: {
                     _cu.openWebpageInExternalBrowser(getString(R.string.app_bug_report_url));
-                    return true;
-                }
-                case R.string.pref_key__more_info__translate: {
-                    _cu.openWebpageInExternalBrowser(getString(R.string.app_translate_url));
                     return true;
                 }
                 case R.string.pref_key__more_info__project_contribution_info: {
@@ -175,6 +163,25 @@ public class SettingsAboutFragment extends GsPreferenceFragmentCompat<AppSetting
         // 1) Name/Title, 2) Description/Summary, 3) Link/View-Intent, 4) Empty line
         if ((pref = findPreference(R.string.pref_key__more_info__project_team)) != null && ((PreferenceGroup) pref).getPreferenceCount() == 0) {
             String[] data = (_cu.readTextfileFromRawRes(R.raw.project, "", "").trim() + "\n\n").split("\n");
+            for (int i = 0; i + 2 < data.length; i += 4) {
+                Preference person = new Preference(context);
+                person.setTitle(data[i]);
+                person.setSummary(data[i + 1]);
+                person.setIcon(R.drawable.ic_person);
+                try {
+                    Uri uri = Uri.parse(data[i + 2]);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    person.setIntent(intent);
+                } catch (Exception ignored) {
+                }
+                appendPreference(person, (PreferenceGroup) pref);
+            }
+        }
+
+        // Extract contributors from raw resource
+        if ((pref = findPreference(R.string.pref_key__more_info__contributors_list)) != null && ((PreferenceGroup) pref).getPreferenceCount() == 0) {
+            String[] data = (_cu.readTextfileFromRawRes(R.raw.contributors_list, "", "").trim() + "\n\n").split("\n");
             for (int i = 0; i + 2 < data.length; i += 4) {
                 Preference person = new Preference(context);
                 person.setTitle(data[i]);

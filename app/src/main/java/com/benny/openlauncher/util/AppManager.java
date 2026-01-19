@@ -7,9 +7,9 @@ import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ShortcutInfo;
-import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Process;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.UserHandle;
 import android.os.UserManager;
 import androidx.annotation.NonNull;
@@ -30,6 +30,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class AppManager {
     private static Logger LOG = LoggerFactory.getLogger("AppManager");
@@ -46,8 +48,9 @@ public class AppManager {
     public final List<AppUpdateListener> _updateListeners = new ArrayList<>();
     public final List<AppDeleteListener> _deleteListeners = new ArrayList<>();
     public boolean _recreateAfterGettingApps;
-    private AsyncTask _task;
     private Context _context;
+    private final ExecutorService _executorService = Executors.newSingleThreadExecutor();
+    private final Handler _mainHandler = new Handler(Looper.getMainLooper());
 
     public PackageManager getPackageManager() {
         return _packageManager;
@@ -85,31 +88,123 @@ public class AppManager {
 
     public void init() {
         // Load saved apps first for instant display
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final List<App> savedApps = Setup.dataManager().getSavedApps();
-                if (savedApps.size() > 0) {
-                    new android.os.Handler(android.os.Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            _apps = savedApps;
-                            notifyUpdateListeners(_apps);
-                        }
-                    });
-                }
+        _executorService.execute(() -> {
+            final List<App> savedApps = Setup.dataManager().getSavedApps();
+            if (savedApps.size() > 0) {
+                _mainHandler.post(() -> {
+                    _apps = savedApps;
+                    notifyUpdateListeners(_apps);
+                });
             }
-        }).start();
+        });
         getAllApps();
     }
 
     public void getAllApps() {
-        if (_task == null || _task.getStatus() == AsyncTask.Status.FINISHED)
-            _task = new AsyncGetApps().execute();
-        else if (_task.getStatus() == AsyncTask.Status.RUNNING) {
-            _task.cancel(false);
-            _task = new AsyncGetApps().execute();
+        _executorService.execute(this::loadAppsTask);
+    }
+
+    private void loadAppsTask() {
+        List<App> appsTemp = new ArrayList<>();
+        List<App> nonFilteredAppsTemp = new ArrayList<>();
+        List<App> removedApps;
+
+        // work profile support
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            LauncherApps launcherApps = (LauncherApps) _context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
+            List<UserHandle> profiles = launcherApps.getProfiles();
+            for (UserHandle userHandle : profiles) {
+                List<LauncherActivityInfo> apps = launcherApps.getActivityList(null, userHandle);
+                for (LauncherActivityInfo info : apps) {
+                    List<ShortcutInfo> shortcutInfo = Tool.getShortcutInfo(getContext(), info.getComponentName().getPackageName());
+                    App app = new App(_packageManager, info, shortcutInfo);
+                    app._userHandle = userHandle;
+                    LOG.debug("adding work profile to non filtered list: {}, {}, {}", app._label, app._packageName, app._className);
+                    nonFilteredAppsTemp.add(app);
+                }
+            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            UserManager userManager = (UserManager) _context.getSystemService(Context.USER_SERVICE);
+            // LauncherApps.getProfiles() is not available for API 25, so just get all associated user profile handlers
+            List<UserHandle> profiles = userManager.getUserProfiles();
+            LauncherApps launcherApps = (LauncherApps) _context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
+            for (UserHandle userHandle : profiles) {
+                List<LauncherActivityInfo> apps = launcherApps.getActivityList(null, userHandle);
+                for (LauncherActivityInfo info : apps) {
+                    List<ShortcutInfo> shortcutInfo = Tool.getShortcutInfo(getContext(), info.getComponentName().getPackageName());
+                    App app = new App(_packageManager, info, shortcutInfo);
+                    app._userHandle = userHandle;
+                    LOG.debug("adding work profile to non filtered list: {}, {}, {}", app._label, app._packageName, app._className);
+                    nonFilteredAppsTemp.add(app);
+                }
+            }
+        } else {
+            Intent intent = new Intent(Intent.ACTION_MAIN, null);
+            intent.addCategory(Intent.CATEGORY_LAUNCHER);
+            List<ResolveInfo> activitiesInfo = _packageManager.queryIntentActivities(intent, 0);
+            for (ResolveInfo info : activitiesInfo) {
+                App app = new App(_packageManager, info, null);
+                LOG.debug("adding app to non filtered list: {}, {}, {}", app._label,  app._packageName, app._className);
+                nonFilteredAppsTemp.add(app);
+            }
         }
+
+        // sort the apps by label here
+        Collections.sort(nonFilteredAppsTemp, new Comparator<App>() {
+            @Override
+            public int compare(App one, App two) {
+                return Collator.getInstance().compare(one._label, two._label);
+            }
+        });
+
+        List<String> hiddenList = AppSettings.get().getHiddenAppsList();
+        if (hiddenList != null) {
+            for (int i = 0; i < nonFilteredAppsTemp.size(); i++) {
+                boolean shouldGetAway = false;
+                for (String hidItemRaw : hiddenList) {
+                    if ((nonFilteredAppsTemp.get(i).getComponentName()).equals(hidItemRaw)) {
+                        shouldGetAway = true;
+                        break;
+                    }
+                }
+                if (!shouldGetAway) {
+                    appsTemp.add(nonFilteredAppsTemp.get(i));
+                }
+            }
+        } else {
+            appsTemp.addAll(nonFilteredAppsTemp);
+        }
+
+        removedApps = getRemovedApps(_apps, appsTemp);
+
+        for (App app : removedApps) {
+            Setup.dataManager().deleteItems(app);
+        }
+
+        // Post results to main thread
+        final List<App> finalAppsTemp = appsTemp;
+        final List<App> finalNonFilteredAppsTemp = nonFilteredAppsTemp;
+        final List<App> finalRemovedApps = removedApps;
+
+        _mainHandler.post(() -> {
+            _apps = finalAppsTemp;
+            _nonFilteredApps = finalNonFilteredAppsTemp;
+
+            // Save to database for next startup
+            Setup.dataManager().saveApps(_apps);
+
+            if (finalRemovedApps.size() > 0) {
+                notifyRemoveListeners(finalRemovedApps);
+            }
+
+            notifyUpdateListeners(finalAppsTemp);
+
+            if (_recreateAfterGettingApps) {
+                _recreateAfterGettingApps = false;
+                if (_context instanceof HomeActivity)
+                    ((HomeActivity) _context).recreate();
+            }
+        });
     }
 
     public List<App> getAllApps(Context context, boolean includeHidden) {
@@ -160,133 +255,6 @@ public class AppManager {
             if (iter.next().onAppDeleted(apps)) {
                 iter.remove();
             }
-        }
-    }
-
-    private class AsyncGetApps extends AsyncTask {
-        private List<App> appsTemp;
-        private List<App> nonFilteredAppsTemp;
-        private List<App> removedApps;
-
-        @Override
-        protected void onPreExecute() {
-            appsTemp = new ArrayList<>();
-            nonFilteredAppsTemp = new ArrayList<>();
-            removedApps = new ArrayList<>();
-            super.onPreExecute();
-        }
-
-        @Override
-        protected void onCancelled() {
-            appsTemp = null;
-            nonFilteredAppsTemp = null;
-            removedApps = new ArrayList<>();
-            super.onCancelled();
-        }
-
-        @Override
-        protected Object doInBackground(Object[] p1) {
-
-            // work profile support
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                LauncherApps launcherApps = (LauncherApps) _context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
-                List<UserHandle> profiles = launcherApps.getProfiles();
-                for (UserHandle userHandle : profiles) {
-                    List<LauncherActivityInfo> apps = launcherApps.getActivityList(null, userHandle);
-                    for (LauncherActivityInfo info : apps) {
-                        List<ShortcutInfo> shortcutInfo = Tool.getShortcutInfo(getContext(), info.getComponentName().getPackageName());
-                        App app = new App(_packageManager, info, shortcutInfo);
-                        app._userHandle = userHandle;
-                        LOG.debug("adding work profile to non filtered list: {}, {}, {}", app._label, app._packageName, app._className);
-                        nonFilteredAppsTemp.add(app);
-                    }
-                }
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-                UserManager userManager = (UserManager) _context.getSystemService(Context.USER_SERVICE);
-                // LauncherApps.getProfiles() is not available for API 25, so just get all associated user profile handlers
-                List<UserHandle> profiles = userManager.getUserProfiles();
-                LauncherApps launcherApps = (LauncherApps) _context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
-                for (UserHandle userHandle : profiles) {
-                    List<LauncherActivityInfo> apps = launcherApps.getActivityList(null, userHandle);
-                    for (LauncherActivityInfo info : apps) {
-                        List<ShortcutInfo> shortcutInfo = Tool.getShortcutInfo(getContext(), info.getComponentName().getPackageName());
-                        App app = new App(_packageManager, info, shortcutInfo);
-                        app._userHandle = userHandle;
-                        LOG.debug("adding work profile to non filtered list: {}, {}, {}", app._label, app._packageName, app._className);
-                        nonFilteredAppsTemp.add(app);
-                    }
-                }
-            } else {
-                Intent intent = new Intent(Intent.ACTION_MAIN, null);
-                intent.addCategory(Intent.CATEGORY_LAUNCHER);
-                List<ResolveInfo> activitiesInfo = _packageManager.queryIntentActivities(intent, 0);
-                for (ResolveInfo info : activitiesInfo) {
-                    App app = new App(_packageManager, info, null);
-                    LOG.debug("adding app to non filtered list: {}, {}, {}", app._label,  app._packageName, app._className);
-                    nonFilteredAppsTemp.add(app);
-                }
-            }
-
-            // sort the apps by label here
-            Collections.sort(nonFilteredAppsTemp, new Comparator<App>() {
-                @Override
-                public int compare(App one, App two) {
-                    return Collator.getInstance().compare(one._label, two._label);
-                }
-            });
-
-            List<String> hiddenList = AppSettings.get().getHiddenAppsList();
-            if (hiddenList != null) {
-                for (int i = 0; i < nonFilteredAppsTemp.size(); i++) {
-                    boolean shouldGetAway = false;
-                    for (String hidItemRaw : hiddenList) {
-                        if ((nonFilteredAppsTemp.get(i).getComponentName()).equals(hidItemRaw)) {
-                            shouldGetAway = true;
-                            break;
-                        }
-                    }
-                    if (!shouldGetAway) {
-                        appsTemp.add(nonFilteredAppsTemp.get(i));
-                    }
-                }
-            } else {
-                appsTemp.addAll(nonFilteredAppsTemp);
-            }
-
-            removedApps = getRemovedApps(_apps, appsTemp);
-
-            for (App app : removedApps) {
-                HomeActivity._db.deleteItems(app);
-            }
-
-            AppSettings appSettings = AppSettings.get();
-            if (!appSettings.getIconPack().isEmpty() && Tool.isPackageInstalled(appSettings.getIconPack(), _packageManager)) {
-                IconPackHelper.applyIconPack(AppManager.this, Tool.dp2px(appSettings.getIconSize()), appSettings.getIconPack(), appsTemp);
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Object result) {
-            _apps = appsTemp;
-            _nonFilteredApps = nonFilteredAppsTemp;
-
-            // Save to database for next startup
-            Setup.dataManager().saveApps(_apps);
-
-            if (removedApps.size() > 0) {
-                notifyRemoveListeners(removedApps);
-            }
-
-            notifyUpdateListeners(appsTemp);
-
-            if (_recreateAfterGettingApps) {
-                _recreateAfterGettingApps = false;
-                if (_context instanceof HomeActivity)
-                    ((HomeActivity) _context).recreate();
-            }
-
-            super.onPostExecute(result);
         }
     }
 

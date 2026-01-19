@@ -1,18 +1,14 @@
-# Key Changes and Features (v0.9.6)
-*   **Massive UI Performance:** Re-engineered icon scaling and rendering logic, reducing CPU overhead by up to 70% during drawer scrolling.
-*   **Asynchronous Architecture:** Background processing for icon caching, disk storage, and database loading for a stutter-free experience.
-*   **Optimized Icon Packs:** Lightning-fast theme switching via cached XML parsing (O(N) vs O(N^2)).
-*   **Enhanced Edit Mode:** Page 0 and Infinite Scrolling are automatically disabled while editing to provide a stable workspace.
-*   **Stealth Integration:** Launcher is completely hidden from the Android "Recent Apps" list.
-*   **Advanced UX:** Added exit protection for Desktop Options (requires back button or long-press) to prevent accidental closures.
-*   **Performance Optimization:** Near-instant app icon loading through localized disk caching and optimized loading sequences (current page -> other pages -> app drawer).
-*   **iOS Style Dock:** New option for a rounded, semi-transparent dock background with larger icons, similar to iOS.
-*   **Infinite Scrolling:** Seamless infinite scrolling for the desktop with optimized dummy page transitions to prevent "blank" pages during fast scrolls.
-*   **Recent Apps Action:** New launcher action to quickly toggle the system's recent apps overview via gestures.
-*   **Performance Optimization (v0.9.1):** Implementation of Lazy Icon Loading, RAM-Caching (LruCache), and asynchronous background loading.
-*   **Enhanced Gestures (v0.9.1):** Split-screen swipe gestures (Up/Down) for the desktop (top and bottom halves).
-*   **Batch App Removal:** Efficiently uninstall multiple applications at once.
-*   **Page0 Webview:** A fullscreen webview integrated on page 0 for quick access to web content.
+# Key Improvements
+
+### Performance
+*   **Next-Gen Icon Engine:** Replaced legacy image handling with **Glide**, enabling high-performance asynchronous loading, localized disk caching, and significantly reduced RAM usage.
+*   **Optimized Startup:** Implemented asynchronous app loading and caching strategies to ensure near-instant interaction and prevent UI stutters.
+*   **Smoother Interactions:** Refined `CellContainer` touch logic and optimized icon pack processing (O(N) complexity) to minimize main thread overhead.
+
+### Modernization
+*   **Architecture Overhaul:** Decoupled monolithic `HomeActivity` into specialized managers (`ReceiverManager`, `AppLauncher`, `PermissionManager`) and centralized backup logic.
+*   **Android 14 Ready:** Updated codebase for modern Android standards, including full migration to `OnBackPressedDispatcher`, `WindowInsetsController`, and modern permission flows.
+*   **Clean Codebase:** Fully migrated from ButterKnife to **ViewBinding**, replaced deprecated `AsyncTask` with `ExecutorService`, and resolved resource conflicts for enhanced stability.
 
 ---
 

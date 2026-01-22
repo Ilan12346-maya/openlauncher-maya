@@ -136,8 +136,12 @@ public final class ItemOptionView extends FrameLayout {
             if (_dragging) {
                 canvas.save();
                 _overlayIconScale = Tool.clampFloat(_overlayIconScale + 0.05f, 1f, 1.1f);
-                canvas.scale(_overlayIconScale, _overlayIconScale, x + DragHandler._cachedDragBitmap.getWidth() / 2, y + DragHandler._cachedDragBitmap.getHeight() / 2);
-                canvas.drawBitmap(DragHandler._cachedDragBitmap, x - DragHandler._cachedDragBitmap.getWidth() / 2, y - DragHandler._cachedDragBitmap.getHeight() / 2, _paint);
+                float itemWidth = DragHandler._cachedDragBitmap.getWidth();
+                float itemHeight = DragHandler._cachedDragBitmap.getHeight();
+                float drawX = x - HomeActivity._itemTouchX;
+                float drawY = y - HomeActivity._itemTouchY;
+                canvas.scale(_overlayIconScale, _overlayIconScale, drawX + itemWidth / 2, drawY + itemHeight / 2);
+                canvas.drawBitmap(DragHandler._cachedDragBitmap, drawX, drawY, _paint);
                 canvas.restore();
             }
 
@@ -286,6 +290,14 @@ public final class ItemOptionView extends FrameLayout {
         _dragItem = item;
         _dragAction = action;
         _dragLocationStart.set(_dragLocation);
+
+        // Calculate touch offset within the item
+        int[] loc = new int[2];
+        view.getLocationOnScreen(loc);
+        int[] thisLoc = new int[2];
+        getLocationOnScreen(thisLoc);
+        HomeActivity._itemTouchX = _dragLocation.x - (loc[0] - thisLoc[0]);
+        HomeActivity._itemTouchY = _dragLocation.y - (loc[1] - thisLoc[1]);
 
         for (Entry dropTarget : _registeredDropTargetEntries.entrySet()) {
             convertPoint(((DropTargetListener) dropTarget.getKey()).getView());

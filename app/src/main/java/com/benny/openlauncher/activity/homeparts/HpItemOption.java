@@ -26,9 +26,12 @@ import com.benny.openlauncher.util.Tool;
 import com.benny.openlauncher.viewutil.PopupDynamicIconLabelItem;
 import com.benny.openlauncher.widget.Desktop;
 import com.benny.openlauncher.widget.Dock;
+import android.view.LayoutInflater;
+import android.widget.SeekBar;
+import android.widget.TextView;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.benny.openlauncher.widget.WidgetContainer;
-
-import java.util.List;
+import com.benny.openlauncher.widget.WidgetView;
 
 public class HpItemOption implements DialogListener.OnEditDialogListener {
     private HomeActivity _homeActivity;
@@ -81,7 +84,7 @@ public class HpItemOption implements DialogListener.OnEditDialogListener {
         }
     }
 
-    public final void onResizeItem(@NonNull Item item) {
+    public final void onResizeItem(@NonNull final Item item) {
         View coordinateToChildView;
         if (item._location.equals(ItemPosition.Desktop)) {
             Desktop desktop = _homeActivity.getDesktop();
@@ -91,8 +94,45 @@ public class HpItemOption implements DialogListener.OnEditDialogListener {
             coordinateToChildView = dock.coordinateToChildView(new Point(item._x, item._y));
         }
 
-        if (coordinateToChildView != null) {
-            ((WidgetContainer) coordinateToChildView).showResize();
+        if (coordinateToChildView != null && coordinateToChildView instanceof WidgetContainer) {
+            final WidgetContainer container = (WidgetContainer) coordinateToChildView;
+            final WidgetView widgetView = (WidgetView) container.getChildAt(0);
+            
+            // Show the resize handles
+            container.showResize();
+
+            // Create and show the scale dialog
+            MaterialDialog.Builder builder = new MaterialDialog.Builder(_homeActivity);
+            builder.title(R.string.resize);
+            
+            View dialogView = LayoutInflater.from(_homeActivity).inflate(R.layout.dialog_widget_scale, null);
+            final SeekBar seekBar = dialogView.findViewById(R.id.scale_seekbar);
+            final TextView label = dialogView.findViewById(R.id.scale_label);
+            
+            seekBar.setProgress((int) (item.getWidgetScale() * 100));
+            label.setText("Scale: " + (int) (item.getWidgetScale() * 100) + "%");
+            
+            seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    float scale = progress / 100f;
+                    item.setWidgetScale(scale);
+                    widgetView.setScale(scale);
+                    label.setText("Scale: " + progress + "%");
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {}
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                    Setup.dataManager().saveItem(item);
+                }
+            });
+            
+            builder.customView(dialogView, true);
+            builder.positiveText(android.R.string.ok);
+            builder.show();
         }
     }
 

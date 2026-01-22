@@ -63,6 +63,8 @@
     <string name="more_info_support">More information on donating or otherwise supporting this project.</string>
     <string name="android_contribution_guide">Android Development</string>
 
+    <string name="recent_apps">Recent Apps</string>
+    <string name="all_apps">All Apps</string>
     
     <string name="pref_title__settings">Settings</string>
     <string name="pref_title__desktop">Desktop</string>
@@ -99,6 +101,10 @@
     <string name="pref_summary__desktop_show_position_indicator">Show the page indicator below the desktop.</string>
     <string name="pref_title__desktop_show_label">Show Labels</string>
     <string name="pref_summary__desktop_show_label">Show item labels below their icons.</string>
+    <string name="pref_title__desktop_parallax">Parallax Effekt</string>
+    <string name="pref_summary__desktop_parallax">Bewegt den Hintergrund leicht basierend auf der Neigung des Geräts.</string>
+    <string name="pref_title__desktop_parallax_intensity">Parallax Intensität</string>
+    <string name="pref_title__dock_parallax_intensity">Dock Parallax Intensität</string>
     <string name="pref_title__desktop_background_color">Background</string>
     <string name="pref_title__desktop_inset_color">System Bars</string>
     <string name="pref_title__desktop_folder_color">Folders</string>
@@ -123,6 +129,8 @@
     <string name="pref_summary__dock_ios_style">Use a rounded, semi-transparent background for the dock.</string>
     <string name="pref_title__dock_background_color">Background Color</string>
     <string name="pref_title__dock_background_alpha">Transparency</string>
+    <string name="pref_title__dock_blur">Blur Effekt</string>
+    <string name="pref_summary__dock_blur">Aktiviert Echtzeit-Blur für den Dock-Hintergrund (Android 12+).</string>
 
     <string name="pref_title__drawer_style">Style</string>
     <string name="pref_summary__drawer_style">Choose between a paged and vertical app drawer.</string>

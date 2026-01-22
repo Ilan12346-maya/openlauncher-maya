@@ -2,8 +2,9 @@ package com.benny.openlauncher.activity;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
-import android.appwidget.AppWidgetManager;
 import android.graphics.Color;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -73,7 +74,14 @@ import net.gsantner.opoc.util.ContextUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class HomeActivity extends ColorActivity implements OnDesktopEditListener {
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+
+import android.view.ContextThemeWrapper;
+
+public final class HomeActivity extends ColorActivity implements OnDesktopEditListener, SensorEventListener {
     public static final Companion Companion = new Companion();
     public static final int REQUEST_CREATE_APPWIDGET = 0x6475;
     public static final int REQUEST_PERMISSION_STORAGE = 0x3648;
@@ -89,10 +97,16 @@ public final class HomeActivity extends ColorActivity implements OnDesktopEditLi
     // static launcher variables
     private static HomeActivity _launcher;
     public static HpDesktopOption _desktopOption;
+    public static Context _widgetContext;
 
     // receiver variables
     private LauncherReceiverManager _receiverManager;
     private boolean _page0Enabled;
+
+    private SensorManager _sensorManager;
+    private Sensor _gravitySensor;
+    private float[] _smoothedValues = new float[2];
+    private final float _filterAlpha = 0.25f; // Smoothing factor (higher = faster response)
 
     private int cx;
     private int cy;
@@ -170,6 +184,12 @@ public final class HomeActivity extends ColorActivity implements OnDesktopEditLi
         AppSettings appSettings = AppSettings.get();
         _page0Enabled = appSettings.getDesktopPage0Enabled();
 
+        _sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        _gravitySensor = _sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+        if (_gravitySensor == null) {
+            _gravitySensor = _sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        }
+
         ContextUtils contextUtils = new ContextUtils(getApplicationContext());
         contextUtils.setAppLanguage(appSettings.getLanguage());
         super.onCreate(savedInstanceState);
@@ -202,14 +222,9 @@ public final class HomeActivity extends ColorActivity implements OnDesktopEditLi
             setSystemBarsVisible(false);
         }
 
-        init(); // This call should be here
+        init();
 
         final View itemOption = findViewById(R.id.item_option);
-        if (itemOption != null) {
-            ViewGroup.LayoutParams params = itemOption.getLayoutParams();
-            params.height = 2480;
-            itemOption.setLayoutParams(params);
-        }
         
         androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(itemOption, (v, insets) -> {
             if (getDesktop().getCurrentItem() == 0) {
@@ -221,12 +236,22 @@ public final class HomeActivity extends ColorActivity implements OnDesktopEditLi
     }
 
     private void init() {
-        _appWidgetManager = AppWidgetManager.getInstance(this);
-        _appWidgetHost = new WidgetHost(getApplicationContext(), 100);
+        if (_widgetContext == null) {
+            _widgetContext = new ContextThemeWrapper(getApplicationContext(), android.R.style.Theme_DeviceDefault);
+        }
+        if (_appWidgetHost == null) {
+            _appWidgetHost = new WidgetHost(_widgetContext, 1024);
+        }
         _appWidgetHost.startListening();
+
+        if (_appWidgetManager == null) {
+            _appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
+        }
 
         _receiverManager = new LauncherReceiverManager(this);
         _receiverManager.registerReceivers();
+
+        _page0Enabled = Setup.appSettings().getDesktopPage0Enabled();
 
         initAppManager();
         initSettings();
@@ -466,6 +491,12 @@ public final class HomeActivity extends ColorActivity implements OnDesktopEditLi
                         lp.rightMargin = 0;
                     }
                     iosDockBg.setLayoutParams(params);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && appSettings.getDockBlur()) {
+                        iosDockBg.setRenderEffect(android.graphics.RenderEffect.createBlurEffect(20f, 20f, android.graphics.Shader.TileMode.MIRROR));
+                    } else {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) iosDockBg.setRenderEffect(null);
+                    }
                 });
             } else {
                 iosDockBg.setVisibility(View.GONE);
@@ -571,6 +602,7 @@ public final class HomeActivity extends ColorActivity implements OnDesktopEditLi
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        _appWidgetHost.startListening();
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_PICK_APPWIDGET) {
                 _desktopOption.configureWidget(data);
@@ -590,11 +622,21 @@ public final class HomeActivity extends ColorActivity implements OnDesktopEditLi
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        _appWidgetHost.startListening();
+        _launcher = this;
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         android.util.Log.i("OpenLauncher", "HomeActivity: onResume");
-        _appWidgetHost.startListening();
-        _launcher = this;
+        checkWidgetPermissions();
+
+        if (_gravitySensor != null) {
+            _sensorManager.registerListener(this, _gravitySensor, SensorManager.SENSOR_DELAY_GAME);
+        }
 
         // handle restart if something needs to be reset
         AppSettings appSettings = Setup.appSettings();
@@ -627,9 +669,20 @@ public final class HomeActivity extends ColorActivity implements OnDesktopEditLi
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        _sensorManager.unregisterListener(this);
+    }
+
+    @Override
+    protected void onStop() {
+        _appWidgetHost.stopListening();
+        super.onStop();
+    }
+
+    @Override
     protected void onDestroy() {
         android.util.Log.i("OpenLauncher", "HomeActivity: onDestroy");
-        _appWidgetHost.stopListening();
         if (_launcher == this) {
             _launcher = null;
         }
@@ -665,6 +718,33 @@ public final class HomeActivity extends ColorActivity implements OnDesktopEditLi
         }
     }
 
+    private void checkWidgetPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
+            
+            // Check if we are the default launcher
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            android.content.pm.ResolveInfo resolveInfo = getPackageManager().resolveActivity(intent, android.content.pm.PackageManager.MATCH_DEFAULT_ONLY);
+            boolean isDefault = resolveInfo != null && getPackageName().equals(resolveInfo.activityInfo.packageName);
+
+            if (!isDefault) {
+                com.benny.openlauncher.util.Logger.log(this, "Launcher is not default. Widgets might not bind.");
+            }
+
+            try {
+                // Try to bind a dummy ID to see if we have permission.
+                // We use a very high ID to avoid conflicts.
+                int testId = 12345;
+                ComponentName dummy = new ComponentName(this, "com.benny.openlauncher.DummyProvider");
+                boolean canBind = appWidgetManager.bindAppWidgetIdIfAllowed(testId, dummy);
+                android.util.Log.i("OpenLauncher", "Widget bind permission status: " + canBind);
+            } catch (Exception e) {
+                // Ignore
+            }
+        }
+    }
+
     public final void openAppDrawer() {
         openAppDrawer(null, 0, 0);
     }
@@ -694,5 +774,41 @@ public final class HomeActivity extends ColorActivity implements OnDesktopEditLi
 
     public final void closeAppDrawer() {
         getAppDrawerController().close(cx, cy);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_GRAVITY || event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            AppSettings appSettings = Setup.appSettings();
+            if (appSettings.getDesktopParallax()) {
+                // Low-pass filter to smooth out the values
+                _smoothedValues[0] = _smoothedValues[0] + _filterAlpha * (event.values[0] - _smoothedValues[0]);
+                _smoothedValues[1] = _smoothedValues[1] + _filterAlpha * (event.values[1] - _smoothedValues[1]);
+
+                float x = _smoothedValues[0];
+                float y = _smoothedValues[1];
+                
+                // Parallax intensity
+                float desktopFactor = appSettings.getDesktopParallaxIntensity();
+                float dockFactor = appSettings.getDockParallaxIntensity();
+
+                getDesktop().setTranslationX(-x * desktopFactor);
+                getDesktop().setTranslationY(y * desktopFactor);
+                
+                getDock().setTranslationX(-x * dockFactor);
+                getDock().setTranslationY(y * dockFactor);
+            } else {
+                if (getDesktop().getTranslationX() != 0 || getDesktop().getTranslationY() != 0) {
+                    getDesktop().setTranslationX(0);
+                    getDesktop().setTranslationY(0);
+                    getDock().setTranslationX(0);
+                    getDock().setTranslationY(0);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
 }

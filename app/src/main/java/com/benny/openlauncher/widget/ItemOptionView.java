@@ -140,7 +140,9 @@ public final class ItemOptionView extends FrameLayout {
                 float itemHeight = DragHandler._cachedDragBitmap.getHeight();
                 float drawX = x - HomeActivity._itemTouchX;
                 float drawY = y - HomeActivity._itemTouchY;
-                canvas.scale(_overlayIconScale, _overlayIconScale, drawX + itemWidth / 2, drawY + itemHeight / 2);
+                
+                // Scale around the finger position (x, y) which is the current drag location
+                canvas.scale(_overlayIconScale, _overlayIconScale, x, y);
                 canvas.drawBitmap(DragHandler._cachedDragBitmap, drawX, drawY, _paint);
                 canvas.restore();
             }

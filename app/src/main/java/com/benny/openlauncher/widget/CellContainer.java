@@ -213,9 +213,8 @@ public class CellContainer extends ViewGroup {
     private void drawCachedOutlineBitmap(Canvas canvas, Rect cell) {
         if (_cachedOutlineBitmap != null) {
             Bitmap bitmap = _cachedOutlineBitmap;
-            float centerX = cell.centerX();
-            float centerY = cell.centerY();
-            canvas.drawBitmap(bitmap, centerX - (bitmap.getWidth() / 2), centerY - (bitmap.getHeight() / 2), _outlinePaint);
+            // Align with top-left of the target cell to support multi-cell widgets correctly
+            canvas.drawBitmap(bitmap, cell.left, cell.top, _outlinePaint);
         }
     }
 
@@ -467,9 +466,13 @@ public class CellContainer extends ViewGroup {
     }
 
     public final LayoutParams coordinateToLayoutParams(int mX, int mY, int xSpan, int ySpan) {
+        return coordinateToLayoutParams(mX, mY, xSpan, ySpan, true);
+    }
+
+    public final LayoutParams coordinateToLayoutParams(int mX, int mY, int xSpan, int ySpan, boolean checkAvailability) {
         Point pos = new Point();
-        touchPosToCoordinate(pos, mX, mY, xSpan, ySpan, true);
-        return !pos.equals(-1, -1) ? new LayoutParams(WRAP_CONTENT, WRAP_CONTENT, pos.x, pos.y, xSpan, ySpan) : null;
+        touchPosToCoordinate(pos, mX, mY, xSpan, ySpan, checkAvailability);
+        return !pos.equals(new Point(-1, -1)) ? new LayoutParams(WRAP_CONTENT, WRAP_CONTENT, pos.x, pos.y, xSpan, ySpan) : null;
     }
 
     public void touchPosToCoordinate(@NonNull Point coordinate, int mX, int mY, int xSpan, int ySpan, boolean checkAvailability) {

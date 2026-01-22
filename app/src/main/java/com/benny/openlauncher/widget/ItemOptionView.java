@@ -287,7 +287,7 @@ public final class ItemOptionView extends FrameLayout {
         }
         _dragging = true;
         _dragExceedThreshold = false;
-        _overlayIconScale = 0.0f;
+        _overlayIconScale = 1.0f;
         _dragView = view;
         _dragItem = item;
         _dragAction = action;

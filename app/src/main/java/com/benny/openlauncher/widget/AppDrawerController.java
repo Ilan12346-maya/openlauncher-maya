@@ -22,6 +22,7 @@ public class AppDrawerController extends RevealFrameLayout {
     public AppDrawerGrid _drawerViewGrid;
     public int _drawerMode;
     public boolean _isOpen = false;
+    private boolean _isInit = false;
     private Callback.a2<Boolean, Boolean> _appDrawerCallback;
     private Animator _appDrawerAnimator;
     private int _drawerAnimationTime;
@@ -49,6 +50,7 @@ public class AppDrawerController extends RevealFrameLayout {
     }
 
     public View getDrawer() {
+        if (!_isInit) return null;
         switch (_drawerMode) {
             case Mode.GRID:
                 return _drawerViewGrid;
@@ -59,6 +61,7 @@ public class AppDrawerController extends RevealFrameLayout {
     }
 
     public void open(int cx, int cy) {
+        if (!_isInit) init();
         if (_isOpen) return;
         _isOpen = true;
 
@@ -152,7 +155,8 @@ public class AppDrawerController extends RevealFrameLayout {
     }
 
     public void init() {
-        if (isInEditMode()) return;
+        if (_isInit || isInEditMode()) return;
+        _isInit = true;
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         _drawerMode = Setup.appSettings().getDrawerStyle();
         setVisibility(GONE);

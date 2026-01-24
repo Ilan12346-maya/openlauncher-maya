@@ -182,6 +182,17 @@ public final class HomeActivity extends ColorActivity implements OnDesktopEditLi
         AndroidThreeTen.init(this);
 
         AppSettings appSettings = AppSettings.get();
+        
+        // Skip to intro if needed
+        if (appSettings.getAppShowIntro()) {
+            Intent intent = new Intent(this, OnBoardActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            startActivity(intent);
+            finish();
+            super.onCreate(null);
+            return;
+        }
+
         _page0Enabled = appSettings.getDesktopPage0Enabled();
 
         _sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -289,7 +300,6 @@ public final class HomeActivity extends ColorActivity implements OnDesktopEditLi
     }
 
     protected void initViews() {
-        getAppDrawerController().init();
         getDock().setHome(this);
 
         getDesktop().setDesktopEditListener(this);
@@ -299,6 +309,7 @@ public final class HomeActivity extends ColorActivity implements OnDesktopEditLi
         getDesktop().initDesktop(new Runnable() {
             @Override
             public void run() {
+                // Background initialization after desktop is ready
                 getAppDrawerController().loadApps();
             }
         });
@@ -745,8 +756,8 @@ public final class HomeActivity extends ColorActivity implements OnDesktopEditLi
             if (getDesktop().getInEditMode()) {
                 android.util.Log.i("OpenLauncher", "HomeActivity: Exiting edit mode on resume");
                 getDesktop().exitDesktopEditMode();
-            } else if (getAppDrawerController().getDrawer().getVisibility() == View.VISIBLE) {
-                android.util.Log.i("OpenLauncher", "HomeActivity: Closing app drawer on resume");
+            } else if (getAppDrawerController().getDrawer() != null && getAppDrawerController().getDrawer().getVisibility() == View.VISIBLE) {
+                android.util.Log.i("OpenLauncher", "HomeActivity: Closing drawer on resume");
                 closeAppDrawer();
             }
             if (getDesktop().getCurrentItem() != 0) {

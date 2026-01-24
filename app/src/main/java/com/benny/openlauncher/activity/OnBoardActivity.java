@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.benny.openlauncher.R;
+import com.benny.openlauncher.manager.Setup;
 
 import agency.tango.materialintroscreen.MaterialIntroActivity;
 import agency.tango.materialintroscreen.SlideFragment;
@@ -75,10 +76,9 @@ public class OnBoardActivity extends MaterialIntroActivity {
 
 
     private void setState() {
-        getSharedPreferences("app", Context.MODE_PRIVATE).edit().putBoolean(getResources().getString(R.string.pref_key__show_intro), false).apply();
+        Setup.appSettings().setAppShowIntro(false);
 
         Intent intent = new Intent(this, HomeActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
     }
 

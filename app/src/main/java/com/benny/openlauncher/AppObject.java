@@ -18,6 +18,14 @@ public class AppObject extends Application {
         super.onCreate();
         _instance = this;
 
+        // Start component warm-up in background
+        new Thread(() -> {
+            // Warm up SharedPreferences
+            com.benny.openlauncher.util.AppSettings.get();
+            // Warm up Database
+            new com.benny.openlauncher.util.DatabaseHelper(_instance).getWritableDatabase();
+        }).start();
+
         DynamicColors.applyToActivitiesIfAvailable(this);
 
         CaocConfig.Builder.create()

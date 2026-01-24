@@ -337,6 +337,10 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
         _prefApp.edit().putBoolean(_context.getString(R.string.pref_key__queue_restart), value).commit();
     }
 
+    public boolean getAppShowIntro() {
+        return getBool(R.string.pref_key__show_intro, true);
+    }
+
     @SuppressLint("ApplySharedPref")
     public void setAppShowIntro(boolean value) {
         // MUST be committed

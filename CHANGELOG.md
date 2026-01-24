@@ -7,8 +7,6 @@
 * **Performance Optimizations**:
     * Introduced in-memory database caching for desktop and dock items to prevent main-thread UI stutters.
     * Switched folder preview icons to asynchronous background loading.
-* **Debug Features**:
-    * Added storage path and SD card status listing to the Debug settings for easier troubleshooting.
 
 ### v0.9.9
 * **Major Refactoring**: Decoupled `HomeActivity` by extracting logic into specialized managers (`LauncherReceiverManager`, `AppLauncher`, `PermissionManager`).

@@ -155,9 +155,17 @@ public class Tool {
     }
 
     public static int dp2px(float dp) {
-        Resources resources = Resources.getSystem();
-        float px = dp * resources.getDisplayMetrics().density;
+        Context context = com.benny.openlauncher.AppObject.get();
+        float density = context != null ? context.getResources().getDisplayMetrics().density : android.content.res.Resources.getSystem().getDisplayMetrics().density;
+        float px = dp * density;
         return (int) Math.ceil(px);
+    }
+
+    public static int px2dp(int px) {
+        Context context = com.benny.openlauncher.AppObject.get();
+        float density = context != null ? context.getResources().getDisplayMetrics().density : android.content.res.Resources.getSystem().getDisplayMetrics().density;
+        float dp = px / density;
+        return (int) Math.ceil(dp);
     }
 
     public static int sp2px(float sp) {

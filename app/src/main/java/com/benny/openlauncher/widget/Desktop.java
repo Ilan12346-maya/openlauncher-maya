@@ -265,6 +265,12 @@ public final class Desktop extends ViewPager implements DesktopCallback {
                     return true;
                 }
             });
+
+            HomeActivity launcher = HomeActivity.Companion.getLauncher();
+            if (launcher != null) {
+                launcher.getItemOptionView().registerDropTarget(layout);
+            }
+
             return layout;
         }
 
@@ -488,9 +494,11 @@ public final class Desktop extends ViewPager implements DesktopCallback {
             pageIndex = Math.max(0, Math.min(pageIndex, _desktop.getPages().size() - 1));
             CellContainer layout = _desktop.getPages().get(pageIndex);
             
-            int topPadding = Tool.dp2px(Setup.appSettings().getSearchBarEnable() ? 120 : 70);
-            int bottomPadding = Tool.dp2px(115);
-            layout.setPadding(0, topPadding, 0, bottomPadding);
+            boolean landscape = layout.getResources().getConfiguration().orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE;
+            int topPadding = Tool.dp2px(landscape ? 40 : (Setup.appSettings().getSearchBarEnable() ? 120 : 70));
+            int bottomPadding = Tool.dp2px(landscape ? 40 : 115);
+            int sidePadding = landscape ? Tool.dp2px(80) : 0;
+            layout.setPadding(sidePadding, topPadding, sidePadding, bottomPadding);
             
             if (layout.getParent() != null) {
                 ((ViewGroup) layout.getParent()).removeView(layout);
@@ -502,10 +510,11 @@ public final class Desktop extends ViewPager implements DesktopCallback {
         private View createDummyView(ViewGroup container, int targetPageIndex) {
             CellContainer layout = getItemLayout();
             
-            // Apply padding same as in instantiateItem
-            int topPadding = Tool.dp2px(Setup.appSettings().getSearchBarEnable() ? 120 : 70);
-            int bottomPadding = Tool.dp2px(115);
-            layout.setPadding(0, topPadding, 0, bottomPadding);
+            boolean landscape = layout.getResources().getConfiguration().orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE;
+            int topPadding = Tool.dp2px(landscape ? 40 : (Setup.appSettings().getSearchBarEnable() ? 120 : 70));
+            int bottomPadding = Tool.dp2px(landscape ? 40 : 115);
+            int sidePadding = landscape ? Tool.dp2px(80) : 0;
+            layout.setPadding(sidePadding, topPadding, sidePadding, bottomPadding);
 
             // Get items for the target page from the database (cached)
             List<List<Item>> desktopItems = Setup.dataManager().getDesktop();
@@ -600,23 +609,28 @@ public final class Desktop extends ViewPager implements DesktopCallback {
     }
 
     public final CellContainer getCurrentPage() {
-        int index = getCurrentItem();
+        List<CellContainer> pages = _pages;
+        if (pages.isEmpty()) {
+            return null;
+        }
         int pageIndex = getCurrentPageIndex();
-        return _pages.get(pageIndex);
+        if (pageIndex < 0 || pageIndex >= pages.size()) {
+            return pages.get(0);
+        }
+        return pages.get(pageIndex);
     }
 
     public final int getCurrentPageIndex() {
+        List<CellContainer> pages = _pages;
+        if (pages.isEmpty()) {
+            return 0;
+        }
         int index = getCurrentItem();
         DesktopAdapter adapter = (DesktopAdapter) getAdapter();
         boolean isDragging = adapter != null && adapter.isDragging();
-        if (_inEditMode || isDragging) {
-            boolean page0Enabled = Setup.appSettings().getDesktopPage0Enabled();
-            int pageIndex = page0Enabled ? index - 1 : index;
-            return Math.max(0, Math.min(pageIndex, _pages.size() - 1));
-        }
         boolean page0Enabled = Setup.appSettings().getDesktopPage0Enabled();
         int pageIndex = page0Enabled ? index - 1 : index;
-        return Math.max(0, Math.min(pageIndex, _pages.size() - 1));
+        return Math.max(0, Math.min(pageIndex, pages.size() - 1));
     }
 
     public final void setPageIndicator(PagerIndicator pageIndicator) {
@@ -629,6 +643,9 @@ public final class Desktop extends ViewPager implements DesktopCallback {
     }
 
     public final void initDesktop(final Runnable onFinished) {
+        setAlpha(0f);
+        setScaleX(0.95f);
+        setScaleY(0.95f);
         Setup.dataManager().getDesktopAsync(new DatabaseHelper.DataCallback<List<List<Item>>>() {
             @Override
             public void onDataLoaded(List<List<Item>> desktopItems) {
@@ -643,6 +660,8 @@ public final class Desktop extends ViewPager implements DesktopCallback {
                 }
                 addItemsToPage(desktopItems);
                 
+                animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(500).setStartDelay(100).setInterpolator(new android.view.animation.OvershootInterpolator(1.2f)).start();
+
                 if (onFinished != null) {
                     onFinished.run();
                 }
@@ -730,6 +749,13 @@ public final class Desktop extends ViewPager implements DesktopCallback {
     public final void updateIconProjection(int x, int y) {
         HomeActivity launcher = HomeActivity.Companion.getLauncher();
         ItemOptionView dragNDropView = launcher.getItemOptionView();
+        Item dragItem = dragNDropView.getDragItem();
+        
+        if (dragItem != null && dragItem.getType() == Type.WIDGET) {
+            x -= (int) com.benny.openlauncher.activity.HomeActivity._itemTouchX;
+            y -= (int) com.benny.openlauncher.activity.HomeActivity._itemTouchY;
+        }
+
         DragState state = getCurrentPage().peekItemAndSwap(x, y, _coordinate);
         if (!_coordinate.equals(_previousDragPoint)) {
             dragNDropView.cancelFolderPreview();
@@ -790,6 +816,21 @@ public final class Desktop extends ViewPager implements DesktopCallback {
         if (com.benny.openlauncher.util.Logger.isEnabled()) {
             com.benny.openlauncher.util.Logger.log(this, "addItemToPage: " + item.getLabel() + " at page " + page + " (" + item._x + "," + item._y + ")");
         }
+
+        if (item.getType() == Type.WIDGET) {
+            CellContainer cellContainer = _pages.get(page);
+            for (int i = 0; i < cellContainer.getChildCount(); i++) {
+                View child = cellContainer.getChildAt(i);
+                if (child instanceof WidgetContainer) {
+                    WidgetContainer widgetContainer = (WidgetContainer) child;
+                    if (widgetContainer.getItem().getWidgetValue() == item.getWidgetValue()) {
+                        com.benny.openlauncher.util.Logger.log(this, "addItemToPage: widget with id " + item.getWidgetValue() + " already exists on page " + page + ", skipping.");
+                        return true;
+                    }
+                }
+            }
+        }
+
         View itemView = ItemViewFactory.getItemView(getContext(), this, Action.DESKTOP, item);
         if (itemView == null) {
             // TODO see if this fixes SD card bug
@@ -799,15 +840,22 @@ public final class Desktop extends ViewPager implements DesktopCallback {
             return false;
         }
         item._location = ItemPosition.Desktop;
-        _pages.get(page).addViewToGrid(itemView, item._x, item._y, item._spanX, item._spanY);
+        _pages.get(page).addView(itemView);
         return true;
     }
 
     public boolean addItemToPoint(@NonNull Item item, int x, int y) {
+        if (item.getType() == Type.WIDGET) {
+            x -= (int) com.benny.openlauncher.activity.HomeActivity._itemTouchX;
+            y -= (int) com.benny.openlauncher.activity.HomeActivity._itemTouchY;
+        }
+
         if (com.benny.openlauncher.util.Logger.isEnabled()) {
             com.benny.openlauncher.util.Logger.log(this, "addItemToPoint: " + item.getLabel() + " at point (" + x + "," + y + ")");
         }
-        CellContainer.LayoutParams positionToLayoutPrams = getCurrentPage().coordinateToLayoutParams(x, y, item._spanX, item._spanY);
+        
+        // Disable checkAvailability (false) for WIDGETS to allow overlapping/free positioning
+        CellContainer.LayoutParams positionToLayoutPrams = getCurrentPage().coordinateToLayoutParams(x, y, item._spanX, item._spanY, item.getType() != Type.WIDGET);
         if (positionToLayoutPrams == null) {
             if (com.benny.openlauncher.util.Logger.isEnabled()) {
                 com.benny.openlauncher.util.Logger.log(this, "addItemToPoint: no layout params found for point");

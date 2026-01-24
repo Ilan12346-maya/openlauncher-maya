@@ -28,6 +28,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         void onDataLoaded(T data);
     }
 
+    private List<List<Item>> _desktopCache = null;
+    private List<Item> _dockCache = null;
+
+    public void clearCache() {
+        _desktopCache = null;
+        _dockCache = null;
+    }
+
     public void getDesktopAsync(final DataCallback<List<List<Item>>> callback) {
         _executor.execute(new Runnable() {
             @Override
@@ -71,6 +79,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_PAGE = "page";
     private static final String COLUMN_DESKTOP = "desktop";
     private static final String COLUMN_STATE = "state";
+    private static final String COLUMN_WIDGET_SCALE = "widgetScale";
+    private static final String COLUMN_X_POS_L = "xL";
+    private static final String COLUMN_Y_POS_L = "yL";
 
     // Apps columns
     private static final String COLUMN_PACKAGE_NAME = "packageName";
@@ -89,7 +100,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     + COLUMN_DATA + " VARCHAR,"
                     + COLUMN_PAGE + " INTEGER,"
                     + COLUMN_DESKTOP + " INTEGER,"
-                    + COLUMN_STATE + " INTEGER)";
+                    + COLUMN_STATE + " INTEGER,"
+                    + COLUMN_WIDGET_SCALE + " FLOAT DEFAULT 1.0,"
+                    + COLUMN_X_POS_L + " INTEGER DEFAULT -1,"
+                    + COLUMN_Y_POS_L + " INTEGER DEFAULT -1)";
 
     private static final String SQL_CREATE_APPS =
             "CREATE TABLE " + TABLE_APPS + " ("
@@ -102,7 +116,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     protected Context _context;
 
     public DatabaseHelper(Context c) {
-        super(c, DATABASE_HOME, null, 2);
+        super(c, DATABASE_HOME, null, 4);
         _db = getWritableDatabase();
         _context = c;
     }
@@ -115,6 +129,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < 2) {
             db.execSQL(SQL_CREATE_APPS);
+        }
+        if (oldVersion < 3) {
+            db.execSQL("ALTER TABLE " + TABLE_HOME + " ADD COLUMN " + COLUMN_WIDGET_SCALE + " FLOAT DEFAULT 1.0");
+        }
+        if (oldVersion < 4) {
+            db.execSQL("ALTER TABLE " + TABLE_HOME + " ADD COLUMN " + COLUMN_X_POS_L + " INTEGER DEFAULT -1");
+            db.execSQL("ALTER TABLE " + TABLE_HOME + " ADD COLUMN " + COLUMN_Y_POS_L + " INTEGER DEFAULT -1");
         }
     }
 
@@ -158,7 +179,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onUpgrade(db, oldVersion, newVersion);
     }
 
-    public void createItem(Item item, int page, Definitions.ItemPosition itemPosition) {
+    public void createItem(final Item item, final int page, final Definitions.ItemPosition itemPosition) {
+        _executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                createItemInternal(item, page, itemPosition);
+            }
+        });
+    }
+
+    private void createItemInternal(Item item, int page, Definitions.ItemPosition itemPosition) {
+        clearCache();
         Log.i(this.getClass().getName(), String.format("createItem: %s (ID: %d)", item.getLabel(), item.getId()));
         ContentValues itemValues = new ContentValues();
         itemValues.put(COLUMN_TIME, item.getId());
@@ -166,6 +197,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         itemValues.put(COLUMN_LABEL, item.getLabel());
         itemValues.put(COLUMN_X_POS, item.getX());
         itemValues.put(COLUMN_Y_POS, item.getY());
+        itemValues.put(COLUMN_X_POS_L, item.getXL());
+        itemValues.put(COLUMN_Y_POS_L, item.getYL());
+        itemValues.put(COLUMN_WIDGET_SCALE, item.getWidgetScale());
 
         String concat = "";
         switch (item.getType()) {
@@ -210,21 +244,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         updateItem(item, state);
     }
 
-    public void saveItem(Item item, int page, Definitions.ItemPosition itemPosition) {
-        String SQL_QUERY_SPECIFIC = SQL_QUERY + TABLE_HOME + " WHERE " + COLUMN_TIME + " = " + item.getId();
-        Cursor cursor = _db.rawQuery(SQL_QUERY_SPECIFIC, null);
-        if (cursor.getCount() == 0) {
-            createItem(item, page, itemPosition);
-        } else if (cursor.getCount() == 1) {
-            updateItem(item, page, itemPosition);
-        }
+    public void saveItem(final Item item, final int page, final Definitions.ItemPosition itemPosition) {
+        _executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                String SQL_QUERY_SPECIFIC = SQL_QUERY + TABLE_HOME + " WHERE " + COLUMN_TIME + " = " + item.getId();
+                Cursor cursor = _db.rawQuery(SQL_QUERY_SPECIFIC, null);
+                if (cursor.getCount() == 0) {
+                    createItemInternal(item, page, itemPosition);
+                } else if (cursor.getCount() == 1) {
+                    updateItemInternal(item, page, itemPosition);
+                }
+                cursor.close();
+            }
+        });
     }
 
-    public void deleteItem(Item item, boolean deleteSubItems) {
+    public void deleteItem(final Item item, final boolean deleteSubItems) {
+        _executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                deleteItemInternal(item, deleteSubItems);
+            }
+        });
+    }
+
+    private void deleteItemInternal(Item item, boolean deleteSubItems) {
+        clearCache();
         // if the item is a group then remove all entries
         if (deleteSubItems && item.getType() == Item.Type.GROUP) {
             for (Item i : item.getGroupItems()) {
-                deleteItem(i, deleteSubItems);
+                deleteItemInternal(i, deleteSubItems);
             }
         }
 
@@ -232,16 +282,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         _db.delete(TABLE_HOME, COLUMN_TIME + " = ?", new String[]{String.valueOf(item.getId())});
     }
 
-    public void deleteItems(App app) {
-        _db.delete(TABLE_HOME,
-                COLUMN_TYPE + " = '" + Item.Type.WIDGET + "' AND " + COLUMN_LABEL + " LIKE ?",
-                new String[]{app.getPackageName() + Definitions.DELIMITER + "%"});
-        _db.delete(TABLE_HOME,
-                COLUMN_TYPE + " = '" + Item.Type.APP + "' AND " + COLUMN_DATA + " = ?",
-                new String[]{Tool.getIntentAsString(Tool.getIntentFromApp(app))});
+    public void deleteItems(final App app) {
+        _executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                clearCache();
+                _db.delete(TABLE_HOME,
+                        COLUMN_TYPE + " = '" + Item.Type.WIDGET + "' AND " + COLUMN_LABEL + " LIKE ?",
+                        new String[]{app.getPackageName() + Definitions.DELIMITER + "%"});
+                _db.delete(TABLE_HOME,
+                        COLUMN_TYPE + " = '" + Item.Type.APP + "' AND " + COLUMN_DATA + " = ?",
+                        new String[]{Tool.getIntentAsString(Tool.getIntentFromApp(app))});
+            }
+        });
     }
 
     public List<List<Item>> getDesktop() {
+        if (_desktopCache != null) return _desktopCache;
         String SQL_QUERY_DESKTOP = SQL_QUERY + TABLE_HOME;
         Cursor cursor = _db.rawQuery(SQL_QUERY_DESKTOP, null);
         List<List<Item>> desktop = new ArrayList<>();
@@ -262,10 +319,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
         cursor.close();
+        _desktopCache = desktop;
         return desktop;
     }
 
     public List<Item> getDock() {
+        if (_dockCache != null) return _dockCache;
         String SQL_QUERY_DESKTOP = SQL_QUERY + TABLE_HOME;
         Cursor cursor = _db.rawQuery(SQL_QUERY_DESKTOP, null);
         List<Item> dock = new ArrayList<>();
@@ -281,6 +340,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
         cursor.close();
+        _dockCache = dock;
         return dock;
     }
 
@@ -296,13 +356,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // update data attribute for an item
-    public void updateItem(Item item) {
+    public void updateItem(final Item item) {
+        _executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                updateItemInternal(item);
+            }
+        });
+    }
+
+    private void updateItemInternal(Item item) {
+        clearCache();
         Log.i(this.getClass().getName(), String.format("updateItem: %s %d", item.getLabel(), item.getId()));
 
         ContentValues itemValues = new ContentValues();
         itemValues.put(COLUMN_LABEL, item.getLabel());
         itemValues.put(COLUMN_X_POS, item.getX());
         itemValues.put(COLUMN_Y_POS, item.getY());
+        itemValues.put(COLUMN_X_POS_L, item.getXL());
+        itemValues.put(COLUMN_Y_POS_L, item.getYL());
+        itemValues.put(COLUMN_WIDGET_SCALE, item.getWidgetScale());
 
         String concat = "";
         switch (item.getType()) {
@@ -333,7 +406,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // update the state of an item
-    public void updateItem(Item item, Definitions.ItemState state) {
+    public void updateItem(final Item item, final Definitions.ItemState state) {
+        _executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                updateItemInternal(item, state);
+            }
+        });
+    }
+
+    private void updateItemInternal(Item item, Definitions.ItemState state) {
+        clearCache();
         Log.i(this.getClass().getName(), String.format("updateItem: %s %d", item.getLabel(), item.getId()));
 
         ContentValues itemValues = new ContentValues();
@@ -343,11 +426,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // update the fields only used by the database
-    public void updateItem(Item item, int page, Definitions.ItemPosition itemPosition) {
+    public void updateItem(final Item item, final int page, final Definitions.ItemPosition itemPosition) {
+        _executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                updateItemInternal(item, page, itemPosition);
+            }
+        });
+    }
+
+    private void updateItemInternal(Item item, int page, Definitions.ItemPosition itemPosition) {
+        clearCache();
         Log.i(this.getClass().getName(), String.format("updateItem: %s %d", item.getLabel(), item.getId()));
 
-        deleteItem(item, false);
-        createItem(item, page, itemPosition);
+        deleteItemInternal(item, false);
+        createItemInternal(item, page, itemPosition);
     }
 
     private Item getSelection(Cursor cursor) {
@@ -365,9 +458,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         item.setLabel(label);
         item.setX(x);
         item.setY(y);
+        item.setXL(cursor.getInt(cursor.getColumnIndex(COLUMN_X_POS_L)));
+        item.setYL(cursor.getInt(cursor.getColumnIndex(COLUMN_Y_POS_L)));
         item._page = page;
         item._location = ItemPosition.values()[desktop];
         item.setType(type);
+        item.setWidgetScale(cursor.getFloat(cursor.getColumnIndex(COLUMN_WIDGET_SCALE)));
 
         String[] dataSplit;
         switch (type) {
@@ -415,14 +511,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return item;
     }
 
-    public void addPage(int position) {
-        _db.execSQL("UPDATE " + TABLE_HOME + " SET " + COLUMN_PAGE + " = " + COLUMN_PAGE + " + 1 WHERE " + COLUMN_PAGE + " >= ?",
-                new String[] {String.valueOf(position)});
+    public void addPage(final int position) {
+        _executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                clearCache();
+                _db.execSQL("UPDATE " + TABLE_HOME + " SET " + COLUMN_PAGE + " = " + COLUMN_PAGE + " + 1 WHERE " + COLUMN_PAGE + " >= ?",
+                        new String[]{String.valueOf(position)});
+            }
+        });
     }
 
-    public void removePage(int position) {
-        _db.execSQL("UPDATE " + TABLE_HOME + " SET " + COLUMN_PAGE + " = " + COLUMN_PAGE + " - 1 WHERE " + COLUMN_PAGE + " > ?",
-                new String[] {String.valueOf(position)});
+    public void removePage(final int position) {
+        _executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                clearCache();
+                _db.execSQL("UPDATE " + TABLE_HOME + " SET " + COLUMN_PAGE + " = " + COLUMN_PAGE + " - 1 WHERE " + COLUMN_PAGE + " > ?",
+                        new String[]{String.valueOf(position)});
+            }
+        });
     }
 
     public void open() {
@@ -443,6 +551,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void clearItems() {
-        _db.execSQL("DELETE FROM " + TABLE_HOME);
+        _executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                clearCache();
+                _db.execSQL("DELETE FROM " + TABLE_HOME);
+            }
+        });
     }
 }

@@ -27,6 +27,15 @@ public class Logger {
         }
         
         String sourceName = source instanceof String ? (String) source : source.getClass().getSimpleName();
+        if (sourceName.isEmpty() && source != null) {
+            sourceName = source.getClass().getName();
+            // Clean up name for anonymous classes (e.g. HpDesktopOption$1 -> HpDesktopOption)
+            if (sourceName.contains("$")) {
+                sourceName = sourceName.substring(0, sourceName.indexOf("$"));
+                sourceName = sourceName.substring(sourceName.lastIndexOf(".") + 1);
+            }
+        }
+
         String logEntry = String.format("%s [%s]: %s", DATE_FORMAT.format(new Date()), sourceName, message);
         
         Log.d("OpenLauncherDebug", logEntry);

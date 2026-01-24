@@ -31,6 +31,7 @@ import android.widget.TextView;
 
 import com.benny.openlauncher.R;
 import com.benny.openlauncher.interfaces.AppUpdateListener;
+import com.benny.openlauncher.manager.HistoryManager;
 import com.benny.openlauncher.manager.Setup;
 import com.benny.openlauncher.model.App;
 import com.benny.openlauncher.model.Item;
@@ -180,7 +181,9 @@ public class SearchBar extends FrameLayout {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if ((event != null) && (event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    _callback.onInternetSearch(_searchInput.getText().toString());
+                    String query = _searchInput.getText().toString();
+                    HistoryManager.getInstance(getContext()).addRecentSearch(query);
+                    _callback.onInternetSearch(query);
                     _searchInput.getText().clear();
                     return true;
                 }

@@ -62,6 +62,23 @@
             android:key="@string/pref_key__desktop_show_label"
             android:summary="@string/pref_summary__desktop_show_label"
             android:title="@string/pref_title__desktop_show_label" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="pref_key__desktop_parallax"
+            android:summary="@string/pref_summary__desktop_parallax"
+            android:title="@string/pref_title__desktop_parallax" />
+        <com.benny.openlauncher.widget.ValueSeekBarPreference
+            android:defaultValue="45"
+            android:key="pref_key__desktop_parallax_intensity"
+            android:max="100"
+            android:title="@string/pref_title__desktop_parallax_intensity"
+            app:min="0" />
+        <com.benny.openlauncher.widget.ValueSeekBarPreference
+            android:defaultValue="20"
+            android:key="pref_key__dock_parallax_intensity"
+            android:max="100"
+            android:title="@string/pref_title__dock_parallax_intensity"
+            app:min="0" />
 
     <com.flask.colorpicker.ColorPickerPreference
             android:defaultValue="@color/transparent"

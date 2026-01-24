@@ -3,9 +3,16 @@ package com.benny.openlauncher.util.cache;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.LruCache;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.benny.openlauncher.manager.Setup;
 import com.benny.openlauncher.util.Tool;
@@ -32,7 +39,13 @@ public class IconCache {
         };
     }
 
+    public Bitmap getIconFast(String key) {
+        if (key == null) return null;
+        return _cache.get(key);
+    }
+
     public Bitmap getIcon(String key) {
+        if (key == null) return null;
         Bitmap bitmap = _cache.get(key);
         if (bitmap == null) {
             Context context = Setup.appContext();
@@ -49,7 +62,16 @@ public class IconCache {
         return bitmap;
     }
 
+    public Drawable getIconDrawable(String key) {
+        Bitmap bitmap = getIcon(key);
+        if (bitmap != null) {
+            return new BitmapDrawable(Setup.appContext().getResources(), bitmap);
+        }
+        return null;
+    }
+
     public void addIcon(String key, Bitmap bitmap) {
+        if (key == null || bitmap == null) return;
         if (_cache.get(key) == null) {
             _cache.put(key, bitmap);
         }

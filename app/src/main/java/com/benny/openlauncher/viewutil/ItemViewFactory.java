@@ -18,6 +18,7 @@ import com.benny.openlauncher.util.DragAction;
 import com.benny.openlauncher.util.DragHandler;
 import com.benny.openlauncher.util.Tool;
 import com.benny.openlauncher.widget.AppItemView;
+import com.benny.openlauncher.widget.CellContainer;
 import com.benny.openlauncher.widget.WidgetContainer;
 import com.benny.openlauncher.widget.WidgetView;
 
@@ -78,6 +79,7 @@ public class ItemViewFactory {
         // TODO find out why tag is set here
         if (view != null) {
             view.setTag(item);
+            view.setLayoutParams(new CellContainer.LayoutParams(CellContainer.LayoutParams.WRAP_CONTENT, CellContainer.LayoutParams.WRAP_CONTENT, item._x, item._y, item._xL, item._yL, item._spanX, item._spanY));
         }
 
         return view;
@@ -96,7 +98,6 @@ public class ItemViewFactory {
         com.benny.openlauncher.util.Logger.log("ItemViewFactory", "getWidgetView: appWidgetId=" + item.getWidgetValue());
         AppWidgetProviderInfo appWidgetInfo = HomeActivity._appWidgetManager.getAppWidgetInfo(item.getWidgetValue());
 
-        // If we can't find the Widget, we don't want to proceed or we'll end up with a phantom on the home screen.
         if (appWidgetInfo == null) {
             com.benny.openlauncher.util.Logger.log("ItemViewFactory", "getWidgetView: appWidgetInfo is NULL for id " + item.getWidgetValue());
             if (item._label.contains(Definitions.DELIMITER)) {
@@ -110,27 +111,35 @@ public class ItemViewFactory {
                     item.setWidgetValue(appWidgetId);
                     Setup.dataManager().updateItem(item);
                 } else {
-                    LOG.error("Unable to bind app widget id: {}; removing from database", cn);
+                    LOG.error("Unable to bind app widget id: {}; showing placeholder", cn);
                     HomeActivity._appWidgetHost.deleteAppWidgetId(appWidgetId);
-                    Setup.dataManager().deleteItem(item, false);
-                    return null;
+                    return getWidgetPlaceholder(context, item);
                 }
             } else {
-                // Delete the Widget if we don't have enough information to rehydrate it.
-                LOG.debug("Unable to identify Widget for rehydration; removing from database");
-                Setup.dataManager().deleteItem(item, false);
-                return null;
+                LOG.debug("Unable to identify Widget for rehydration; showing placeholder");
+                return getWidgetPlaceholder(context, item);
             }
         }
 
-        com.benny.openlauncher.util.Logger.log("ItemViewFactory", "getWidgetView: creating view for " + appWidgetInfo.provider);
-        final WidgetView widgetView = (WidgetView) HomeActivity._appWidgetHost.createView(context, item.getWidgetValue(), appWidgetInfo);
+        View view = null;
+        try {
+            Context widgetContext = HomeActivity._widgetContext != null ? HomeActivity._widgetContext : context.getApplicationContext();
+            view = HomeActivity._appWidgetHost.createView(widgetContext, item.getWidgetValue(), appWidgetInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (view == null) {
+            return getWidgetPlaceholder(context, item);
+        }
+        
+        final WidgetView widgetView = (WidgetView) view;
         widgetView.setAppWidget(item.getWidgetValue(), appWidgetInfo);
+        widgetView.setScale(item.getWidgetScale());
 
         final WidgetContainer widgetContainer = new WidgetContainer(context, widgetView, item);
+        widgetContainer.updateWidgetOption(item);
 
-        // TODO move this to standard DragHandler.getLongClick() method
-        // needs to be set on widgetView but use widgetContainer inside
         widgetView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -140,18 +149,76 @@ public class ItemViewFactory {
                 if (Setup.appSettings().getGestureFeedback()) {
                     Tool.vibrate(view);
                 }
-                DragHandler.startDrag(widgetContainer, item, DragAction.Action.DESKTOP, callback);
+                DragHandler.startDrag(widgetContainer, widgetContainer.getItem(), DragAction.Action.DESKTOP, callback);
                 return true;
             }
         });
 
-        widgetView.post(new Runnable() {
+        return widgetContainer;
+    }
+
+    private static View getWidgetPlaceholder(final Context context, final Item item) {
+        android.widget.LinearLayout layout = new android.widget.LinearLayout(context);
+        layout.setOrientation(android.widget.LinearLayout.VERTICAL);
+        layout.setGravity(android.view.Gravity.CENTER);
+        layout.setBackgroundColor(Color.argb(180, 40, 40, 40));
+        
+        android.widget.TextView textView = new android.widget.TextView(context);
+        textView.setText("Restoration Failed\n" + item.getLabel());
+        textView.setTextColor(Color.WHITE);
+        textView.setGravity(android.view.Gravity.CENTER);
+        textView.setPadding(0, 0, 0, Tool.dp2px(8));
+        
+        android.widget.Button repairBtn = new android.widget.Button(context);
+        repairBtn.setText("Repair Widget");
+        repairBtn.setTextSize(12);
+        
+        layout.addView(textView);
+        layout.addView(repairBtn);
+        
+        final WidgetContainer widgetContainer = new WidgetContainer(context, layout, item);
+        
+        View.OnLongClickListener longClick = new View.OnLongClickListener() {
             @Override
-            public void run() {
-                widgetContainer.updateWidgetOption(item);
+            public boolean onLongClick(View view) {
+                if (Setup.appSettings().getDesktopLock()) return false;
+                if (Setup.appSettings().getGestureFeedback()) Tool.vibrate(view);
+                DragHandler.startDrag(widgetContainer, widgetContainer.getItem(), DragAction.Action.DESKTOP, null);
+                return true;
+            }
+        };
+        
+        layout.setOnLongClickListener(longClick);
+        repairBtn.setOnLongClickListener(longClick);
+        
+        repairBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HomeActivity launcher = HomeActivity.Companion.getLauncher();
+                if (launcher != null) {
+                    // Start the pick process
+                    launcher.ignoreResume = true;
+                    int appWidgetId = HomeActivity._appWidgetHost.allocateAppWidgetId();
+                    
+                    if (item.getLabel().contains(Definitions.DELIMITER)) {
+                        String[] cnSplit = item.getLabel().split(Definitions.DELIMITER);
+                        ComponentName cn = new ComponentName(cnSplit[0], cnSplit[1]);
+                        
+                        Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
+                        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+                        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, cn);
+                        // We store the item ID in the request code to identify which item to update
+                        // Use a safe range for request codes
+                        launcher.startActivityForResult(intent, HomeActivity.REQUEST_PICK_APPWIDGET);
+                        // Store the current item ID in HomeActivity for update after result
+                        launcher._desktopOption.setRepairItem(item);
+                    } else {
+                        Tool.toast(context, "Cannot identify widget package.");
+                    }
+                }
             }
         });
-
+        
         return widgetContainer;
     }
 }

@@ -62,6 +62,14 @@ public class App {
         }
     }
 
+    public Drawable getIconFast() {
+        android.graphics.Bitmap cachedBitmap = IconCache.getInstance().getIconFast(getComponentName());
+        if (cachedBitmap != null) {
+            return new android.graphics.drawable.BitmapDrawable(null, cachedBitmap);
+        }
+        return null;
+    }
+
     public Drawable getIcon() {
         android.graphics.Bitmap cachedBitmap = IconCache.getInstance().getIcon(getComponentName());
         if (cachedBitmap != null) {

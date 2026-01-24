@@ -13,6 +13,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import com.benny.openlauncher.manager.Setup;
 import com.benny.openlauncher.model.App;
 import com.benny.openlauncher.model.Item;
@@ -57,7 +59,26 @@ public class GroupDrawable extends Drawable {
                 Log.d(this.getClass().getName(), String.format("Item %s has a null app at index %d (Intent: %s)", item.getLabel(), i, temp == null ? "Item is NULL" : temp.getIntent()));
                 icons[i] = new ColorDrawable(Color.TRANSPARENT);
             } else {
-                _icons[i] = app.getIcon();
+                final int index = i;
+                Drawable cachedIcon = app.getIconFast();
+                if (cachedIcon != null) {
+                    _icons[index] = cachedIcon;
+                } else {
+                    _icons[index] = new ColorDrawable(Color.TRANSPARENT);
+                    // Load missing icon asynchronously
+                    com.bumptech.glide.Glide.with(context)
+                        .load(app)
+                        .into(new com.bumptech.glide.request.target.CustomTarget<Drawable>() {
+                            @Override
+                            public void onResourceReady(@androidx.annotation.NonNull Drawable resource, @Nullable com.bumptech.glide.request.transition.Transition<? super Drawable> transition) {
+                                _icons[index] = resource;
+                                invalidateSelf();
+                            }
+                            @Override
+                            public void onLoadCleared(@Nullable Drawable placeholder) {
+                            }
+                        });
+                }
             }
         }
     }

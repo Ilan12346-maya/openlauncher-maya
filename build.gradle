@@ -8,7 +8,7 @@ buildscript {
 
         version_compileSdk = 34
         version_buildTools = "34.0.0"
-        version_minSdk = 21
+        version_minSdk = 31
 
     version_library_appcompat = "1.6.1"
     version_library_glide = "4.16.0"

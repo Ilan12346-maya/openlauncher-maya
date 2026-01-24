@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,7 +19,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.benny.openlauncher.activity.HomeActivity;
+import com.benny.openlauncher.interfaces.DropTargetListener;
 import com.benny.openlauncher.manager.Setup;
+import com.benny.openlauncher.model.Item;
+import com.benny.openlauncher.util.Definitions;
+import com.benny.openlauncher.util.DragAction;
 import com.benny.openlauncher.util.Tool;
 
 import java.util.ArrayList;
@@ -28,7 +33,7 @@ import in.championswimmer.sfg.lib.SimpleFingerGestures;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
-public class CellContainer extends ViewGroup {
+public class CellContainer extends ViewGroup implements DropTargetListener {
     private boolean _animateBackground;
     private final Paint _bgPaint = new Paint(1);
     private boolean _blockTouch;
@@ -62,6 +67,8 @@ public class CellContainer extends ViewGroup {
         private int _xSpan = 1;
         private int _y;
         private int _ySpan = 1;
+        private int _xL = -1;
+        private int _yL = -1;
 
         public final int getX() {
             return _x;
@@ -77,6 +84,22 @@ public class CellContainer extends ViewGroup {
 
         public final void setY(int v) {
             _y = v;
+        }
+
+        public final int getXL() {
+            return _xL;
+        }
+
+        public final void setXL(int v) {
+            _xL = v;
+        }
+
+        public final int getYL() {
+            return _yL;
+        }
+
+        public final void setYL(int v) {
+            _yL = v;
         }
 
         public final int getXSpan() {
@@ -105,6 +128,16 @@ public class CellContainer extends ViewGroup {
             super(w, h);
             _x = x;
             _y = y;
+            _xSpan = xSpan;
+            _ySpan = ySpan;
+        }
+
+        public LayoutParams(int w, int h, int x, int y, int xL, int yL, int xSpan, int ySpan) {
+            super(w, h);
+            _x = x;
+            _y = y;
+            _xL = xL;
+            _yL = yL;
             _xSpan = xSpan;
             _ySpan = ySpan;
         }
@@ -172,8 +205,14 @@ public class CellContainer extends ViewGroup {
     }
 
     public final void setGridSize(int x, int y) {
-        _cellSpanV = y;
-        _cellSpanH = x;
+        boolean landscape = getResources().getConfiguration().orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE;
+        if (landscape) {
+            _cellSpanV = x;
+            _cellSpanH = y;
+        } else {
+            _cellSpanV = y;
+            _cellSpanH = x;
+        }
 
         _occupied = new boolean[_cellSpanH][_cellSpanV];
         for (int i = 0; i < _cellSpanH; i++) {
@@ -528,6 +567,59 @@ public class CellContainer extends ViewGroup {
         }
     }
 
+    @Override
+    public View getView() {
+        return this;
+    }
+
+    @Override
+    public boolean onStart(DragAction.Action action, PointF location, boolean isInside) {
+        return true;
+    }
+
+    @Override
+    public void onStartDrag(DragAction.Action action, PointF location) {
+    }
+
+    @Override
+    public void onDrop(DragAction.Action action, PointF location, Item item) {
+        Point pos = new Point();
+        touchPosToCoordinate(pos, (int) location.x, (int) location.y, item._spanX, item._spanY, false);
+        if (pos.x != -1 && pos.y != -1) {
+            boolean landscape = getResources().getConfiguration().orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE;
+            if (landscape) {
+                item.setXL(pos.x);
+                item.setYL(pos.y);
+            } else {
+                item.setX(pos.x);
+                item.setY(pos.y);
+            }
+            
+            HomeActivity launcher = HomeActivity.Companion.getLauncher();
+            if (launcher != null) {
+                int page = launcher.getDesktop().getCurrentPageIndex();
+                Setup.dataManager().saveItem(item, page, Definitions.ItemPosition.Desktop);
+                launcher.getDesktop().addItemToPage(item, page);
+            }
+        }
+    }
+
+    @Override
+    public void onMove(DragAction.Action action, PointF location) {
+    }
+
+    @Override
+    public void onEnter(DragAction.Action action, PointF location) {
+    }
+
+    @Override
+    public void onExit(DragAction.Action action, PointF location) {
+    }
+
+    @Override
+    public void onEnd() {
+    }
+
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int width = ((r - l) - getPaddingLeft()) - getPaddingRight();
         int height = ((b - t) - getPaddingTop()) - getPaddingBottom();
@@ -547,23 +639,37 @@ public class CellContainer extends ViewGroup {
                 View child = getChildAt(i);
                 if (child.getVisibility() != View.GONE) {
                     LayoutParams lp = (LayoutParams) child.getLayoutParams();
-                    child.measure(MeasureSpec.makeMeasureSpec(lp.getXSpan() * _cellWidth, View.MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(lp.getYSpan() * _cellHeight, View.MeasureSpec.EXACTLY));
-                    Rect[][] rectArr = _cells;
-                    Rect upRect = rectArr[lp.getX()][lp.getY()];
-                    Rect downRect = _tempRect;
-                    if ((lp.getX() + lp.getXSpan()) - 1 < _cellSpanH && (lp.getY() + lp.getYSpan()) - 1 < _cellSpanV) {
-                        Rect[][] rectArr2 = _cells;
-                        downRect = rectArr2[(lp.getX() + lp.getXSpan()) - 1][(lp.getY() + lp.getYSpan()) - 1];
+                    
+                    boolean landscape = getResources().getConfiguration().orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE;
+                    int x = lp.getX();
+                    int y = lp.getY();
+                    int xSpan = lp.getXSpan();
+                    int ySpan = lp.getYSpan();
+
+                    if (landscape) {
+                        if (lp.getXL() != -1 && lp.getYL() != -1) {
+                            x = lp.getXL();
+                            y = lp.getYL();
+                        } else {
+                            // Default: Swap coordinates and spans
+                            x = lp.getY();
+                            y = lp.getX();
+                            xSpan = lp.getYSpan();
+                            ySpan = lp.getXSpan();
+                        }
                     }
-                    if (lp.getXSpan() == 1 && lp.getYSpan() == 1) {
-                        child.layout(upRect.left, upRect.top, upRect.right, upRect.bottom);
-                    } else if (lp.getXSpan() > 1 && lp.getYSpan() > 1) {
-                        child.layout(upRect.left, upRect.top, downRect.right, downRect.bottom);
-                    } else if (lp.getXSpan() > 1) {
-                        child.layout(upRect.left, upRect.top, downRect.right, upRect.bottom);
-                    } else if (lp.getYSpan() > 1) {
-                        child.layout(upRect.left, upRect.top, upRect.right, downRect.bottom);
-                    }
+
+                    // Ensure coordinates are within bounds
+                    x = Math.max(0, Math.min(x, _cellSpanH - 1));
+                    y = Math.max(0, Math.min(y, _cellSpanV - 1));
+                    xSpan = Math.min(xSpan, _cellSpanH - x);
+                    ySpan = Math.min(ySpan, _cellSpanV - y);
+
+                    child.measure(MeasureSpec.makeMeasureSpec(xSpan * _cellWidth, View.MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(ySpan * _cellHeight, View.MeasureSpec.EXACTLY));
+                    Rect upRect = _cells[x][y];
+                    Rect downRect = _cells[Math.min(x + xSpan - 1, _cellSpanH - 1)][Math.min(y + ySpan - 1, _cellSpanV - 1)];
+                    
+                    child.layout(upRect.left, upRect.top, downRect.right, downRect.bottom);
                 }
 
                 i++;

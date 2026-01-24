@@ -1,6 +1,7 @@
 package com.benny.openlauncher;
 
 import android.app.Application;
+import com.google.android.material.color.DynamicColors;
 import cat.ereza.customactivityoncrash.config.CaocConfig;
 import com.benny.openlauncher.activity.HomeActivity;
 import com.benny.openlauncher.activity.CrashActivity;
@@ -16,6 +17,8 @@ public class AppObject extends Application {
     public void onCreate() {
         super.onCreate();
         _instance = this;
+
+        DynamicColors.applyToActivitiesIfAvailable(this);
 
         CaocConfig.Builder.create()
                 .backgroundMode(CaocConfig.BACKGROUND_MODE_SILENT)

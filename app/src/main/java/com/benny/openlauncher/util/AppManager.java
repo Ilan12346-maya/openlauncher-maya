@@ -44,6 +44,7 @@ public class AppManager {
 
     private PackageManager _packageManager;
     private List<App> _apps = new ArrayList<>();
+    private java.util.Map<String, App> _appsMap = new java.util.HashMap<>();
     private List<App> _nonFilteredApps = new ArrayList<>();
     public final List<AppUpdateListener> _updateListeners = new ArrayList<>();
     public final List<AppDeleteListener> _deleteListeners = new ArrayList<>();
@@ -70,9 +71,15 @@ public class AppManager {
 
         String packageName = intent.getComponent().getPackageName();
         String className = intent.getComponent().getClassName();
-        for (App app : _apps) {
-            if (app._className.equals(className) && app._packageName.equals(packageName)) {
-                return app;
+        String componentName = packageName + "/" + className;
+        
+        App app = _appsMap.get(componentName);
+        if (app != null) return app;
+
+        // Fallback for legacy items or slight mismatches
+        for (App a : _apps) {
+            if (a._className.equals(className) && a._packageName.equals(packageName)) {
+                return a;
             }
         }
         return null;
@@ -93,11 +100,20 @@ public class AppManager {
             if (savedApps.size() > 0) {
                 _mainHandler.post(() -> {
                     _apps = savedApps;
+                    updateAppsMap(_apps);
                     notifyUpdateListeners(_apps);
                 });
             }
         });
         getAllApps();
+    }
+
+    private void updateAppsMap(List<App> apps) {
+        java.util.Map<String, App> newMap = new java.util.HashMap<>();
+        for (App app : apps) {
+            newMap.put(app._packageName + "/" + app._className, app);
+        }
+        _appsMap = newMap;
     }
 
     public void getAllApps() {
@@ -189,6 +205,7 @@ public class AppManager {
         _mainHandler.post(() -> {
             _apps = finalAppsTemp;
             _nonFilteredApps = finalNonFilteredAppsTemp;
+            updateAppsMap(_apps);
 
             // Save to database for next startup
             Setup.dataManager().saveApps(_apps);

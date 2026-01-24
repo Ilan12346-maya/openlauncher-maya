@@ -58,12 +58,10 @@ public final class DragHandler {
             tempLabel = ((AppItemView) view).getLabel();
             ((AppItemView) view).setLabel(" ");
         }
-        view.layout(0, 0, view.getWidth(), view.getHeight());
         view.draw(canvas);
         if (view instanceof AppItemView) {
             ((AppItemView) view).setLabel(tempLabel);
         }
-        view.getParent().requestLayout();
         return bitmap;
     }
 }

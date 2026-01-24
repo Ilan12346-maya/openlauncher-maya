@@ -62,6 +62,8 @@ public class AppDrawerController extends RevealFrameLayout {
         if (_isOpen) return;
         _isOpen = true;
 
+        loadApps(); // Refresh content (Recents)
+
         _drawerAnimationTime = Setup.appSettings().getAnimationSpeed() * 10;
         _appDrawerAnimator = io.codetail.animation.ViewAnimationUtils.createCircularReveal(getDrawer(), cx, cy, 0, Math.max(getWidth(), getHeight()));
         _appDrawerAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -143,12 +145,23 @@ public class AppDrawerController extends RevealFrameLayout {
         }
     }
 
+    public void focusSearch() {
+        if (_drawerMode == Mode.GRID && _drawerViewGrid != null) {
+            _drawerViewGrid.focusSearch();
+        }
+    }
+
     public void init() {
         if (isInEditMode()) return;
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         _drawerMode = Setup.appSettings().getDrawerStyle();
         setVisibility(GONE);
-        setBackgroundColor(Setup.appSettings().getDrawerBackgroundColor());
+        
+        int color = Setup.appSettings().getDrawerBackgroundColor();
+        // Set alpha to ~60% (153/255) to show blur behind
+        int semiTransparentColor = (color & 0x00FFFFFF) | 0x99000000;
+        setBackgroundColor(semiTransparentColor);
+
         switch (_drawerMode) {
             case Mode.GRID:
                 _drawerViewGrid = new AppDrawerGrid(getContext());
@@ -169,9 +182,10 @@ public class AppDrawerController extends RevealFrameLayout {
     @SuppressWarnings("deprecation")
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // API 30+
-            android.graphics.Insets systemBarInsets = insets.getInsets(WindowInsets.Type.systemBars());
-            setPadding(0, systemBarInsets.top, 0, systemBarInsets.bottom);
-            return insets;
+            int types = WindowInsets.Type.systemBars() | WindowInsets.Type.ime();
+            android.graphics.Insets typeInsets = insets.getInsets(types);
+            setPadding(0, typeInsets.top, 0, typeInsets.bottom);
+            return WindowInsets.CONSUMED;
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) { // API 19-29 (old behavior)
             setPadding(0, insets.getSystemWindowInsetTop(), 0, insets.getSystemWindowInsetBottom());
             return insets;

@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import com.benny.openlauncher.BuildConfig;
 import com.benny.openlauncher.R;
 import com.benny.openlauncher.activity.HomeActivity;
+import com.benny.openlauncher.manager.HistoryManager;
 import com.benny.openlauncher.model.App;
 import com.benny.openlauncher.widget.AppItemView;
 
@@ -23,6 +24,8 @@ import java.util.List;
 public class AppLauncher {
 
     public static void startApp(@NonNull Context context, @NonNull App app, @Nullable View view) {
+        HistoryManager.getInstance(context).addRecentApp(app);
+
         if (BuildConfig.APPLICATION_ID.equals(app._packageName)) {
             LauncherAction.RunAction(LauncherAction.Action.LauncherSettings, context);
             return;

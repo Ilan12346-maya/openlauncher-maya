@@ -34,6 +34,11 @@
             android:key="@string/pref_key__dock_ios_style"
             android:summary="@string/pref_summary__dock_ios_style"
             android:title="@string/pref_title__dock_ios_style" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="pref_key__dock_blur"
+            android:summary="@string/pref_summary__dock_blur"
+            android:title="@string/pref_title__dock_blur" />
     </com.benny.openlauncher.widget.ColorPreferenceCategory>
 
     <com.benny.openlauncher.widget.ColorPreferenceCategory android:title="@string/pref_title__color">

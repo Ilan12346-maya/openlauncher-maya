@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_drawer_sheet"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -14,45 +15,55 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="20dp"
+            android:clipToPadding="false"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:scrollbars="vertical"
             android:layout_centerInParent="true" />
-
-        <com.turingtechnologies.materialscrollbar.DragScrollBar
-            android:id="@+id/scroll_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
-            app:msb_lightOnTouch="false"
-            app:msb_recyclerView="@id/recycler_view" />
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:clipToPadding="false">
 
-        <EditText
-            android:id="@+id/search_bar"
+        <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_margin="10dp"
-            android:padding="12dp"
-            android:hint="@string/search_hint"
-            android:background="@drawable/new_page"
-            android:drawableStart="@drawable/ic_search"
-            android:drawablePadding="10dp"
-            android:singleLine="true"
-            android:inputType="text"
-            android:imeOptions="actionSearch" />
+            android:layout_marginEnd="12dp"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#33FFFFFF">
+
+            <EditText
+                android:id="@+id/search_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:hint="@string/search_hint"
+                android:textColorHint="#99FFFFFF"
+                android:textColor="@android:color/white"
+                android:background="@android:color/transparent"
+                android:drawableStart="@drawable/ic_search"
+                android:drawablePadding="12dp"
+                android:singleLine="true"
+                android:inputType="text"
+                android:imeOptions="actionSearch" />
+        </androidx.cardview.widget.CardView>
 
         <ImageButton
             android:id="@+id/batch_uninstall_button"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginEnd="10dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_delete"
             android:contentDescription="Batch Uninstall"

@@ -48,26 +48,86 @@ public final class Dock extends CellContainer implements DesktopCallback {
     }
 
     public final void initDock() {
-        final int columns = Setup.appSettings().getDockColumnCount();
-        final int rows = Setup.appSettings().getDockRowCount();
-        setGridSize(columns, rows);
+        if (getAlpha() > 0.1f) {
+            animate().alpha(0f).scaleX(0.85f).scaleY(0.85f).setDuration(120).withEndAction(new Runnable() {
+                @Override
+                public void run() {
+                    initDockInternal(false);
+                }
+            });
+            if (Setup.appSettings().getDockIosStyle() && _homeActivity != null) {
+                View iosBg = _homeActivity.findViewById(com.benny.openlauncher.R.id.ios_dock_background);
+                if (iosBg != null) iosBg.animate().alpha(0f).scaleX(0.85f).scaleY(0.85f).setDuration(120).start();
+            }
+        } else {
+            setAlpha(0f);
+            setScaleX(0.85f);
+            setScaleY(0.85f);
+            if (Setup.appSettings().getDockIosStyle() && _homeActivity != null) {
+                View iosBg = _homeActivity.findViewById(com.benny.openlauncher.R.id.ios_dock_background);
+                if (iosBg != null) {
+                    iosBg.setAlpha(0f);
+                    iosBg.setScaleX(0.85f);
+                    iosBg.setScaleY(0.85f);
+                }
+            }
+            initDockInternal(true);
+        }
+    }
+
+    private void initDockInternal(boolean animateInImmediately) {
+        setAlpha(0f);
+        setScaleX(0.85f);
+        setScaleY(0.85f);
+        if (Setup.appSettings().getDockIosStyle() && _homeActivity != null) {
+            View iosBg = _homeActivity.findViewById(com.benny.openlauncher.R.id.ios_dock_background);
+            if (iosBg != null) {
+                iosBg.setAlpha(0f);
+                iosBg.setScaleX(0.85f);
+                iosBg.setScaleY(0.85f);
+            }
+        }
+        
+        boolean landscape = getResources().getConfiguration().orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE;
+        
+        // CellContainer.setGridSize(x, y) already handles swapping if landscape is detected.
+        // It expects x = columns (horizontal) and y = rows (vertical) in portrait.
+        setGridSize(Setup.appSettings().getDockColumnCount(), Setup.appSettings().getDockRowCount());
+        
+        final int spanH = getCellSpanH();
+        final int spanV = getCellSpanV();
+
         Setup.dataManager().getDockAsync(new DatabaseHelper.DataCallback<List<Item>>() {
             @Override
             public void onDataLoaded(List<Item> dockItems) {
                 removeAllViews();
                 for (Item item : dockItems) {
-                    if (item._x + item._spanX > columns) item._x = Math.max(0, columns - item._spanX);
-                    if (item._y + item._spanY > rows) item._y = Math.max(0, rows - item._spanY);
+                    // If coordinates are out of bounds, it's likely they were saved for the other orientation
+                    if (item._x >= spanH || item._y >= spanV) {
+                        int temp = item._x;
+                        item._x = item._y;
+                        item._y = temp;
+                    }
+
+                    // Final safety check
+                    if (item._x >= spanH) item._x = Math.max(0, spanH - item._spanX);
+                    if (item._y >= spanV) item._y = Math.max(0, spanV - item._spanY);
+                    
                     addItemToPage(item, 0);
                 }
                 // Fade in after items are loaded and layout is ready
                 post(new Runnable() {
                     @Override
                     public void run() {
-                        animate().alpha(1f).setDuration(200).setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
+                        int delay = animateInImmediately ? 150 : 600;
+                        animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(500).setStartDelay(delay).setInterpolator(new android.view.animation.OvershootInterpolator(1.2f)).start();
                         if (Setup.appSettings().getDockIosStyle() && _homeActivity != null) {
                             View iosBg = _homeActivity.findViewById(com.benny.openlauncher.R.id.ios_dock_background);
-                            if (iosBg != null) iosBg.animate().alpha(1f).setDuration(200).start();
+                            if (iosBg != null) {
+                                iosBg.setScaleX(0.85f);
+                                iosBg.setScaleY(0.85f);
+                                iosBg.animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(500).setStartDelay(delay).setInterpolator(new android.view.animation.OvershootInterpolator(1.2f)).start();
+                            }
                         }
                     }
                 });
@@ -179,40 +239,55 @@ public final class Dock extends CellContainer implements DesktopCallback {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         if (Setup.appSettings().getDockIosStyle()) {
+            boolean landscape = getResources().getConfiguration().orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE;
             int width = ((r - l) - getPaddingLeft()) - getPaddingRight();
             int height = ((b - t) - getPaddingTop()) - getPaddingBottom();
-            int columns = getCellSpanH();
-            if (columns == 0) columns = 1;
-
+            
             int settingsIconSize = Tool.dp2px(Setup.appSettings().getIconSize());
             int dockIconSize = (int) (settingsIconSize * 1.1f);
             float gap = settingsIconSize * 0.30f;
-            
-            // Total background width matching HomeActivity
-            float bgWidth = columns * dockIconSize + (columns + 1) * gap;
-            
-            float bgLeft = (width - bgWidth) / 2f;
-            float startX = getPaddingLeft() + bgLeft + gap;
 
-            int count = getChildCount();
-            for (int i = 0; i < count; i++) {
-                View child = getChildAt(i);
-                if (child.getVisibility() != View.GONE) {
-                    LayoutParams lp = (LayoutParams) child.getLayoutParams();
-                    
-                    // Apply 10% larger size to the view if it's an AppItemView
-                    if (child instanceof AppItemView) {
-                        ((AppItemView) child).setIconSize(dockIconSize);
+            if (landscape) {
+                int rows = getCellSpanV();
+                if (rows == 0) rows = 1;
+                float bgHeight = rows * dockIconSize + (rows + 1) * gap;
+                float bgTop = (height - bgHeight) / 2f;
+                float startY = getPaddingTop() + bgTop + gap;
+
+                int count = getChildCount();
+                for (int i = 0; i < count; i++) {
+                    View child = getChildAt(i);
+                    if (child.getVisibility() != View.GONE) {
+                        LayoutParams lp = (LayoutParams) child.getLayoutParams();
+                        if (child instanceof AppItemView) ((AppItemView) child).setIconSize(dockIconSize);
+                        
+                        child.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY), 
+                                     MeasureSpec.makeMeasureSpec(dockIconSize, MeasureSpec.EXACTLY));
+
+                        float top = startY + (lp.getY() * (dockIconSize + gap));
+                        child.layout(0, (int)top, width, (int)(top + dockIconSize));
                     }
+                }
+            } else {
+                int columns = getCellSpanH();
+                if (columns == 0) columns = 1;
+                float bgWidth = columns * dockIconSize + (columns + 1) * gap;
+                float bgLeft = (width - bgWidth) / 2f;
+                float startX = getPaddingLeft() + bgLeft + gap;
 
-                    int childWidth = dockIconSize;
-                    int childHeight = height;
-                    
-                    child.measure(MeasureSpec.makeMeasureSpec(childWidth, MeasureSpec.EXACTLY), 
-                                 MeasureSpec.makeMeasureSpec(childHeight, MeasureSpec.EXACTLY));
+                int count = getChildCount();
+                for (int i = 0; i < count; i++) {
+                    View child = getChildAt(i);
+                    if (child.getVisibility() != View.GONE) {
+                        LayoutParams lp = (LayoutParams) child.getLayoutParams();
+                        if (child instanceof AppItemView) ((AppItemView) child).setIconSize(dockIconSize);
+                        
+                        child.measure(MeasureSpec.makeMeasureSpec(dockIconSize, MeasureSpec.EXACTLY), 
+                                     MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
 
-                    float left = startX + (lp.getX() * (dockIconSize + gap));
-                    child.layout((int)left, 0, (int)(left + childWidth), childHeight);
+                        float left = startX + (lp.getX() * (dockIconSize + gap));
+                        child.layout((int)left, 0, (int)(left + dockIconSize), height);
+                    }
                 }
             }
         } else {
@@ -255,18 +330,27 @@ public final class Dock extends CellContainer implements DesktopCallback {
 
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (!isInEditMode()) {
-            // set the height for the dock based on the number of rows and the show label preference
+            boolean landscape = getResources().getConfiguration().orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE;
             int iconSize = Setup.appSettings().getDockIconSize();
-            int height = Tool.dp2px((iconSize + 20) * getCellSpanV());
-            if (Setup.appSettings().getDockShowLabel()) height += Tool.dp2px(20);
             
-            if (Setup.appSettings().getDockIosStyle()) {
-                // Ensure dock is high enough for the 170% background + 10dp
-                height = (int) (Tool.dp2px(Setup.appSettings().getIconSize()) * 1.7f) + Tool.dp2px(10);
+            if (landscape) {
+                int width = Tool.dp2px((iconSize + 20) * getCellSpanH());
+                if (Setup.appSettings().getDockIosStyle()) {
+                    width = (int) (Tool.dp2px(Setup.appSettings().getIconSize()) * 1.7f) + Tool.dp2px(10);
+                }
+                getLayoutParams().width = width;
+                setMeasuredDimension(width, View.getDefaultSize(getSuggestedMinimumHeight(), heightMeasureSpec));
+            } else {
+                int height = Tool.dp2px((iconSize + 20) * getCellSpanV());
+                if (Setup.appSettings().getDockShowLabel()) height += Tool.dp2px(20);
+                
+                if (Setup.appSettings().getDockIosStyle()) {
+                    height = (int) (Tool.dp2px(Setup.appSettings().getIconSize()) * 1.7f) + Tool.dp2px(10);
+                }
+                
+                getLayoutParams().height = height;
+                setMeasuredDimension(View.getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec), height);
             }
-            
-            getLayoutParams().height = height;
-            setMeasuredDimension(View.getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec), height);
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         }
     }
@@ -308,16 +392,19 @@ public final class Dock extends CellContainer implements DesktopCallback {
 
         // Check if occupied and if so, find next free slot
         if (checkOccupied(pos, item._spanX, item._spanY)) {
-            // Find any free horizontal slot
+            // Find any free slot
             boolean found = false;
             Point testPoint = new Point(0, 0);
-            for (int i = 0; i < getCellSpanH(); i++) {
-                testPoint.set(i, 0);
-                if (!checkOccupied(testPoint, item._spanX, item._spanY)) {
-                    pos.set(i, 0);
-                    found = true;
-                    break;
+            for (int y2 = 0; y2 < getCellSpanV(); y2++) {
+                for (int x2 = 0; x2 < getCellSpanH(); x2++) {
+                    testPoint.set(x2, y2);
+                    if (!checkOccupied(testPoint, item._spanX, item._spanY)) {
+                        pos.set(x2, y2);
+                        found = true;
+                        break;
+                    }
                 }
+                if (found) break;
             }
             if (!found) return false;
         }
@@ -364,22 +451,32 @@ public final class Dock extends CellContainer implements DesktopCallback {
     @Override
     public void touchPosToCoordinate(@NonNull Point coordinate, int mX, int mY, int xSpan, int ySpan, boolean checkAvailability, boolean checkBoundary) {
         if (Setup.appSettings().getDockIosStyle()) {
-            int width = (getWidth() - getPaddingLeft()) - getPaddingRight();
-            int columns = getCellSpanH();
-            if (columns == 0) columns = 1;
-
+            boolean landscape = getResources().getConfiguration().orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE;
             int settingsIconSize = Tool.dp2px(Setup.appSettings().getIconSize());
             int dockIconSize = (int) (settingsIconSize * 1.1f);
             float gap = settingsIconSize * 0.30f;
-            float bgWidth = columns * dockIconSize + (columns + 1) * gap;
-            float bgLeft = (width - bgWidth) / 2f;
-            float startX = getPaddingLeft() + bgLeft + gap;
 
-            // Calculate which column we are over
-            float relativeX = mX - startX;
-            int col = Math.round(relativeX / (dockIconSize + gap));
-            
-            coordinate.set(Math.max(0, Math.min(col, columns - 1)), 0);
+            if (landscape) {
+                int height = (getHeight() - getPaddingTop()) - getPaddingBottom();
+                int rows = getCellSpanV();
+                if (rows == 0) rows = 1;
+                float bgHeight = rows * dockIconSize + (rows + 1) * gap;
+                float bgTop = (height - bgHeight) / 2f;
+                float startY = getPaddingTop() + bgTop + gap;
+                float relativeY = mY - startY;
+                int row = Math.round(relativeY / (dockIconSize + gap));
+                coordinate.set(0, Math.max(0, Math.min(row, rows - 1)));
+            } else {
+                int width = (getWidth() - getPaddingLeft()) - getPaddingRight();
+                int columns = getCellSpanH();
+                if (columns == 0) columns = 1;
+                float bgWidth = columns * dockIconSize + (columns + 1) * gap;
+                float bgLeft = (width - bgWidth) / 2f;
+                float startX = getPaddingLeft() + bgLeft + gap;
+                float relativeX = mX - startX;
+                int col = Math.round(relativeX / (dockIconSize + gap));
+                coordinate.set(Math.max(0, Math.min(col, columns - 1)), 0);
+            }
         } else {
             super.touchPosToCoordinate(coordinate, mX, mY, xSpan, ySpan, checkAvailability, checkBoundary);
         }

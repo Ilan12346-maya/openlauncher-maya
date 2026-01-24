@@ -227,11 +227,8 @@ public final class HomeActivity extends ColorActivity implements OnDesktopEditLi
         final View itemOption = findViewById(R.id.item_option);
         
         androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(itemOption, (v, insets) -> {
-            if (getDesktop().getCurrentItem() == 0) {
-                v.setPadding(0, 0, 0, 0);
-                return insets.inset(insets.getInsets(WindowInsetsCompat.Type.systemBars()));
-            }
-            return insets; 
+            v.setPadding(0, 0, 0, 0);
+            return insets;
         });
     }
 
@@ -432,13 +429,39 @@ public final class HomeActivity extends ColorActivity implements OnDesktopEditLi
         AppSettings appSettings = Setup.appSettings();
         setSystemBarsVisible(!appSettings.getDesktopFullscreen());
 
+        // Update Dock constraints based on orientation
+        boolean landscape = getResources().getConfiguration().orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE;
+        Dock dock = getDock();
+        androidx.constraintlayout.widget.ConstraintLayout.LayoutParams dockParams = (androidx.constraintlayout.widget.ConstraintLayout.LayoutParams) dock.getLayoutParams();
+        
+        if (landscape) {
+            dockParams.bottomToBottom = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID;
+            dockParams.topToTop = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID;
+            dockParams.rightToRight = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID;
+            dockParams.leftToLeft = -1; // Disconnect left
+            dockParams.bottomMargin = 0;
+            dockParams.rightMargin = Tool.dp2px(16);
+            dockParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            dockParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+        } else {
+            dockParams.bottomToBottom = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID;
+            dockParams.leftToLeft = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID;
+            dockParams.rightToRight = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID;
+            dockParams.topToTop = -1; // Disconnect top
+            dockParams.bottomMargin = Tool.dp2px(16);
+            dockParams.rightMargin = 0;
+            dockParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            dockParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        }
+        dock.setLayoutParams(dockParams);
+
         // set background colors
         getDesktop().setBackgroundColor(appSettings.getDesktopBackgroundColor());
         getDock().setBackgroundColor(appSettings.getDockIosStyle() ? Color.TRANSPARENT : appSettings.getDockColor());
 
         // set frame colors
-        getStatusView().setBackgroundColor(appSettings.getDesktopInsetColor());
-        getNavigationView().setBackgroundColor(appSettings.getDesktopInsetColor());
+        getStatusView().setBackgroundColor(Color.TRANSPARENT);
+        getNavigationView().setBackgroundColor(Color.TRANSPARENT);
 
         // iOS dock background
         View iosDockBg = findViewById(R.id.ios_dock_background);
@@ -478,12 +501,17 @@ public final class HomeActivity extends ColorActivity implements OnDesktopEditLi
                 
                 iosDockBg.post(() -> {
                     ViewGroup.LayoutParams params = iosDockBg.getLayoutParams();
-                    params.height = bgHeight;
+                    boolean isLandscape = getResources().getConfiguration().orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE;
                     
-                    int columns = appSettings.getDockColumnCount();
-                    // Width: columns * dockIconSize + (columns + 1) * gap
-                    int bgWidth = (int) (columns * dockIconSize + (columns + 1) * gap);
-                    params.width = bgWidth;
+                    if (isLandscape) {
+                        int rows = appSettings.getDockColumnCount(); // Using columns as height in landscape
+                        params.height = (int) (rows * dockIconSize + (rows + 1) * gap);
+                        params.width = (int) (settingsIconSize * 1.7f) + Tool.dp2px(10);
+                    } else {
+                        int columns = appSettings.getDockColumnCount();
+                        params.height = (int) (settingsIconSize * 1.7f) + Tool.dp2px(10);
+                        params.width = (int) (columns * dockIconSize + (columns + 1) * gap);
+                    }
                     
                     if (params instanceof androidx.constraintlayout.widget.ConstraintLayout.LayoutParams) {
                         androidx.constraintlayout.widget.ConstraintLayout.LayoutParams lp = (androidx.constraintlayout.widget.ConstraintLayout.LayoutParams) params;
@@ -564,9 +592,15 @@ public final class HomeActivity extends ColorActivity implements OnDesktopEditLi
         AppSettings appSettings = Setup.appSettings();
         View iosDockBg = findViewById(R.id.ios_dock_background);
         if (appSettings.getDockEnable() && show) {
-            Tool.visibleViews(100, getDock());
+            getDock().setVisibility(View.VISIBLE);
+            if (getDock().getAlpha() < 0.1f && getDesktop().getCurrentItem() != 0) {
+                getDock().setAlpha(1.0f);
+            }
             if (iosDockBg != null && appSettings.getDockIosStyle()) {
-                Tool.visibleViews(100, iosDockBg);
+                iosDockBg.setVisibility(View.VISIBLE);
+                if (iosDockBg.getAlpha() < 0.1f && getDesktop().getCurrentItem() != 0) {
+                    iosDockBg.setAlpha(1.0f);
+                }
             }
         } else {
             if (appSettings.getDockEnable()) {
@@ -588,7 +622,11 @@ public final class HomeActivity extends ColorActivity implements OnDesktopEditLi
         if (getDesktop() != null && getDesktop().getCurrentItem() == 0 && show) return;
         AppSettings appSettings = Setup.appSettings();
         if (appSettings.getDesktopShowIndicator() && show) {
-            Tool.visibleViews(100, getDesktopIndicator());
+            if (getDesktopIndicator().getAlpha() < 0.1f) {
+                getDesktopIndicator().setVisibility(View.VISIBLE);
+            } else {
+                Tool.visibleViews(100, getDesktopIndicator());
+            }
         } else {
             Tool.goneViews(100, getDesktopIndicator());
         }
@@ -604,9 +642,9 @@ public final class HomeActivity extends ColorActivity implements OnDesktopEditLi
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         _appWidgetHost.startListening();
         if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_PICK_APPWIDGET) {
+            if (requestCode == REQUEST_PICK_APPWIDGET && data != null) {
                 _desktopOption.configureWidget(data);
-            } else if (requestCode == REQUEST_CREATE_APPWIDGET) {
+            } else if (requestCode == REQUEST_CREATE_APPWIDGET && data != null) {
                 _desktopOption.createWidget(data);
             } else if (requestCode == REQUEST_BACKUP && data != null) {
                 com.benny.openlauncher.util.BackupManager.startBackupTask(this, data.getData());
@@ -777,10 +815,22 @@ public final class HomeActivity extends ColorActivity implements OnDesktopEditLi
     }
 
     @Override
+    public void onConfigurationChanged(@NonNull android.content.res.Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (getDesktop() != null) {
+            getDesktop().initDesktop();
+        }
+        initSettings();
+        if (getDock() != null) {
+            getDock().initDock();
+        }
+    }
+
+    @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_GRAVITY || event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             AppSettings appSettings = Setup.appSettings();
-            if (appSettings.getDesktopParallax()) {
+            if (appSettings.getDesktopParallax() && getDesktop().getCurrentItem() != 0) {
                 // Low-pass filter to smooth out the values
                 _smoothedValues[0] = _smoothedValues[0] + _filterAlpha * (event.values[0] - _smoothedValues[0]);
                 _smoothedValues[1] = _smoothedValues[1] + _filterAlpha * (event.values[1] - _smoothedValues[1]);

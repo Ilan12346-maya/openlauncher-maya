@@ -23,6 +23,8 @@ public class Item {
     public int _page = 0;
     public int _x = 0;
     public int _y = 0;
+    public int _xL = -1;
+    public int _yL = -1;
 
     // intent for shortcuts and apps
     public Intent _intent;
@@ -40,6 +42,7 @@ public class Item {
     public int _widgetValue;
     public int _spanX = 1;
     public int _spanY = 1;
+    public float _widgetScale = 1.0f;
 
     public Item() {
         _id = (int) (System.currentTimeMillis() & 0xfffffff);
@@ -163,6 +166,22 @@ public class Item {
         _y = y;
     }
 
+    public int getXL() {
+        return _xL;
+    }
+
+    public void setXL(int x) {
+        _xL = x;
+    }
+
+    public int getYL() {
+        return _yL;
+    }
+
+    public void setYL(int y) {
+        _yL = y;
+    }
+
     public int getSpanX() {
         return _spanX;
     }
@@ -225,5 +244,13 @@ public class Item {
 
     public void setWidgetValue(int widgetValue) {
         _widgetValue = widgetValue;
+    }
+
+    public float getWidgetScale() {
+        return _widgetScale;
+    }
+
+    public void setWidgetScale(float widgetScale) {
+        _widgetScale = widgetScale;
     }
 }

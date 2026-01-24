@@ -33,9 +33,14 @@ import static com.benny.openlauncher.activity.HomeActivity.REQUEST_PICK_APPWIDGE
 @SuppressWarnings("deprecation")
 public class HpDesktopOption implements DesktopOptionView.DesktopOptionViewListener, DialogListener.OnActionDialogListener {
     private HomeActivity _homeActivity;
+    private Item _repairItem;
 
     public HpDesktopOption(HomeActivity homeActivity) {
         _homeActivity = homeActivity;
+    }
+
+    public void setRepairItem(Item item) {
+        _repairItem = item;
     }
 
     @Override
@@ -88,12 +93,15 @@ public class HpDesktopOption implements DesktopOptionView.DesktopOptionViewListe
                 AppWidgetProviderInfo widgetInfo = (AppWidgetProviderInfo) item.getTag();
                 int appWidgetId = _homeActivity._appWidgetHost.allocateAppWidgetId();
                 
-                if (_homeActivity._appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId, widgetInfo.provider)) {
+                boolean bound = _homeActivity._appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId, widgetInfo.provider);
+
+                if (bound) {
+                    com.benny.openlauncher.util.Logger.log(this, "bindAppWidgetIdIfAllowed SUCCESS for id: " + appWidgetId);
                     Intent data = new Intent();
                     data.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
                     configureWidget(data);
                 } else {
-                    com.benny.openlauncher.util.Logger.log(this, "bindAppWidgetIdIfAllowed failed for widget: " + widgetInfo.provider);
+                    com.benny.openlauncher.util.Logger.log(this, "bindAppWidgetIdIfAllowed FAILED for " + widgetInfo.provider + " id: " + appWidgetId + ". Requesting manual bind.");
                     Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
                     intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
                     intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, widgetInfo.provider);
@@ -133,8 +141,22 @@ public class HpDesktopOption implements DesktopOptionView.DesktopOptionViewListe
 
     public void configureWidget(Intent data) {
         Bundle extras = data.getExtras();
-        int appWidgetId = extras.getInt("appWidgetId", -1);
+        int appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+        if (appWidgetId == -1) {
+            appWidgetId = extras.getInt("appWidgetId", -1);
+        }
+        
+        if (appWidgetId == -1) {
+            com.benny.openlauncher.util.Logger.log(this, "configureWidget: INVALID appWidgetId");
+            return;
+        }
+
         AppWidgetProviderInfo appWidgetInfo = _homeActivity._appWidgetManager.getAppWidgetInfo(appWidgetId);
+        if (appWidgetInfo == null) {
+            com.benny.openlauncher.util.Logger.log(this, "configureWidget: appWidgetInfo is NULL for id " + appWidgetId);
+            return;
+        }
+
         if (appWidgetInfo.configure != null) {
             Intent intent = new Intent("android.appwidget.action.APPWIDGET_CONFIGURE");
             intent.setComponent(appWidgetInfo.configure);
@@ -151,17 +173,54 @@ public class HpDesktopOption implements DesktopOptionView.DesktopOptionViewListe
         if (appWidgetId == -1) {
             appWidgetId = extras.getInt("appWidgetId", -1);
         }
-        com.benny.openlauncher.util.Logger.log(this, "createWidget: appWidgetId=" + appWidgetId);
         AppWidgetProviderInfo appWidgetInfo = _homeActivity._appWidgetManager.getAppWidgetInfo(appWidgetId);
         if (appWidgetInfo == null) {
-            com.benny.openlauncher.util.Logger.log(this, "createWidget: appWidgetInfo is NULL");
             return;
         }
+
+        if (_repairItem != null) {
+            _repairItem.setWidgetValue(appWidgetId);
+            Setup.dataManager().saveItem(_repairItem);
+            _repairItem = null;
+            _homeActivity.getDesktop().initDesktop();
+            return;
+        }
+
         Item item = Item.newWidgetItem(appWidgetInfo.provider, appWidgetId);
         Desktop desktop = _homeActivity.getDesktop();
         List<CellContainer> pages = desktop.getPages();
-        item._spanX = (appWidgetInfo.minWidth - 1) / pages.get(desktop.getCurrentPageIndex()).getCellWidth() + 1;
-        item._spanY = (appWidgetInfo.minHeight - 1) / pages.get(desktop.getCurrentPageIndex()).getCellHeight() + 1;
+        
+        int cellWidth = pages.get(desktop.getCurrentPageIndex()).getCellWidth();
+        int cellHeight = pages.get(desktop.getCurrentPageIndex()).getCellHeight();
+        
+        AppSettings appSettings = Setup.appSettings();
+        int columns = appSettings.getDesktopColumnCount();
+        int rows = appSettings.getDesktopRowCount();
+
+        // Use more conservative defaults if cell size is not yet available
+        int cellWidthDp = cellWidth > 0 ? Tool.px2dp(cellWidth) : 72;
+        int cellHeightDp = cellHeight > 0 ? Tool.px2dp(cellHeight) : 72;
+
+        int minSpanX = (appWidgetInfo.minWidth - 1) / cellWidthDp + 1;
+        int minSpanY = (appWidgetInfo.minHeight - 1) / cellHeightDp + 1;
+
+        // Force a visible size increase by adding +1 cell to each dimension
+        item._spanX = Math.max(1, Math.min(columns, minSpanX + 1));
+        item._spanY = Math.max(1, Math.min(rows, minSpanY + 1));
+        
+        // Notify the widget about its host category and initial size
+        Bundle options = new Bundle();
+        options.putInt(AppWidgetManager.OPTION_APPWIDGET_HOST_CATEGORY, AppWidgetProviderInfo.WIDGET_CATEGORY_HOME_SCREEN);
+        options.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, item._spanX * cellWidthDp);
+        options.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, item._spanY * cellHeightDp);
+        options.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, item._spanX * cellWidthDp);
+        options.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, item._spanY * cellHeightDp);
+        try {
+            _homeActivity._appWidgetManager.updateAppWidgetOptions(appWidgetId, options);
+        } catch (Exception e) {
+            // Ignore
+        }
+
         Point point = desktop.getCurrentPage().findFreeSpace(item._spanX, item._spanY);
         if (point != null) {
             item._x = point.x;

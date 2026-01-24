@@ -135,7 +135,7 @@ public final class ItemOptionView extends FrameLayout {
 
             if (_dragging) {
                 canvas.save();
-                _overlayIconScale = Tool.clampFloat(_overlayIconScale + 0.05f, 1f, 1.1f);
+                _overlayIconScale = 1.0f;
                 float itemWidth = DragHandler._cachedDragBitmap.getWidth();
                 float itemHeight = DragHandler._cachedDragBitmap.getHeight();
                 float drawX = x - HomeActivity._itemTouchX;
@@ -609,6 +609,14 @@ public final class ItemOptionView extends FrameLayout {
 
         if (topTarget != null) {
             com.benny.openlauncher.util.Logger.log(this, "handleDragFinished: dropping on target: " + topTarget.getClass().getSimpleName());
+            
+            // Check orientation before drop to ensure item gets correct coords saved
+            boolean landscape = getResources().getConfiguration().orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE;
+            if (landscape && _dragItem != null) {
+                // The onDrop implementation in CellContainer should handle setting the correct coords.
+                // We just need to make sure the item is updated in DB.
+            }
+
             convertPoint(topTarget.getView());
             topTarget.onDrop(_dragAction, _dragLocationConverted, _dragItem);
         } else {

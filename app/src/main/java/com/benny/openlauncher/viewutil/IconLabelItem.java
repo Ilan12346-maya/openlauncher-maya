@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
+import android.util.TypedValue;
 import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 
@@ -36,6 +37,7 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
     private int _textColor = Integer.MAX_VALUE;
     private boolean _textVisibility = true;
     private boolean _isAppLauncher = false;
+    private boolean _isHeader = false;
 
     private boolean _onClickAnimate = true;
     private boolean _isSelected = false;
@@ -44,6 +46,11 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
 
     public IconLabelItem(Context context, int icon, int label) {
         _label = context.getString(label);
+        _icon = ContextCompat.getDrawable(context, icon);
+    }
+
+    public IconLabelItem(Context context, int icon, String label) {
+        _label = label;
         _icon = ContextCompat.getDrawable(context, icon);
     }
 
@@ -133,6 +140,23 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
 
     @Override
     public void bindView(@NonNull ViewHolder holder, @NonNull List<Object> payloads) {
+        if (_isHeader) {
+            holder.itemView.getLayoutParams().width = RecyclerView.LayoutParams.MATCH_PARENT;
+            holder.itemView.getLayoutParams().height = RecyclerView.LayoutParams.WRAP_CONTENT;
+            holder.textView.setText(_label);
+            holder.textView.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+            holder.textView.setTypeface(null, android.graphics.Typeface.BOLD);
+            holder.textView.setTextColor(0xFF4CAF50); // Material Green
+            holder.textView.setAllCaps(true);
+            holder.textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+            holder.textView.setPadding(Tool.dp2px(16), Tool.dp2px(24), Tool.dp2px(16), Tool.dp2px(8));
+            holder.textView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+            holder.itemView.setClickable(false);
+            holder.itemView.setLongClickable(false);
+            holder.itemView.setBackgroundResource(0);
+            return;
+        }
+
         if (_width == Integer.MAX_VALUE) {
             holder.itemView.getLayoutParams().width = RecyclerView.LayoutParams.MATCH_PARENT;
         } else {
@@ -144,6 +168,10 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
         } else {
             holder.itemView.getLayoutParams().height = _height;
         }
+
+        // Reset padding for non-header items (fix for recycling issue)
+        int pad = Tool.dp2px(10);
+        holder.textView.setPadding(pad, pad, pad, pad);
 
         // only run all this code if a label should be shown
         if (_label != null && _textVisibility) {
@@ -234,6 +262,15 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
     public IconLabelItem withIsAppLauncher(boolean isAppLauncher) {
         _isAppLauncher = isAppLauncher;
         return this;
+    }
+
+    public IconLabelItem withIsHeader(boolean isHeader) {
+        _isHeader = isHeader;
+        return this;
+    }
+
+    public boolean isHeader() {
+        return _isHeader;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

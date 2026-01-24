@@ -18,6 +18,7 @@ import android.net.Uri;
 
 import com.benny.openlauncher.R;
 import com.benny.openlauncher.interfaces.AppUpdateListener;
+import com.benny.openlauncher.manager.HistoryManager;
 import com.benny.openlauncher.manager.Setup;
 import com.benny.openlauncher.model.App;
 import com.benny.openlauncher.model.Item;
@@ -27,8 +28,6 @@ import com.benny.openlauncher.util.Tool;
 import com.benny.openlauncher.viewutil.IconLabelItem;
 import com.mikepenz.fastadapter.IItemAdapter;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
-import com.turingtechnologies.materialscrollbar.AlphabetIndicator;
-import com.turingtechnologies.materialscrollbar.DragScrollBar;
 import com.turingtechnologies.materialscrollbar.INameableAdapter;
 
 import java.util.ArrayList;
@@ -41,13 +40,13 @@ public class AppDrawerGrid extends FrameLayout {
 
     public RecyclerView _recyclerView;
     public AppDrawerGridAdapter _gridDrawerAdapter;
-    public DragScrollBar _scrollBar;
     public EditText _searchBar;
     public View _batchUninstallButton;
 
     private static List<App> _apps;
     private GridLayoutManager _layoutManager;
     private boolean _isSelectionMode = false;
+    private boolean _searchBarFocused = false;
     private List<App> _selectedApps = new ArrayList<>();
 
     public AppDrawerGrid(Context context) {
@@ -58,10 +57,23 @@ public class AppDrawerGrid extends FrameLayout {
 
         _recyclerView = findViewById(R.id.recycler_view);
         _recyclerView.setItemAnimator(null);
-        _scrollBar = findViewById(R.id.scroll_bar);
         _searchBar = findViewById(R.id.search_bar);
         _batchUninstallButton = findViewById(R.id.batch_uninstall_button);
-        _layoutManager = new GridLayoutManager(getContext(), Setup.appSettings().getDrawerColumnCount());
+        
+        final int columns = Setup.appSettings().getDrawerColumnCount();
+        _layoutManager = new GridLayoutManager(getContext(), columns);
+        _layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if (_gridDrawerAdapter != null && position < _gridDrawerAdapter.getItemCount()) {
+                    IconLabelItem item = _gridDrawerAdapter.getItem(position);
+                    if (item != null && item.isHeader()) {
+                        return _layoutManager.getSpanCount();
+                    }
+                }
+                return 1;
+            }
+        });
 
         init();
     }
@@ -71,12 +83,6 @@ public class AppDrawerGrid extends FrameLayout {
     }
 
     private void init() {
-        if (!Setup.appSettings().getDrawerShowIndicator()) _scrollBar.setVisibility(View.GONE);
-        _scrollBar.setIndicator(new AlphabetIndicator(getContext()), true);
-        _scrollBar.setClipToPadding(true);
-        _scrollBar.setDraggableFromAnywhere(true);
-        _scrollBar.setHandleColor(Setup.appSettings().getDrawerFastScrollColor());
-
         _batchUninstallButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,10 +106,12 @@ public class AppDrawerGrid extends FrameLayout {
         });
 
         _gridDrawerAdapter = new AppDrawerGridAdapter();
-        _gridDrawerAdapter.getItemFilter().withFilterPredicate(new IItemAdapter.Predicate<IconLabelItem>() {
+
+        _searchBar.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
-            public boolean filter(IconLabelItem item, CharSequence constraint) {
-                return item._label.toLowerCase().contains(constraint.toString().toLowerCase());
+            public void onFocusChange(View v, boolean hasFocus) {
+                _searchBarFocused = hasFocus;
+                updateAdapter(_apps);
             }
         });
 
@@ -113,7 +121,7 @@ public class AppDrawerGrid extends FrameLayout {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                _gridDrawerAdapter.filter(s);
+                updateAdapter(_apps);
             }
 
             @Override
@@ -167,38 +175,91 @@ public class AppDrawerGrid extends FrameLayout {
     public void updateAdapter(List<App> apps) {
         _apps = apps;
         ArrayList<IconLabelItem> items = new ArrayList<>();
+        String filter = _searchBar.getText().toString().toLowerCase();
+
+        // Add Recent Apps Header & Items only if not searching
+        if (filter.isEmpty()) {
+            List<App> recents = HistoryManager.getInstance(getContext()).getRecentApps(_layoutManager.getSpanCount() * 2);
+            if (!recents.isEmpty()) {
+                items.add(new IconLabelItem((android.graphics.drawable.Drawable)null, getContext().getString(R.string.recent_apps)).withIsHeader(true));
+                for (App app : recents) {
+                    items.add(createAppItem(app));
+                }
+            }
+        }
+
+        // Add All Apps with alphabetical headers
+        String lastHeader = "";
         for (int i = 0; i < apps.size(); i++) {
-            final App app = apps.get(i);
-            final boolean isSelected = _selectedApps.contains(app);
+            App app = apps.get(i);
+            String label = app.getLabel();
             
-            items.add(new IconLabelItem(app.getIcon(), app.getLabel())
-                    .withIconSize(Setup.appSettings().getIconSize())
-                    .withTextColor(Color.WHITE)
-                    .withTextVisibility(Setup.appSettings().getDrawerShowLabel())
-                    .withIconPadding(8)
-                    .withTextGravity(Gravity.CENTER)
-                    .withIconGravity(Gravity.TOP)
-                    .withOnClickAnimate(false)
-                    .withIsAppLauncher(true)
-                    .withSelected(isSelected)
-                    .withOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (_isSelectionMode) {
-                                if (_selectedApps.contains(app)) {
-                                    _selectedApps.remove(app);
-                                } else {
-                                    _selectedApps.add(app);
-                                }
-                                updateAdapter(_apps);
-                            } else {
-                                Tool.startApp(v.getContext(), app, null);
-                            }
-                        }
-                    })
-                    .withOnLongClickListener(_isSelectionMode ? null : DragHandler.getLongClick(Item.newAppItem(app), DragAction.Action.DRAWER, null)));
+            // Skip if doesn't match filter
+            if (!filter.isEmpty() && (label == null || !label.toLowerCase().contains(filter))) {
+                continue;
+            }
+
+            String currentHeader = "";
+            if (label != null && !label.isEmpty()) {
+                char firstChar = Character.toUpperCase(label.charAt(0));
+                if (Character.isDigit(firstChar)) {
+                    currentHeader = "#";
+                } else if (Character.isLetter(firstChar)) {
+                    currentHeader = String.valueOf(firstChar);
+                } else {
+                    currentHeader = "#";
+                }
+            } else {
+                currentHeader = "#";
+            }
+
+            if (!currentHeader.equals(lastHeader)) {
+                items.add(new IconLabelItem((android.graphics.drawable.Drawable)null, currentHeader).withIsHeader(true));
+                lastHeader = currentHeader;
+            }
+            items.add(createAppItem(app));
         }
         _gridDrawerAdapter.set(items);
+    }
+    
+    public void focusSearch() {
+        if (_searchBar != null) {
+            _searchBar.requestFocus();
+            android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.showSoftInput(_searchBar, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT);
+            }
+        }
+    }
+
+    private IconLabelItem createAppItem(final App app) {
+        final boolean isSelected = _selectedApps.contains(app);
+        return new IconLabelItem(app.getIcon(), app.getLabel())
+                .withIconSize(Setup.appSettings().getIconSize())
+                .withTextColor(Color.WHITE)
+                .withTextVisibility(Setup.appSettings().getDrawerShowLabel())
+                .withIconPadding(8)
+                .withTextGravity(Gravity.CENTER)
+                .withIconGravity(Gravity.TOP)
+                .withOnClickAnimate(false)
+                .withIsAppLauncher(true)
+                .withSelected(isSelected)
+                .withOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (_isSelectionMode) {
+                            if (_selectedApps.contains(app)) {
+                                _selectedApps.remove(app);
+                            } else {
+                                _selectedApps.add(app);
+                            }
+                            updateAdapter(_apps);
+                        } else {
+                            Tool.startApp(v.getContext(), app, v);
+                        }
+                    }
+                })
+                .withOnLongClickListener(_isSelectionMode ? null : DragHandler.getLongClick(Item.newAppItem(app), DragAction.Action.DRAWER, null));
     }
 
     @Override
@@ -226,15 +287,26 @@ public class AppDrawerGrid extends FrameLayout {
         _gridDrawerAdapter.notifyAdapterDataSetChanged();
     }
 
-    public static class AppDrawerGridAdapter extends FastItemAdapter<IconLabelItem> implements INameableAdapter {
+    public class AppDrawerGridAdapter extends FastItemAdapter<IconLabelItem> implements INameableAdapter {
         public AppDrawerGridAdapter() {
         }
 
         @Override
         public Character getCharacterForElement(int element) {
-            if (_apps != null && element < _apps.size() && _apps.get(element) != null && _apps.get(element).getLabel().length() > 0)
-                return _apps.get(element).getLabel().charAt(0);
-            else return '#';
+            IconLabelItem item = getAdapterItem(element);
+            if (item == null || item._label == null || item._label.isEmpty()) return '#';
+
+            if (item.isHeader()) {
+                // If it is the Recent Apps header, return '#'
+                String recentApps = getContext().getString(R.string.recent_apps);
+                if (item._label.equals(recentApps)) return '#';
+
+                // Otherwise it is an alphabetical header, return its character
+                return item._label.charAt(0);
+            }
+
+            // For normal items, return the first character
+            return Character.toUpperCase(item._label.charAt(0));
         }
     }
 }

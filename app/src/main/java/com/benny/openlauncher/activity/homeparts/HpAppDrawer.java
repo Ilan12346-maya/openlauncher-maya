@@ -8,6 +8,10 @@ import com.benny.openlauncher.widget.PagerIndicator;
 
 import net.gsantner.opoc.util.Callback;
 
+import android.graphics.RenderEffect;
+import android.graphics.Shader;
+import android.os.Build;
+
 public class HpAppDrawer implements Callback.a2<Boolean, Boolean> {
     private HomeActivity _homeActivity;
     private PagerIndicator _appDrawerIndicator;
@@ -25,19 +29,28 @@ public class HpAppDrawer implements Callback.a2<Boolean, Boolean> {
     public void callback(Boolean openingOrClosing, Boolean startOrEnd) {
         if (openingOrClosing) {
             if (startOrEnd) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    _homeActivity.getDesktop().setRenderEffect(RenderEffect.createBlurEffect(30f, 30f, Shader.TileMode.MIRROR));
+                }
                 _homeActivity.getAppDrawerController().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         Tool.visibleViews(200, _appDrawerIndicator);
-                        Tool.invisibleViews(200, _homeActivity.getDesktop());
+                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+                            Tool.invisibleViews(200, _homeActivity.getDesktop());
+                        }
                         _homeActivity.updateDesktopIndicator(false);
                         _homeActivity.updateDock(false);
                         _homeActivity.updateSearchBar(false);
+                        _homeActivity.getAppDrawerController().focusSearch();
                     }
                 }, 100);
             }
         } else {
             if (startOrEnd) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    _homeActivity.getDesktop().setRenderEffect(null);
+                }
                 Tool.invisibleViews(200, _appDrawerIndicator);
                 Tool.visibleViews(200, _homeActivity.getDesktop());
                 _homeActivity.updateDesktopIndicator(true);

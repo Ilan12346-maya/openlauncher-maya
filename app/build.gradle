@@ -29,8 +29,8 @@ android {
         resValue 'string', 'app_name', "OpenLauncher"
 
         applicationId "com.benny.openlauncher"
-        versionCode 629
-        versionName "0.9.9"
+        versionCode 840
+        versionName "v0.9.11-cv840"
     }
 
     compileOptions {

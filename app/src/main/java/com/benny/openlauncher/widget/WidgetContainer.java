@@ -2,23 +2,27 @@ package com.benny.openlauncher.widget;
 import com.benny.openlauncher.manager.Setup;
 
 import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.benny.openlauncher.R;
 import com.benny.openlauncher.activity.HomeActivity;
 import com.benny.openlauncher.model.Item;
+import com.benny.openlauncher.util.Tool;
 
 public class WidgetContainer extends FrameLayout {
     View ve;
     View he;
     View vl;
     View hl;
+    Item _item;
 
     final Runnable action = new Runnable() {
         @Override
@@ -30,14 +34,15 @@ public class WidgetContainer extends FrameLayout {
         }
     };
 
-    public WidgetContainer(Context context, WidgetView widgetView, Item item) {
+    public WidgetContainer(Context context, final View widgetView, final Item item) {
         super(context);
+        _item = item;
 
         setPadding(0, 0, 0, 0);
         setClipChildren(false);
         setClipToPadding(false);
 
-        addView(widgetView);
+        addView(widgetView, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         layoutInflater.inflate(R.layout.view_widget_container, this);
 
@@ -98,22 +103,29 @@ public class WidgetContainer extends FrameLayout {
         vl.animate().scaleY(1).scaleX(1);
         hl.animate().scaleY(1).scaleX(1);
 
-        postDelayed(action, 2000);
+        postDelayed(action, 3000);
+    }
+
+    public Item getItem() {
+        return _item;
     }
 
     public void scaleWidget(View view, Item item) {
-        item.setSpanX(Math.min(item.getSpanX(), HomeActivity.Companion.getLauncher().getDesktop().getCurrentPage().getCellSpanH()));
+        Desktop desktop = HomeActivity.Companion.getLauncher().getDesktop();
+        if (desktop == null || desktop.getCurrentPage() == null) return;
+
+        item.setSpanX(Math.min(item.getSpanX(), desktop.getCurrentPage().getCellSpanH()));
         item.setSpanX(Math.max(item.getSpanX(), 1));
-        item.setSpanY(Math.min(item.getSpanY(), HomeActivity.Companion.getLauncher().getDesktop().getCurrentPage().getCellSpanV()));
+        item.setSpanY(Math.min(item.getSpanY(), desktop.getCurrentPage().getCellSpanV()));
         item.setSpanY(Math.max(item.getSpanY(), 1));
 
-        HomeActivity.Companion.getLauncher().getDesktop().getCurrentPage().setOccupied(false, (CellContainer.LayoutParams) view.getLayoutParams());
+        desktop.getCurrentPage().setOccupied(false, (CellContainer.LayoutParams) view.getLayoutParams());
 
-        if (!HomeActivity.Companion.getLauncher().getDesktop().getCurrentPage().checkOccupied(new Point(item.getX(), item.getY()), item.getSpanX(), item.getSpanY())) {
+        if (!desktop.getCurrentPage().checkOccupied(new Point(item.getX(), item.getY()), item.getSpanX(), item.getSpanY())) {
             CellContainer.LayoutParams newWidgetLayoutParams = new CellContainer.LayoutParams(CellContainer.LayoutParams.WRAP_CONTENT, CellContainer.LayoutParams.WRAP_CONTENT, item.getX(), item.getY(), item.getSpanX(), item.getSpanY());
 
             // update occupied array
-            HomeActivity.Companion.getLauncher().getDesktop().getCurrentPage().setOccupied(true, newWidgetLayoutParams);
+            desktop.getCurrentPage().setOccupied(true, newWidgetLayoutParams);
 
             // update the view
             view.setLayoutParams(newWidgetLayoutParams);
@@ -122,30 +134,43 @@ public class WidgetContainer extends FrameLayout {
             // update the widget size in the database
             Setup.dataManager().saveItem(item);
         } else {
-            Toast.makeText(HomeActivity.Companion.getLauncher().getDesktop().getContext(), R.string.toast_not_enough_space, Toast.LENGTH_SHORT).show();
+            Toast.makeText(desktop.getContext(), R.string.toast_not_enough_space, Toast.LENGTH_SHORT).show();
 
             // add the old layout params to the occupied array
-            HomeActivity.Companion.getLauncher().getDesktop().getCurrentPage().setOccupied(true, (CellContainer.LayoutParams) view.getLayoutParams());
+            desktop.getCurrentPage().setOccupied(true, (CellContainer.LayoutParams) view.getLayoutParams());
         }
     }
 
     public void updateWidgetOption(Item item) {
-        int cellWidth = HomeActivity.Companion.getLauncher().getDesktop().getCurrentPage().getCellWidth();
-        int cellHeight = HomeActivity.Companion.getLauncher().getDesktop().getCurrentPage().getCellHeight();
+        if (item.getWidgetValue() == -1) return;
+        
+        Desktop desktop = HomeActivity.Companion.getLauncher().getDesktop();
+        if (desktop == null || desktop.getCurrentPage() == null) return;
 
-        if (cellWidth < 1 || cellHeight < 1) {
-            // desktop isn't laid out
+        int cellWidth = desktop.getCurrentPage().getCellWidth();
+        int cellHeight = desktop.getCurrentPage().getCellHeight();
+
+        if (cellWidth <= 0 || cellHeight <= 0) {
+            // desktop isn't laid out yet, don't send updates
             return;
         }
 
         Bundle newOps = new Bundle();
-        // Increase dimensions reporting by 50% to allow widgets to use full space
-        int width = (int) (item.getSpanX() * cellWidth * 1.5f);
-        int height = (int) (item.getSpanY() * cellHeight * 1.5f);
+        int width = Tool.px2dp(item.getSpanX() * cellWidth);
+        int height = Tool.px2dp(item.getSpanY() * cellHeight);
+        
+        if (width <= 0 || height <= 0) return;
+
+        newOps.putInt(AppWidgetManager.OPTION_APPWIDGET_HOST_CATEGORY, AppWidgetProviderInfo.WIDGET_CATEGORY_HOME_SCREEN);
         newOps.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, width);
         newOps.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, width);
         newOps.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, height);
         newOps.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, height);
-        HomeActivity._appWidgetManager.updateAppWidgetOptions(item.getWidgetValue(), newOps);
+        
+        try {
+            HomeActivity._appWidgetManager.updateAppWidgetOptions(item.getWidgetValue(), newOps);
+        } catch (Exception e) {
+            // Ignore
+        }
     }
 }

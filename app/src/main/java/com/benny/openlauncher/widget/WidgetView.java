@@ -1,8 +1,11 @@
 package com.benny.openlauncher.widget;
 
 import android.appwidget.AppWidgetHostView;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.RemoteViews;
 
 public class WidgetView extends AppWidgetHostView {
     private OnTouchListener _onTouchListener;
@@ -12,12 +15,25 @@ public class WidgetView extends AppWidgetHostView {
     public WidgetView(Context context) {
         super(context);
         setLongClickable(true);
-        setPadding(0, 0, 0, 0);
+        setClipChildren(false);
+        setClipToPadding(false);
+    }
+
+    public void setScale(float scale) {
+        for (int i = 0; i < getChildCount(); i++) {
+            View child = getChildAt(i);
+            child.setScaleX(scale);
+            child.setScaleY(scale);
+        }
     }
 
     @Override
-    public void setPadding(int left, int top, int right, int bottom) {
-        super.setPadding(0, 0, 0, 0);
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        try {
+            super.onLayout(changed, left, top, right, bottom);
+        } catch (Exception e) {
+            // Keep the crash protection but remove verbose logging
+        }
     }
 
     @Override
@@ -43,7 +59,10 @@ public class WidgetView extends AppWidgetHostView {
             case MotionEvent.ACTION_MOVE:
                 long delta = System.currentTimeMillis() - _down;
                 if (delta > 300L) {
-                    _longClick.onLongClick(this);
+                    if (_longClick != null) {
+                        _longClick.onLongClick(this);
+                        return true;
+                    }
                 }
                 break;
         }

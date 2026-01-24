@@ -81,6 +81,18 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
         return getBool(R.string.pref_key__desktop_infinite_scrolling, false);
     }
 
+    public boolean getDesktopParallax() {
+        return getBool("pref_key__desktop_parallax", false);
+    }
+
+    public float getDesktopParallaxIntensity() {
+        return (float) getInt("pref_key__desktop_parallax_intensity", 45) / 10.0f;
+    }
+
+    public float getDockParallaxIntensity() {
+        return (float) getInt("pref_key__dock_parallax_intensity", 20) / 10.0f;
+    }
+
     public boolean getSearchBarEnable() {
         return getBool(R.string.pref_key__search_bar_enable, true);
     }
@@ -135,6 +147,10 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
 
     public boolean getDockIosStyle() {
         return getBool(R.string.pref_key__dock_ios_style, false);
+    }
+
+    public boolean getDockBlur() {
+        return getBool("pref_key__dock_blur", false);
     }
 
     public int getDockColor() {

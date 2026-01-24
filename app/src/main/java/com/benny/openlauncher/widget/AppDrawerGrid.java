@@ -173,6 +173,7 @@ public class AppDrawerGrid extends FrameLayout {
     }
 
     public void updateAdapter(List<App> apps) {
+        if (apps == null) return;
         _apps = apps;
         ArrayList<IconLabelItem> items = new ArrayList<>();
         String filter = _searchBar.getText().toString().toLowerCase();

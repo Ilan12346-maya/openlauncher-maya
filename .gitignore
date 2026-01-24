@@ -20,3 +20,6 @@ TODO.md
 *.iml
 local.properties
 build.sh
+feld.md
+build.index
+openlauncher_debug.apk

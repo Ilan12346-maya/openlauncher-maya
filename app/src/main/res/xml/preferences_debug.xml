@@ -13,6 +13,10 @@
         <Preference
             android:key="pref_key__clear_logs"
             android:title="@string/pref_title__clear_logs" />
+        <Preference
+            android:key="pref_key__storage_info"
+            android:title="Storage Info"
+            android:summary="Checking..." />
         <com.benny.openlauncher.widget.LogViewPreference
             android:key="pref_key__log_view"
             android:layout="@layout/preference_log_view"

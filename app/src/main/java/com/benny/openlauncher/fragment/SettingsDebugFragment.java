@@ -78,6 +78,16 @@ public class SettingsDebugFragment extends SettingsBaseFragment {
             });
         }
 
+        Preference storagePref = findPreference("pref_key__storage_info");
+        if (storagePref != null) {
+            try {
+                String internal = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
+                storagePref.setSummary("Internal: " + internal);
+            } catch (Exception e) {
+                storagePref.setSummary("Error: " + e.getMessage());
+            }
+        }
+
         Preference copyPref = findPreference("pref_key__copy_logs");
         if (copyPref != null) {
             copyPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {

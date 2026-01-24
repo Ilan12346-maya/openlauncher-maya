@@ -1,3 +1,15 @@
+### v0.9.11
+* **Smooth Animations**: Implemented modern "pop" (overshoot) entrance animations for both dock and desktop icons during startup and orientation changes.
+* **Edge-to-Edge UI**: Enabled full transparency for the status bar and navigation bar to provide a more immersive visual experience.
+* **Dock Enhancements**:
+    * Fixed coordinate mapping for the vertical dock in landscape mode.
+    * Eliminated initial visibility flickering during app launch.
+* **Performance Optimizations**:
+    * Introduced in-memory database caching for desktop and dock items to prevent main-thread UI stutters.
+    * Switched folder preview icons to asynchronous background loading.
+* **Debug Features**:
+    * Added storage path and SD card status listing to the Debug settings for easier troubleshooting.
+
 ### v0.9.9
 * **Major Refactoring**: Decoupled `HomeActivity` by extracting logic into specialized managers (`LauncherReceiverManager`, `AppLauncher`, `PermissionManager`).
 * **Icon Loading Engine**: Switched to **Glide** for high-performance asynchronous icon loading, localized disk caching, and improved RAM management.
